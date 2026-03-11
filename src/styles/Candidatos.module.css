@@ -1,0 +1,133 @@
+:root{
+    --alturaFieldForm:110px;
+    --alturaFieldFormButton:50px;
+    --alturaFieldFormBotton:50px;
+    --alturaTitulo:50px;
+}
+
+.candidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+.titulo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--alturaTitulo);
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopo));
+}
+
+.fieldFormColunas{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 50%;
+    height: var(--alturaFieldForm);
+    padding: 20px;
+    gap:10px;
+}
+
+.fieldFormCol{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    height: var(--alturaFieldForm);
+}
+
+.fieldForm{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 50%;
+    height: var(--alturaFieldForm);
+    padding: 20px;
+}
+
+.fieldForm{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 50%;
+    height: var(--alturaFieldFormButton);
+    padding: 20px;
+}
+
+.fieldFormBotton{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 50%;
+    height: var(--alturaFieldFormBotton);
+    padding: 20px;
+}
+
+.formElementIni label{
+    font-weight: bold;
+    align-self: flex-start;
+}
+  
+.fieldForm select, .fieldForm input, .fieldFormCol select, .fieldFormCol input{
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: large;
+}
+
+.fieldListaCandidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 50%;
+    height: calc(100vh - var(--alturaTopo) - var(--alturaFieldForm) - 40px);
+    padding: 20px;
+}
+
+.listaCandidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopo) - var(--alturaFieldForm) - var(--alturaFieldFormButton) - var(--alturaTitulo) - var(--alturaFieldFormBotton) - 45px);
+    overflow-y: auto;
+    gap: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.btnAdd{
+    background-color: var(--azulStellantis);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: capitalize;
+    width: 100%;
+  }

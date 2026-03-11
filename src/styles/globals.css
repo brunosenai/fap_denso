@@ -1,0 +1,160 @@
+:root {
+  --background: #f4f4f8;
+  --foreground: #224;
+  --margem:50px;
+  --alturaTopo: 50px;
+  --azulStellantis:#253783;
+  --alturaFieldFormIni:40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: flex-start;
+  justify-content: flex-start;
+  font-family: var(--font-geist-sans);
+  background-color: var(--background);
+}
+
+.main {
+  display: flex;
+  min-height: calc(100vh - var(--alturaTopo));
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: var(--background);
+  padding: 0px var(--margem);
+}
+
+.btnPadrao{
+  background-color: var(--azulStellantis);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.formIni{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: calc(100vh - var(--alturaTopo));
+  padding: 20px;
+  border: 1px solid #f00;
+}
+
+.fieldFormIni{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 50%;
+  /* height: var(--alturaFieldFormIni); */
+  padding: 20px;
+  border: 1px solid #00f;
+}
+
+.fieldFormIniTam{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 50%;
+  /* height: calc(100vh - var(--alturaTopo) - var(--alturaFieldFormIni) - 40px); */
+  padding: 20px;
+  border: 1px solid #f00;
+}
+
+.formElementIni label{
+  font-weight: bold;
+  align-self: flex-start;
+}
+
+.fieldFormIni select, .fieldFormIni input{
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: large;
+}
+
+.inputButton{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: large;
+  overflow: hidden;
+}
+
+.inputButton input{
+  width: 100%;
+  padding: 10px;
+  margin-top: 0px !important;
+  border: none;
+  background-color: #fff;
+  font-size: large;
+  outline: none;
+}
+
+.inputButton button{
+  width: 50px;
+  border: none;
+  background-color: #fff;
+  font-size: large;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

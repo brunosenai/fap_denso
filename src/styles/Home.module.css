@@ -1,0 +1,42 @@
+.topo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: var(--alturaTopo);
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopo));
+}
+
+.fieldForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    padding: 20px;
+}
+
+.formElementIni label{
+    font-weight: bold;
+    align-self: flex-start;
+}
+  
+.fieldForm select, .fieldForm input{
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: large;
+}
+  
