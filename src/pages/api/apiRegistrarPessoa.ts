@@ -22,8 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!data) {
         return res.status(400).json({ message: 'Dados incompletos ou formato inválido' });
     }
-    
-    const connection = await pool.getConnection();
 
     try {
 
@@ -41,8 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(409).json({ message: 'CPF ou Email já cadastrado.' });
         }
         return res.status(500).json({ message: 'Erro no servidor.' });
-    }finally{
-        connection.release();
     }
 
 }
