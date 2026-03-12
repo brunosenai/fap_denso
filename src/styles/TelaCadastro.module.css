@@ -1,0 +1,9 @@
+.telaCadastro{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: calc(100vh - var(--alturaMenuCadastro) - var(--alturaTopo));
+    width: 100%;
+    gap:10px;
+}

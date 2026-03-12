@@ -2,9 +2,40 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Index.module.css";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Index() {
   const router=useRouter()
+  const [email,setEmail]=useState('')
+  const [senha,setSenha]=useState('')
+
+  const login=async()=>{
+    sessionStorage.setItem('menuSelected','1')
+    const response = await fetch('/api/apiLogin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: `${email}`,
+        password: `${senha}`,
+        action:'login'
+      }),
+    }); 
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('n_id_pessoa', data.data.n_id_pessoa)
+      if(data.data.n_id_tipoPessoa==1){
+        router.replace('/home');
+      }else{
+        router.replace('/cadastro');
+      }      
+    } else {
+      alert('Usuário ou Senha incorretos!')
+      console.error('Login failed:', response.statusText);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -23,15 +54,15 @@ export default function Index() {
               <div className={styles.telaLogin_body}>
                 <div className={styles.telaLogin_fieldForm}>
                   <label htmlFor="email">E-mail</label>
-                  <input type="email" name="email" id="email" />
+                  <input type="email" name="email" id="email" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
                 </div>
                 <div className={styles.telaLogin_fieldForm}>
                   <label htmlFor="senha">Senha</label>
-                  <input type="password" name="senha" id="senha" />
+                  <input type="password" name="senha" id="senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
                 </div>                
               </div>
               <div className={styles.telaLogin_bottuns}>
-                <button onClick={()=>router.replace('/home')} className='btnPadrao'>Entrar</button>
+                <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
               </div>
             </div>
           </div>
