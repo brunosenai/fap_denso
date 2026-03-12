@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import pool from "@/DB/db"
+import pool from "../../../services/banco"
 import { ResultSetHeader } from 'mysql2';
 
 //export const config = {
@@ -9,9 +9,16 @@ import { ResultSetHeader } from 'mysql2';
 //};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const apiKey = req.headers['x-api-key'];
+
+    //if (!apiKey || apiKey !== process.env.API_KEY) {
+    //   return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
+    //}
+
     if(req.method !== "POST") {
         return res.status(405).json({ message: 'Método não permitido' });
     }
+    
 
     if (!req.body) {
         return res.status(400).json({ message: 'Corpo da requisição vazio' });
