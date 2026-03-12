@@ -17,9 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ message: 'Corpo da requisição vazio' });
     }
 
-    const { nome_avaliacao, dt_avaliacao, candidatos } = req.body;
+    const { nome_avaliacao, dt_avaliacao, idsCandidatos } = req.body;
 
-    if (!nome_avaliacao || !candidatos || !Array.isArray(candidatos)) {
+    if (!nome_avaliacao || !idsCandidatos || !Array.isArray(idsCandidatos)) {
         return res.status(400).json({ message: 'Dados incompletos ou formato inválido' });
     }
     
@@ -35,36 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         );
         const idAvaliacao = resAval.insertId;
 
-        const cpfsParaVerificar = candidatos.map((c: any) => c.cpf);
-
-        const [existentes]: any = await connection.query(
-            'SELECT n_id_candidato, s_cpf_candidato FROM candidato WHERE s_cpf_candidato IN (?)',
-            [cpfsParaVerificar]
-        );
-
-        const mapaExistentes = new Map(existentes.map((r: any) => [r.s_cpf_candidato, r.n_id_candidato]));
-
-        const candidatosNovos = candidatos.filter((c: any) => !mapaExistentes.has(c.cpf));
-        const idsCandidatosFinal: number[] = Array.from(mapaExistentes.values()) as number[];;
-
-        if (candidatosNovos.length > 0) {
-            const valoresNovos = candidatosNovos.map((c: any) => [c.nome, c.cpf, c.email]);
-            
-            const [insCands] = await connection.query<ResultSetHeader>(
-                'INSERT INTO candidato (s_nome_candidato, s_cpf_candidato, s_email_candidato) VALUES ?',
-                [valoresNovos]
-            );
-
-            for (let i = 0; i < insCands.affectedRows; i++) {
-                idsCandidatosFinal.push(insCands.insertId + i);
-            }
-        }
-
-        const valoresJuncao = idsCandidatosFinal.map(idCand => [
+        const valoresJuncao = idsCandidatos.map(idCand => [
             idAvaliacao,
             idCand
         ]);
-
 
         await connection.query(
             'INSERT INTO avaCanFap (n_id_avaliacao, n_id_candidato) VALUES ?',
@@ -73,7 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         await connection.commit();
 
-        return res.status(200).json({})
+        return res.status(201).json({ 
+            message: "Avaliação registrada e candidatos vinculados!"
+        });
     }catch(err){
         await connection.rollback();
         throw err;
