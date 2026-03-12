@@ -24,44 +24,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ message: 'Corpo da requisição vazio' });
     }
 
-    const { nome_avaliacao, dt_avaliacao, idsCandidatos } = req.body;
+    const { nome_avaliacao, dt_avaliacao } = req.body;
 
-    if (!nome_avaliacao || !idsCandidatos || !Array.isArray(idsCandidatos)) {
+    if (!nome_avaliacao) {
         return res.status(400).json({ message: 'Dados incompletos ou formato inválido' });
     }
-    
-    const connection = await pool.getConnection();
 
     try {
-       
-        await connection.beginTransaction();
 
-        const [resAval] = await connection.query<ResultSetHeader>(
+        await pool.query<ResultSetHeader>(
             'INSERT INTO avaliacao (s_nome_avaliacao, dt_data_avaliacao) VALUES (?, ?)',
             [nome_avaliacao, dt_avaliacao]
         );
-        const idAvaliacao = resAval.insertId;
-
-        const valoresJuncao = idsCandidatos.map(idCand => [
-            idAvaliacao,
-            idCand
-        ]);
-
-        await connection.query(
-            'INSERT INTO avaCanFap (n_id_avaliacao, n_id_candidato) VALUES ?',
-            [valoresJuncao]
-        );
-
-        await connection.commit();
 
         return res.status(201).json({ 
-            message: "Avaliação registrada e candidatos vinculados!"
+            message: "Avaliação registrada!"
         });
     }catch(err){
-        await connection.rollback();
+
         throw err;
-    }finally{
-        connection.release();
     }
 
 }
