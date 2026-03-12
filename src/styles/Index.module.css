@@ -1,0 +1,70 @@
+.index{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.telaLogin{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap:10px;
+}
+
+.telaLogin_titulo{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;    
+    font-size: 24px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.telaLogin_body{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+.telaLogin_bottuns{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.telaLogin_fieldForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.telaLogin_fieldForm label{
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.telaLogin_fieldForm input{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background-color: #f4f4f4;
+}

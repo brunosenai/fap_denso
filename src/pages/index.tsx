@@ -15,7 +15,26 @@ export default function Index() {
       </Head>
       <div className='page'>
         <main className='main'>
-          <button onClick={()=>router.replace('/home')}>Entrar</button>
+          <div className={styles.index}>
+            <div className={styles.telaLogin}>
+              <div className={styles.telaLogin_titulo}>
+                <Image src="/stellantis_logo.png" alt="Logo Stellantis" width={236} height={50} />
+              </div>
+              <div className={styles.telaLogin_body}>
+                <div className={styles.telaLogin_fieldForm}>
+                  <label htmlFor="email">E-mail</label>
+                  <input type="email" name="email" id="email" />
+                </div>
+                <div className={styles.telaLogin_fieldForm}>
+                  <label htmlFor="senha">Senha</label>
+                  <input type="password" name="senha" id="senha" />
+                </div>                
+              </div>
+              <div className={styles.telaLogin_bottuns}>
+                <button onClick={()=>router.replace('/home')} className='btnPadrao'>Entrar</button>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
     </>
