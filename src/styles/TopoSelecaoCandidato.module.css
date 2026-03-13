@@ -1,0 +1,56 @@
+.topo{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    max-height: var(--alturaTopo_telaSelecaoCandidato);
+    background-image: linear-gradient(to bottom, #243783, #253059);
+}
+
+.topoLogos{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: var(--alturaTopoGeral);
+}
+
+.topoSelecaoCandidato{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--alturaTopoPagina);
+}
+
+.titulo{
+    font-size: 40px;
+    font-weight: bold;
+    color: #7CF2FF;
+    text-transform: uppercase;
+}
+
+.fieldSelect{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 50%;
+    margin-top: 20px;
+}
+
+.fieldSelect label{
+    color: #fff;
+    font-size: x-large;
+}
+
+.fieldSelect select{
+    width: 100%;
+    /* font-size: large; */
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}

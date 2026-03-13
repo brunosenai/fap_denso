@@ -4,6 +4,7 @@ import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Topo from "@/components/Topo/Topo";
+import TopoSelecaoCandidato from "@/components/Topo/TopoSelecaoCandidato";
 import { tAvaliacao } from "@/utils/Types";
 
 export default function Home() {
@@ -28,8 +29,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className='page'>
-        <Topo />
-        <main className='main'>
+        <TopoSelecaoCandidato />
+        <main className={styles.main}>
           <div className={styles.form}>
             <div className={styles.fieldForm}>
               <select title={''}>

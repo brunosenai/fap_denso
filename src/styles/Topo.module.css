@@ -1,9 +1,9 @@
 .topo{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     width: 100%;
-    height: var(--alturaTopo);
-    background-color: #fff;
+    height: var(--alturaTopoGeral);
+    background-image: linear-gradient(to bottom, #243783, #253059);
 }

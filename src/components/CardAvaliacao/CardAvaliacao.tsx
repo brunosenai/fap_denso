@@ -1,4 +1,4 @@
-import styles from "@/styles/CardAvaliacao.module.css";
+import styles from "@/styles/TelaAvaliacoes.module.css";
 
 interface CardAvaliacaoProps {
     id: number;
@@ -8,7 +8,7 @@ interface CardAvaliacaoProps {
 
 export default function CardAvaliacao(props:CardAvaliacaoProps){
     return(
-        <div className={styles.CardAvaliacaoProps}>
+        <div className={styles.cardAvaliacao}>
             <div className={`${styles.coluna} ${styles.c1}`}>{props.id}</div>
             <div className={`${styles.coluna} ${styles.c2}`}>{props.nome}</div>
             <div className={`${styles.coluna} ${styles.c3}`}>{props.data}</div>

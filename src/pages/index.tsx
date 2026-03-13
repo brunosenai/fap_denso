@@ -47,24 +47,34 @@ export default function Index() {
       <div className='page'>
         <main className='main'>
           <div className={styles.index}>
-            <div className={styles.telaLogin}>
-              <div className={styles.telaLogin_titulo}>
-                <Image src="/stellantis_logo.png" alt="Logo Stellantis" width={236} height={50} />
-              </div>
-              <div className={styles.telaLogin_body}>
-                <div className={styles.telaLogin_fieldForm}>
-                  <label htmlFor="email">E-mail</label>
-                  <input type="email" name="email" id="email" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
-                </div>
-                <div className={styles.telaLogin_fieldForm}>
-                  <label htmlFor="senha">Senha</label>
-                  <input type="password" name="senha" id="senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
-                </div>                
-              </div>
-              <div className={styles.telaLogin_bottuns}>
-                <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
-              </div>
+
+            <div className={styles.indexLogos}>
+              <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" width={665} height={144} />
+              <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" width={365} height={365} />
             </div>
+
+            <div className={styles.formLogin}>
+              <div className={styles.formLogin_title}>login</div>
+              <div className={styles.fieldForm}>
+                <div>
+                  <Image src="/assets/icons/person.png" alt="Email" width={51} height={51} />
+                </div>
+                <input title={''} type="email" name="email" id="email" placeholder="E-mail" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
+              </div>
+              <div className={styles.fieldForm}>
+                <div>
+                  <Image src="/assets/icons/lock.png" alt="Email" width={51} height={51} />
+                </div>
+                <input title={''} type="password" name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
+              </div>    
+              <div className={styles.fieldFormButton}>
+                <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
+              </div>            
+            </div>
+
+            <div></div>
+            <div></div>
+
           </div>
         </main>
       </div>

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import pool from "@/DB/db"
+import pool from "@/services/Banco"
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 //export const config = {
@@ -26,6 +26,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         avaliacao
                     WHERE
                         dt_data_avaliacao >= CURDATE()
+                    ORDER BY
+                        dt_data_avaliacao DESC
+                    `,[]
+                )
+
+                res.status(200).json(rows_cell)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }
+
+        if(action == "getAllAvaliacao"){
+            try {
+                const [rows_cell] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        *
+                    FROM
+                        avaliacao
                     ORDER BY
                         dt_data_avaliacao DESC
                     `,[]
