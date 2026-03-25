@@ -5,6 +5,9 @@ import { tAvaliacao } from "@/utils/Types";
 interface TopoSelecaoAvaliacaoProps{
     setAvaliacao:(avaliacao:number)=>void
     avaliacoes:tAvaliacao[]
+    //setQtdAvaliadores:React.Dispatch<React.SetStateAction<number>>
+    setQtdAvaliadores:(dtq:number)=>void
+    qtdAvaliadores:number
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -16,14 +19,20 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
             </div>
             <div className={styles.topoSelecaoCandidato}>
                 <div className={styles.titulo}>seleção de avaliação</div>
-                <div className={styles.fieldSelect}>
-                    <label htmlFor="selecao">Selecione a avaliação</label>
-                    <select name="selecao" id="selecao" onChange={(evt)=>props.setAvaliacao(Number(evt.target.value))}>
-                        <option value={-1}>Selecione a avaliação</option>
-                        {props.avaliacoes.length>0 && props.avaliacoes.map((item,index)=>
-                            <option key={index} value={item.n_id_avaliacao}>{item.s_nome_avaliacao}</option>
-                        )}
-                    </select>
+                <div className={styles.selects}>
+                    <div className={styles.fieldSelect_c1}>
+                        <label className={styles.label} htmlFor="selecao">Selecione a avaliação</label>
+                        <select className={styles.fieldForm} name="selecao" id="selecao" onChange={(evt)=>props.setAvaliacao(Number(evt.target.value))}>
+                            <option value={-1}>Selecione a avaliação</option>
+                            {props.avaliacoes.length>0 && props.avaliacoes.map((item,index)=>
+                                <option key={index} value={item.n_id_avaliacao}>{item.s_nome_avaliacao}</option>
+                            )}
+                        </select>
+                    </div>
+                    <div className={styles.fieldSelect_c2}>
+                        <label className={styles.label} htmlFor="qtde">Qtd avaliadores</label>
+                        <input className={styles.fieldForm} type="text" title='qtde' id={'qtde'} value={props.qtdAvaliadores} onChange={(e)=>{props.setQtdAvaliadores(Number(e.target.value))}} />
+                    </div>
                 </div>
             </div>
         </div>

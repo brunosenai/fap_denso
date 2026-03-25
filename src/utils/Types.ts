@@ -34,6 +34,7 @@ export type tFap={
     n_id_avaliacao:number
     n_id_candidato:number
     n_id_pessoa:number
+    n_status_fap:number
     dt_date_fap:string
     n_nota_fap:number
     n_resultado_fap:number
@@ -53,5 +54,6 @@ export type tFap={
     s_q13_fap:string
     s_q14_fap:string
     s_q15_fap:string
-    s_q16_fap:string     
+    s_q16_fap:string
+    s_relatorio_fap:string  
 }

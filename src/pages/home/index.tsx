@@ -12,11 +12,20 @@ export default function Home() {
   const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState<number>(-1);
   const [candidatos, setCandidatos] = useState<tCandidadoAvaliacao[]>([]);
   const [candidatosSelecionados, setCandidatosSelecionados] = useState<number[]>([]);
-  const maxCandidatosSelecionados = Math.floor(candidatos.length / 2);
+  const [qtdAvaliadores,setQtdAvaliadores]=useState<number>(1);
+  const [maxCandidatosSelecionados, setMaxCandidatosSelecionados]=useState(0);
 
   useEffect(() => {
     getAvaliacoes();
   }, []);
+
+  const changeQtdAvaliadores=(qtd:number)=>{
+    console.log(qtd)
+    const maxCandidatosSelecionados=Math.ceil(candidatos.length / qtd)
+    setMaxCandidatosSelecionados(maxCandidatosSelecionados)
+    setQtdAvaliadores(qtd)
+    setCandidatosSelecionados([])
+  }
 
   const getAvaliacoes = async () => {
     const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiAvaliacao?action=getAvaliacoesHojeEmDiante`;
@@ -43,6 +52,9 @@ export default function Home() {
     .then(res => res.json())
     .then(data => {
       setCandidatos(data);
+      const maxCandidatosSelecionados=Math.ceil(data.length / qtdAvaliadores)
+      setMaxCandidatosSelecionados(maxCandidatosSelecionados)
+  
     });
   }
 
@@ -59,6 +71,14 @@ export default function Home() {
   }
 
   const goto = () => {
+    if(candidatos.length < qtdAvaliadores){
+      alert('Número de avaliadores acima da quantidade de candidatos')
+      return
+    }
+    if(qtdAvaliadores<1){
+      alert('Número de avaliadores insuficiente, deve ser pelo menos 1')
+      return
+    }
     const path=`/fap`
     if(candidatosSelecionados.length == maxCandidatosSelecionados && candidatosSelecionados.length > 0){
       localStorage.setItem('n_id_avaliacao',avaliacaoSelecionada.toString());
@@ -85,7 +105,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.page}>
-        <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} />
+        <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores}/>
         <main className={styles.main}>
           <div className={styles.telaMain}>
             <div className={styles.formCandidatos}>
@@ -105,10 +125,8 @@ export default function Home() {
                         name='candidato' 
                         id={`candidato${i}`} 
                         value={c.n_id_candidato} 
-                        
                         checked={estaSelecionado} 
                         onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
-                        
                         disabled={!estaSelecionado && atingiuLimite}
                       />
                     </div>
@@ -119,8 +137,8 @@ export default function Home() {
           </div>
           <div className={styles.rodape}>
             <button title={'voltar'} className={styles.btnHome} onClick={()=>voltar()}>
-              <Image src="/assets/icons/exit_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
-              sair
+              <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
+              logout
             </button>
             <button className='btnPadrao_claro' onClick={() => goto()}>
               <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
