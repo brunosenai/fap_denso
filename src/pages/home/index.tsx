@@ -107,10 +107,10 @@ export default function Home() {
 
   const atingiuLimite = candidatosSelecionados.length >= maxCandidatosSelecionados;
 
-  const voltar=()=>{
+  const logout=async()=>{
+    await fetch('/api/apiLogout');
     router.replace('/');
   }
-
 
   return (
     <>
@@ -153,7 +153,7 @@ export default function Home() {
             </div>
           </div>
           <div className={styles.rodape}>
-            <button title={'voltar'} className={styles.btnHome} onClick={()=>voltar()}>
+            <button title={'voltar'} className={styles.btnHome} onClick={()=>logout()}>
               <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
               logout
             </button>
