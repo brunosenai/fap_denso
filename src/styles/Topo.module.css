@@ -1,9 +1,30 @@
 .topo{
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
+    flex-direction: column;
     width: 100%;
     height: var(--alturaTopoGeral);
     background-image: linear-gradient(to bottom, #243783, #253059);
+}
+
+.topoImages{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-around;
+    gap: 10rem;
+
+}
+
+.topoStellantis{
+    margin-top: 2.3rem;
+}
+
+.topoTitulo{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    color: #7CF2FF;
+    font-weight: bold;
+    font-size: 40px;
 }
