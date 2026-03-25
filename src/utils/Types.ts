@@ -14,6 +14,13 @@ export type tAvaliador={
     s_senha_pessoa:string
 }
 
+export type tCandidatoFap={
+    n_id_candidato:number
+    s_nome_candidato: string
+    s_email_candidato: string
+    relatorios: []
+}
+
 export type tCandidado={
     n_id_candidato:number
     s_nome_candidato:string
