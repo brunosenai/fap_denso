@@ -20,6 +20,7 @@ export default function Home() {
   }, []);
 
   const changeQtdAvaliadores=(qtd:number)=>{
+    console.log(qtd)
     const maxCandidatosSelecionados=Math.ceil(candidatos.length / qtd)
     setMaxCandidatosSelecionados(maxCandidatosSelecionados)
     setQtdAvaliadores(qtd)
