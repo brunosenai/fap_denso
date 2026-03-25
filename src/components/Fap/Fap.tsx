@@ -8,14 +8,12 @@ interface FapProps {
   setFap: React.Dispatch<React.SetStateAction<tFap[]>>;
   abaObservacaoAberta: boolean; // Adicionado para controlar a visibilidade das observações
   setAbaObservacaoAberta: React.Dispatch<React.SetStateAction<boolean>>; // Função para atualizar o estado de observação aberta
-  setHabilitarExportar: React.Dispatch<React.SetStateAction<boolean>>; // Função para habilitar o botão de exportar
 }
 
-export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObservacaoAberta, setHabilitarExportar }: FapProps) {
+export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObservacaoAberta }: FapProps) {
 
   const handleChange = (campo: keyof tFap, valor: number | string) => {
     setFap((prevFap) => {
-      setHabilitarExportar(false); // Habilita o botão de exportar ao fazer qualquer alteração
       const novoFap = [...prevFap];
       novoFap[iAba] = { ...novoFap[iAba], [campo]: valor };
       return novoFap;
