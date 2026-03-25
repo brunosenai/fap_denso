@@ -16,8 +16,11 @@ export default function TelaCandidatoAvaliacao(){
     const [candidatosFiltrados,setCandidatosFiltrados]=useState<tCandidado[]>([])
     const [filtroCandidatos,setFiltroCandidatos]=useState("")
     const [candidatosAva,setCandidatosAva]=useState<tCandidado[]>([])
+    const [screenWidth, setScreenWidth]=useState<number>()
     
     useEffect(()=>{
+        const viewportWidth: number = window.innerWidth;
+        setScreenWidth(viewportWidth)
         obterDadosIniciais()
     },[])
 
@@ -122,83 +125,93 @@ export default function TelaCandidatoAvaliacao(){
     return(
         <div className={styles.telaCadastroCandidatos}>
             <div className={styles.telaCadastroCandidatos_topo}>
-                <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
-                <h1>Relacionar Candidato com avaliação</h1>
+                {screenWidth && screenWidth >= 1351 && (
+                    <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
+                ) }
+                {screenWidth && screenWidth <= 1350 && (
+                    <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
+                ) }
+                
+                <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
             </div>
-            <div className={styles.telaCadastroCandidatos_form}>
-                <div className={styles.areaLista}>
-                    <div className={styles.telaCadastroCandidatos_lista_filtro}>
-                        <div className={styles.fieldForm}>
-                            <input type="text" placeholder="pesquise pelo nome do candidato" id={`filtro`} value={filtroCandidatos} onChange={(e)=>filtrarCandidatos(e.target.value)} />
-                        </div>
-                    </div>
-                    <div className={styles.telaCadastroCandidatos_lista}>
-                        <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                            <div className={styles.c1_c}>id</div>
-                            <div className={styles.c2_c}>Candidato</div>
-                            <div className={styles.c3_c}>cpf</div>
-                        </div>
-                    </div>
-                    <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                        {candidatosFiltrados.length>0 && candidatosFiltrados.map((c,i)=>(
-                            <div key={i} className={`${candidatoSel==c.n_id_candidato&&styles.telaCadastroCandidatos_lista_l_selecionada} ${styles.telaCadastroCandidatos_lista_l}`} onClick={(evt)=>selecionarCandidato(c.n_id_candidato)}>
-                                <div className={styles.c1_c}>{c.n_id_candidato}</div>
-                                <div className={styles.c2_c}>{c.s_nome_candidato}</div>
-                                <div className={styles.c3_c}>{c.s_cpf_candidato}</div>
+            <div className={styles.webContainer}>
+                <div className={styles.telaCadastroCandidatos_form}>
+                    <div className={styles.areaLista}>
+                        <div className={styles.telaCadastroCandidatos_lista_filtro}>
+                            <div className={styles.fieldForm}>
+                                <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`} value={filtroCandidatos} onChange={(e)=>filtrarCandidatos(e.target.value)} />
                             </div>
-                        ))}
-                    </div>
-                </div>
-                <div className={styles.btnMove} onClick={()=>associarCandidato()}>
-                    <Image src='/assets/icons/move_w.svg' alt='Cadastro de Candidatos' width={50} height={50}/>
-                </div>
-                <div className={styles.areaLista}>
-                    <div className={styles.telaCadastroCandidatos_lista_filtro}>
-                        <div className={styles.fieldForm}>
-                            <input type="text" placeholder="pesquise pela avaliação" id={`filtro`} value={filtroAvaliacoes} onChange={(e)=>filtrarAvaliacoes(e.target.value)} />
                         </div>
-                    </div>                    
-                    <div className={styles.telaCadastroCandidatos_lista}>
-                        <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                            <div className={styles.c1_a}>id</div>
-                            <div className={styles.c2_a}>avaliacao</div>
-                            <div className={styles.c3_a}>data</div>
+                        <div className={styles.telaCadastroCandidatos_lista}>
+                            <div className={styles.telaCadastroCandidatos_lista_titulos}>
+                                <div className={styles.c1_c}>id</div>
+                                <div className={styles.c2_c}>Candidato</div>
+                                <div className={styles.c3_c}>cpf</div>
+                            </div>
                         </div>
                         <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                            {avaliacoesFiltrados.length>0 && avaliacoesFiltrados.map((a,i)=>(
-                                <div key={i} className={`${avaliacaoSel==a.n_id_avaliacao&&styles.telaCadastroCandidatos_lista_l_selecionada} ${styles.telaCadastroCandidatos_lista_l}`} onClick={(evt)=>selecionarAvaliacao(a.n_id_avaliacao)}>
-                                    <div className={styles.c1_a}>{a.n_id_avaliacao}</div>
-                                    <div className={styles.c2_a}>{a.s_nome_avaliacao}</div>
-                                    <div className={styles.c3_a}>{formatDateToText(a.dt_data_avaliacao)}</div>
+                            {candidatosFiltrados.length>0 && candidatosFiltrados.map((c,i)=>(
+                                <div key={i} className={`${candidatoSel==c.n_id_candidato&&styles.telaCadastroCandidatos_lista_l_selecionada} ${styles.telaCadastroCandidatos_lista_l}`} onClick={(evt)=>selecionarCandidato(c.n_id_candidato)}>
+                                    <div className={styles.c1_c}>{c.n_id_candidato}</div>
+                                    <div className={styles.c2_c}>{c.s_nome_candidato}</div>
+                                    <div className={styles.c3_c}>{c.s_cpf_candidato}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className={styles.btnMove} onClick={()=>associarCandidato()}>
+                        <Image src='/assets/icons/move_w.svg' alt='Cadastro de Candidatos' width={35} height={35}/>
+                    </div>
+                    <div className={styles.areaLista}>
+                        <div className={styles.telaCadastroCandidatos_lista_filtro}>
+                            <div className={styles.fieldForm}>
+                                <input type="text" placeholder="pesquise pela avaliação" id={`filtro`} value={filtroAvaliacoes} onChange={(e)=>filtrarAvaliacoes(e.target.value)} />
+                            </div>
+                        </div>                    
+                        <div className={styles.telaCadastroCandidatos_lista}>
+                            <div className={styles.telaCadastroCandidatos_lista_titulos}>
+                                <div className={styles.c1_a}>id</div>
+                                <div className={styles.c2_a}>avaliacao</div>
+                                <div className={styles.c3_a}>data</div>
+                            </div>
+                            <div className={styles.telaCadastroCandidatos_lista_linhas}>
+                                {avaliacoesFiltrados.length>0 && avaliacoesFiltrados.map((a,i)=>(
+                                    <div key={i} className={`${avaliacaoSel==a.n_id_avaliacao&&styles.telaCadastroCandidatos_lista_l_selecionada} ${styles.telaCadastroCandidatos_lista_l}`} onClick={(evt)=>selecionarAvaliacao(a.n_id_avaliacao)}>
+                                        <div className={styles.c1_a}>{a.n_id_avaliacao}</div>
+                                        <div className={styles.c2_a}>{a.s_nome_avaliacao}</div>
+                                        <div className={styles.c3_a}>{formatDateToText(a.dt_data_avaliacao)}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={styles.telaCadastroCandidatos_candidatosAvaliacao}>
+                    <h1>LISTA DE ASSOCIADOS</h1>
+                    <div className={styles.telaCadastroCandidatos_lista}>
+                        <div className={styles.telaCadastroCandidatos_lista_titulos}>
+                            <div className={styles.c1_ca}>id</div>
+                            <div className={styles.c2_ca}>nome</div>
+                            <div className={styles.c3_ca}>cpf</div>
+                            <div className={styles.c4_ca}></div>
+                        </div>
+                        <div className={styles.telaCadastroCandidatos_lista_linhas}>
+                            {candidatosAva.length>0 && candidatosAva.map((c,i)=>(
+                                <div key={i} className={styles.telaCadastroCandidatos_lista_l}>
+                                    <div className={styles.c1_ca}>{c.n_id_candidato}</div>
+                                    <div className={styles.c2_ca}>{c.s_nome_candidato}</div>
+                                    <div className={styles.c3_ca}>{c.s_cpf_candidato}</div>
+                                    <div className={styles.c4_ca} onClick={()=>desassociarCandidato(c.n_id_candidato,avaliacaoSel)}>
+                                        <Image src='/assets/icons/delete.svg' alt='Cadastro de Candidatos' width={25} height={25}/>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={styles.telaCadastroCandidatos_candidatosAvaliacao}>
-                <h1>Lista de Candidatos associados à avaliação selecionada</h1>
-                <div className={styles.telaCadastroCandidatos_lista}>
-                    <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                        <div className={styles.c1_ca}>id</div>
-                        <div className={styles.c2_ca}>nome</div>
-                        <div className={styles.c3_ca}>cpf</div>
-                        <div className={styles.c4_ca}></div>
-                    </div>
-                    <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                        {candidatosAva.length>0 && candidatosAva.map((c,i)=>(
-                            <div key={i} className={styles.telaCadastroCandidatos_lista_l}>
-                                <div className={styles.c1_ca}>{c.n_id_candidato}</div>
-                                <div className={styles.c2_ca}>{c.s_nome_candidato}</div>
-                                <div className={styles.c3_ca}>{c.s_cpf_candidato}</div>
-                                <div className={styles.c4_ca} onClick={()=>desassociarCandidato(c.n_id_candidato,avaliacaoSel)}>
-                                    <Image src='/assets/icons/delete.svg' alt='Cadastro de Candidatos' width={25} height={25}/>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            
             <div className={styles.telaCadastroCandidatos_rodape}>
                 <button className="btnPadrao_claro" onClick={()=>router.replace('/')}>Sair</button>
             </div>

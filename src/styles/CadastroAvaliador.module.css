@@ -4,16 +4,6 @@
     --alturaForm:400px;
 }
 
-.telaCadastroCandidatos{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    flex: 1;
-    background-color: var(--azulFap);
-}
-
 .telaCadastroCandidatos_topo{
     display: flex;
     flex-direction: column;
@@ -31,7 +21,7 @@
     width: 100%;
     gap:20px;
     padding: 50px;
-    height: var(--alturaForm);
+    height: 100%;
 }
 
 .telaCadastroCandidatos_lista{
@@ -115,14 +105,6 @@
     gap:5px;
 }
 
-.fieldForm_center{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap:5px;
-}
 
 .fieldForm label{
     font-size: xx-large;
@@ -142,3 +124,98 @@
 .obrigatorio{
     color: red;
 }
+
+.telaCadastroCandidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    background-color: var(--azulFap);
+}
+
+
+.fieldForm_center{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap:5px;
+}
+
+@media(min-width: 1351px){
+
+    .telaCadastroCandidatos_topo{
+        margin-top: 10px;
+        height: 118px;
+    }
+
+    .telaCadastroCandidatos_form{
+        gap:10px;
+        padding: 50px;
+        padding-top: 0px;
+        height: 100%;
+    }
+
+    .telaCadastroCandidatos{
+        flex-direction: row;
+        
+        height: 69vh;
+    }
+
+    .telaCadastroCandidatos_esquerda{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+    }
+
+    .telaCadastroCandidatos_direita{
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .fieldForm label{
+        font-size: 1.4rem;
+    }
+
+    .fieldForm input{
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .fieldForm_center{
+        margin-top: 40px;
+    }
+
+    .telaCadastroCandidatos_rodape{
+        display: none;
+    }
+
+    .telaCadastroCandidatos_lista{
+        height: 320px;
+        overflow-y:hidden;
+        padding: 20px;
+    } 
+
+    .telaCadastroCandidatos_lista_linhas{
+        flex: 1; /* Ocupa o espaço restante da lista */
+        overflow-y: auto; /* CRIA O SCROLL APENAS NAS LINHAS */
+    }
+}
+
+
+@media(max-width: 1350px) {
+    .telaCadastroCandidatos_esquerda{
+        width: 100%;
+    }
+
+    .telaCadastroCandidatos_direita{
+        width: 100%;
+    }
+}
+
+

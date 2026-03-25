@@ -59,7 +59,6 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    overflow-y: auto; 
 }
 
 .telaCadastroCandidatos_lista_filtro{
@@ -84,43 +83,33 @@
 
 .c1_c{
     width: 10%;
-    padding: 10px;
 }
 .c2_c{
     width: 50%;
-    padding: 10px;
 }
 .c3_c{
     width: 40%;
-    padding: 10px;
 }
 .c1_a{
     width: 10%;
-    padding: 10px;
 }
 .c2_a{
     width: 50%;
-    padding: 10px;
 }
 .c3_a{
     width: 40%;
-    padding: 10px;
 }
 .c1_ca{
     width: 10%;
-    padding: 10px;
 }
 .c2_ca{
     width: 40%;
-    padding: 10px;
 }
 .c3_ca{
     width: 40%;
-    padding: 10px;
 }
 .c4_ca{
     width: 10%;
-    padding: 10px;
 }
 
 
@@ -138,6 +127,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
+    padding: 10px;
     background-color: #fff;
     border-bottom: 1px solid #ccc;
 }
@@ -157,12 +147,6 @@
     border-radius: 10px;
     margin-top: 60px;
 }
-
-
-
-
-
-
 
 .telaCadastroCandidatos_rodape{
     display: flex;
@@ -210,3 +194,90 @@
 .obrigatorio{
     color: red;
 }
+
+@media(min-width: 1351px){
+
+    .telaCadastroCandidatos{
+        align-items: start;
+        height: 69vh;
+    }
+
+    .telaCadastroCandidatos_topo{
+        flex-direction: row;
+        gap: 20px;
+        font-size: 16px;
+        height: 120px;
+    }
+
+    .telaCadastroCandidatos_form{
+
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        gap:10px;
+        margin: 40px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding: 0px;
+        width: 50%;
+        height: 100%;
+    }
+
+    .fieldForm input{
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .telaCadastroCandidatos_lista_linhas{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .telaCadastroCandidatos_lista_l{
+        padding: 6px;
+    }
+
+    .telaCadastroCandidatos_rodape{
+        display: none;
+    }
+
+    .telaCadastroCandidatos_lista_titulos{
+        padding: 4px;
+    }
+
+    .areaLista{
+        justify-content: start;
+        width: 100%;
+        height: 225px;
+    }
+
+    .btnMove{
+        margin-top: 0px;
+    }
+
+    .webContainer{
+        display: flex;
+        height: 100%;
+        width: 100%;
+    }
+
+    .telaCadastroCandidatos_candidatosAvaliacao{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 50%;
+        gap:10px;
+        padding: 0px;
+        margin-top: 6px;
+        margin-right: 10px;
+        height: 100%;
+    }
+}
+
+

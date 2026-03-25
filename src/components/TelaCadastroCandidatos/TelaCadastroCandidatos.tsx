@@ -1,6 +1,6 @@
 import styles from "@/styles/CadastroCandidado.module.css"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 export default function TelaCadastroCandidatos(){
@@ -8,6 +8,12 @@ export default function TelaCadastroCandidatos(){
     const [nome,setNome]=useState<string>("")
     const [cpf,setCpf]=useState<string>("")
     const [email,setEmail]=useState<string>("")
+    const [screenWidth, setScreenWidth]=useState<number>()
+    
+    useEffect(()=>{
+        const viewportWidth: number = window.innerWidth;
+        setScreenWidth(viewportWidth)
+    },[])
 
     const cadastrarCandidato=async()=>{
         if(nome.trim()=="" || cpf.trim()=="" || email.trim()==""){
@@ -41,10 +47,16 @@ export default function TelaCadastroCandidatos(){
     return(
         <div className={styles.telaCadastroCandidatos}>
             <div className={styles.telaCadastroCandidatos_topo}>
-                <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
-                <h1>Novo Candidato</h1>
+                
+                {screenWidth && screenWidth >= 1351 && (
+                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={110} height={110}/>
+                ) }
+                {screenWidth && screenWidth <= 1350 && (
+                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
+                ) }
             </div>
             <div className={styles.telaCadastroCandidatos_form}>
+                <h1>NOVO CANDIDATO</h1><br />
                 <div className={styles.fieldForm}>
                     <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
                     <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
