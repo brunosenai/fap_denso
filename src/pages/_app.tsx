@@ -11,7 +11,7 @@ const exo2 = Exo_2({
 export default function App({ Component, pageProps }: AppProps) {
   return(
     <main className={exo2.className}>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </main>
   )
 }

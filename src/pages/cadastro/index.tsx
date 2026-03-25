@@ -1,13 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
-import styles from "@/styles/Cadastro.module.css";
+import styles from "@/styles/CandicadoAvaliacao.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Topo from "@/components/Topo/Topo";
 import { tAvaliacao } from "@/utils/Types";
 import MenuCadastro from "@/components/MenuCadastro.tsx/MenuCadastro";
-import TelaCadastroAvaliacoes from "@/components/TelaCadastroAvaliacoes/TelaCadastroAvaliacoes";
 import TelaCadastroCandidatos from "@/components/TelaCadastroCandidatos/TelaCadastroCandidatos";
+import TelaCadastroAvaliador from "@/components/TelaCadastroAvaliador/TelaCadastroAvaliador";
+import TelaCadastroAvaliacao from "@/components/TelaCadastroAvaliacao/TelaCadastroAvaliacao";
+import TelaCandidatoAvaliacao from "@/components/TelaCandidatoAvaliacao/TelaCandidatoAvaliacao";
 
 export default function Home() {
   const router=useRouter()
@@ -36,8 +38,12 @@ export default function Home() {
           <div className={styles.cadastro}>
             <MenuCadastro setMenuSelected={setMenuSelected}/>
             {menuSelected==1?
-                <TelaCadastroAvaliacoes />:
-                <TelaCadastroCandidatos />
+                <TelaCadastroAvaliacao/>:
+                menuSelected==2?
+                <TelaCadastroAvaliador/>:
+                menuSelected==3?
+                <TelaCadastroCandidatos/>:
+                <TelaCandidatoAvaliacao/>
             }
           </div>
         </main>

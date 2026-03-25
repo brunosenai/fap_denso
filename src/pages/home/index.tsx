@@ -3,22 +3,78 @@ import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import Topo from "@/components/Topo/Topo";
-import TopoSelecaoCandidato from "@/components/Topo/TopoSelecaoCandidato";
-import { tAvaliacao } from "@/utils/Types";
+import TopoSelecaoAvaliacao from "@/components/Topo/TopoSelecaoAvaliacao";
+import { tAvaliacao, tCandidadoAvaliacao } from "@/utils/Types";
 
 export default function Home() {
-  const router=useRouter()
-  const [avaliacoes,setAvaliacoes]=useState<tAvaliacao[]>([])
-  const [avaliacaoSelecionada,setAvaliacaoSelecionada]=useState<number>(0)
+  const router = useRouter();
+  const [avaliacoes, setAvaliacoes] = useState<tAvaliacao[]>([]);
+  const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState<number>(-1);
+  const [candidatos, setCandidatos] = useState<tCandidadoAvaliacao[]>([]);
+  const [candidatosSelecionados, setCandidatosSelecionados] = useState<number[]>([]);
+  const maxCandidatosSelecionados = Math.floor(candidatos.length / 2);
 
-  useEffect(()=>{
+  useEffect(() => {
+    getAvaliacoes();
+  }, []);
 
-  },[])
-
-  const goto=(path:string)=>{
-    router.push(path)
+  const getAvaliacoes = async () => {
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiAvaliacao?action=getAvaliacoesHojeEmDiante`;
+    fetch(endpoint, {
+      method: "GET"
+    })
+    .then(res => res.json())
+    .then(data => {
+      setAvaliacoes(data);
+    });
   }
+
+  const setAvaliacao = (idAvaliacao: number) => {
+    setAvaliacaoSelecionada(idAvaliacao);
+    setCandidatosSelecionados([]); 
+    getCandidatosByAvaliacao(idAvaliacao);
+  }
+
+  const getCandidatosByAvaliacao = async (idAvaliacao: number) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}`;
+    fetch(endpoint, {
+      method: "GET"
+    })
+    .then(res => res.json())
+    .then(data => {
+      setCandidatos(data);
+    });
+  }
+
+  const selecionaCandidato = (idCandidato: number, selecionado: boolean) => {
+    if (selecionado) {
+      if (candidatosSelecionados.length >= maxCandidatosSelecionados) {
+        alert(`Apenas ${maxCandidatosSelecionados} candidatos podem ser selecionados por avaliador`);
+        return;
+      }
+      setCandidatosSelecionados([...candidatosSelecionados, idCandidato]);
+    } else {
+      setCandidatosSelecionados(candidatosSelecionados.filter(id => id !== idCandidato));
+    }
+  }
+
+  const goto = () => {
+    const path=`/fap`
+    if(candidatosSelecionados.length == maxCandidatosSelecionados && candidatosSelecionados.length > 0){
+      localStorage.setItem('n_id_avaliacao',avaliacaoSelecionada.toString());
+      localStorage.setItem('candidatos',candidatosSelecionados.join(','));
+      router.push(path);
+    }else{
+      alert(`Selecione seus ${maxCandidatosSelecionados} candidatos para prosseguir`);
+    }
+  }
+
+  const atingiuLimite = candidatosSelecionados.length >= maxCandidatosSelecionados;
+
+  const voltar=()=>{
+    router.replace('/');
+  }
+
 
   return (
     <>
@@ -28,38 +84,51 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className='page'>
-        <TopoSelecaoCandidato />
+      <div className={styles.page}>
+        <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} />
         <main className={styles.main}>
-          <div className={styles.form}>
-            <div className={styles.fieldForm}>
-              <select title={''}>
-                  <option value={''}>Selecione a avaliação</option>
-                  {avaliacoes.length>0 && avaliacoes.map((item,index)=>
-                      <option key={index} value={item.n_id_avaliacao}>{item.n_id_avaliacao}</option>
-                  )}
-              </select>
+          <div className={styles.telaMain}>
+            <div className={styles.formCandidatos}>
+              {candidatos.length > 0 && candidatos.map((c, i) => {
+                const estaSelecionado = candidatosSelecionados.includes(c.n_id_candidato);
+                return (
+                  <div className={styles.fieldForm} key={i}>
+                    <div className={styles.fieldForm_inputTexts}>
+                      <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
+                      <input type="text" title={''} className={styles.fieldForm_input_cpf} value={c.s_cpf_candidato} readOnly />
+                    </div>
+                    <div className={styles.fieldForm_inputCheckbox}>
+                      <input 
+                        type='checkbox' 
+                        title={''} 
+                        className={styles.fieldForm_checkbox} 
+                        name='candidato' 
+                        id={`candidato${i}`} 
+                        value={c.n_id_candidato} 
+                        
+                        checked={estaSelecionado} 
+                        onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
+                        
+                        disabled={!estaSelecionado && atingiuLimite}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <div className={styles.fieldForm}>
-              <select title={''}>
-                  <option value={''}>Selecione a Ficha de avaliação</option>
-                  {avaliacoes.length>0 && avaliacoes.map((item,index)=>
-                      <option key={index} value={item.n_id_avaliacao}>{item.n_id_avaliacao}</option>
-                  )}
-              </select>
-            </div>
-            <div className={styles.fieldForm}>
-              <input type="text" placeholder="Digite o nome do avaliador 1" />
-            </div>
-            <div className={styles.fieldForm}>
-              <input type="text" placeholder="Digite o nome do avaliador 2" />
-            </div>
-            <div className={styles.fieldForm}>
-              <button className='btnPadrao' onClick={()=>goto(`/candidatos`)}>próximo</button>
-            </div>
+          </div>
+          <div className={styles.rodape}>
+            <button title={'voltar'} className={styles.btnHome} onClick={()=>voltar()}>
+              <Image src="/assets/icons/exit_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
+              sair
+            </button>
+            <button className='btnPadrao_claro' onClick={() => goto()}>
+              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
+              avaliação
+            </button>
           </div>
         </main>
       </div>
     </>
-  );
+  )
 }

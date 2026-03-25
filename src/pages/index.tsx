@@ -2,39 +2,27 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Index.module.css";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export default function Index() {
   const router=useRouter()
-  const [email,setEmail]=useState('')
-  const [senha,setSenha]=useState('')
 
-  const login=async()=>{
-    sessionStorage.setItem('menuSelected','1')
-    const response = await fetch('/api/apiLogin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: `${email}`,
-        password: `${senha}`,
-        action:'login'
-      }),
-    }); 
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('n_id_pessoa', data.data.n_id_pessoa)
-      if(data.data.n_id_tipoPessoa==1){
-        router.replace('/home');
-      }else{
-        router.replace('/cadastro');
-      }      
-    } else {
-      alert('Usuário ou Senha incorretos!')
-      console.error('Login failed:', response.statusText);
-    }
-  }
+  let modo=2;//1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
+  
+  useEffect(() => {
+    localStorage.setItem('modo',modo.toString())
+    const checkDeviceAndRedirect = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+      if (isTablet || modo==2) {
+        router.push('/login'); 
+      } else if (!isTablet || modo==1) {
+        router.push('/pc/login'); 
+      }
+    };
+
+    checkDeviceAndRedirect();
+  }, [router]);
 
   return (
     <>
@@ -46,36 +34,7 @@ export default function Index() {
       </Head>
       <div className='page'>
         <main className='main'>
-          <div className={styles.index}>
-
-            <div className={styles.indexLogos}>
-              <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" width={665} height={144} />
-              <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" width={365} height={365} />
-            </div>
-
-            <div className={styles.formLogin}>
-              <div className={styles.formLogin_title}>login</div>
-              <div className={styles.fieldForm}>
-                <div>
-                  <Image src="/assets/icons/person.png" alt="Email" width={51} height={51} />
-                </div>
-                <input title={''} type="email" name="email" id="email" placeholder="E-mail" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
-              </div>
-              <div className={styles.fieldForm}>
-                <div>
-                  <Image src="/assets/icons/lock.png" alt="Email" width={51} height={51} />
-                </div>
-                <input title={''} type="password" name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
-              </div>    
-              <div className={styles.fieldFormButton}>
-                <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
-              </div>            
-            </div>
-
-            <div></div>
-            <div></div>
-
-          </div>
+            <Image src="/assets/icons/person.png" alt="Email" width={51} height={51} />
         </main>
       </div>
     </>

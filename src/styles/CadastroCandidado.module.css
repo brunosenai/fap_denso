@@ -1,0 +1,82 @@
+:root{
+    --alturaRodape:150px;
+    --topo:200px;
+}
+
+.telaCadastroCandidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    background-color: var(--azulFap);
+    gap:50px;
+}
+
+.telaCadastroCandidatos_topo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--topo);
+}
+
+.telaCadastroCandidatos_form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap:20px;
+    padding: 50px;
+    height: calc(100vh - var(--topo) - var(--alturaRodape) - var(--alturaTopo_fap) - var(--alturaMenuCadastro) - 24px);
+}
+
+.telaCadastroCandidatos_rodape{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--alturaRodape);
+    background-color: var(--azulStellantis);
+}
+
+.fieldForm{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    gap:5px;
+}
+
+.fieldForm_center{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap:5px;
+}
+
+.fieldForm label{
+    font-size: xx-large;
+}
+
+.fieldForm input, .fieldForm select{
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    font-size: xx-large;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1); 
+}
+
+.obrigatorio{
+    color: red;
+}
