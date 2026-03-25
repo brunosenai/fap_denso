@@ -16,7 +16,6 @@ export default function Fap() {
   const [fap, setFap] = useState<tFap[]>([]);
   const [abaAtual, setAbaAtual] = useState<number>(0);
   const [abaObservacaoAberta, setAbaObservacaoAberta] = useState<boolean>(false);
-  const [habilitarExportar, setHabilitarExportar] = useState<boolean>(false);
 
   useEffect(() => {   
     buscarDados();
@@ -47,15 +46,11 @@ export default function Fap() {
 
   const validarFap = (): boolean => {
     let res = true;
-  
     fap.forEach((f, index) => {
-      // Valida Postos (Pelo menos um precisa estar marcado)
       if(f.n_posto1_fap == 0 && f.n_posto2_fap == 0 && f.n_posto3_fap == 0 && f.n_posto4_fap == 0 && f.n_posto5_fap == 0 && f.n_posto6_fap == 0){
         console.log(`Candidato da aba ${index} está sem POSTO marcado.`);
         res = false;
       }
-      
-      // Q6, Q7 e Q8 são de Atende (1) / Não Atende (0)
       if(f.n_q6_fap < 0 || f.n_q6_fap > 1){
         console.log(`Candidato da aba ${index} está com a Q6 pendente.`);
         res = false;
@@ -64,31 +59,27 @@ export default function Fap() {
         console.log(`Candidato da aba ${index} está com a Q7 pendente.`);
         res = false;
       }
-      // CORREÇÃO AQUI NA Q8
       if(f.n_q8_fap < 0 || f.n_q8_fap > 1){
         console.log(`Candidato da aba ${index} está com a Q8 pendente.`);
         res = false;
       }
-  
-      // Q9 a Q12 são níveis de 1 a 4
-      if(f.n_q9_fap < 1 || f.n_q9_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q9 pendente.`);
-        res = false;
-      }
-      if(f.n_q10_fap < 1 || f.n_q10_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q10 pendente.`);
-        res = false;
-      }
-      if(f.n_q11_fap < 1 || f.n_q11_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q11 pendente.`);
-        res = false;
-      }
-      if(f.n_q12_fap < 1 || f.n_q12_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q12 pendente.`);
-        res = false;
-      }
-    });
-  
+      // if(f.n_q9_fap < 1 || f.n_q9_fap > 4){
+      //   console.log(`Candidato da aba ${index} está com a Q9 pendente.`);
+      //   res = false;
+      // }
+      // if(f.n_q10_fap < 1 || f.n_q10_fap > 4){
+      //   console.log(`Candidato da aba ${index} está com a Q10 pendente.`);
+      //   res = false;
+      // }
+      // if(f.n_q11_fap < 1 || f.n_q11_fap > 4){
+      //   console.log(`Candidato da aba ${index} está com a Q11 pendente.`);
+      //   res = false;
+      // }
+      // if(f.n_q12_fap < 1 || f.n_q12_fap > 4){
+      //   console.log(`Candidato da aba ${index} está com a Q12 pendente.`);
+      //   res = false;
+      // }
+    });  
     return res;
   }
 
@@ -117,7 +108,6 @@ export default function Fap() {
   }
 
   const salvar = async (): Promise<boolean> => {
-    // 1. Validação: Se estiver incompleto, avisa e retorna falso
     if (!validarFap()) {
       alert("Por favor, preencha todos os campos obrigatórios de todos os candidatos antes de salvar.");
       return false; 
@@ -128,6 +118,7 @@ export default function Fap() {
       const [nota, aprovado] = calcularNota(f);
       f.n_nota_fap = nota;
       f.n_resultado_fap = aprovado;
+      f.n_status_fap=1;
     });
   
     // 3. Envia para o banco de dados
@@ -140,7 +131,6 @@ export default function Fap() {
       });
   
       if (response.ok) {
-        setHabilitarExportar(true);
         return true; // Sucesso! Pode gerar os PDFs.
       } else {
         alert("Erro ao salvar avaliações no banco de dados.");
@@ -153,29 +143,29 @@ export default function Fap() {
     }
   };
 
-  const exportarTodosPDFs = async () => {
-    if (listaCandidatos.length === 0 || fap.length === 0) return;
-    for (let i = 0; i < listaCandidatos.length; i++) {
-      const candidato = listaCandidatos[i];
-      const fapCandidato = fap[i];
+  // const exportarTodosPDFs = async () => {
+  //   if (listaCandidatos.length === 0 || fap.length === 0) return;
+  //   for (let i = 0; i < listaCandidatos.length; i++) {
+  //     const candidato = listaCandidatos[i];
+  //     const fapCandidato = fap[i];
 
-      const blob = await pdf(
-        <RelatorioFap candidato={candidato} fapCandidato={fapCandidato} />
-      ).toBlob();
+  //     const blob = await pdf(
+  //       <RelatorioFap candidato={candidato} fapCandidato={fapCandidato} />
+  //     ).toBlob();
 
-      const url = URL.createObjectURL(blob);
+  //     const url = URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `FAP_${candidato.s_nome_candidato.replace(/\s+/g, '_')}.pdf`; // Troca espaços por _
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.download = `FAP_${candidato.s_nome_candidato.replace(/\s+/g, '_')}.pdf`; // Troca espaços por _
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     URL.revokeObjectURL(url);
 
-      await new Promise(resolve => setTimeout(resolve, 300));
-    }
-  }; 
+  //     await new Promise(resolve => setTimeout(resolve, 300));
+  //   }
+  // }; 
 
   const finalizarAvaliacao = async () => {
     if (listaCandidatos.length === 0 || fap.length === 0) return;
@@ -235,7 +225,7 @@ export default function Fap() {
     // Opcional: tira o estado de loading
     // setSalvandoPdf(false);
     
-    alert("Avaliação finalizada, salva e relatórios gerados com sucesso!");
+    alert("Avaliação finalizada com sucesso!");
     // router.push('/dashboard'); // Redireciona de volta para a tela inicial/dashboard
   };
   
@@ -272,18 +262,9 @@ export default function Fap() {
             <Image src="/assets/icons/arrow_back_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
             voltar
           </button>
-          {/* <button className={styles.btnSalvar} onClick={()=>{salvar();setHabilitarExportar(true)}}>
-            <Image src="/assets/icons/save.svg" alt="exportar" width={30} height={30} style={{marginLeft:"5px"}}/>
-            salvar parcial
-          </button> */}
-          {/* <button className={`${styles.btnExportar} ${!habilitarExportar&&styles.btnExportarDesabilitado}`} onClick={()=>exportarTodosPDFs()} disabled={!habilitarExportar}>
-            <Image src="/assets/icons/file_export_w.svg" alt="exportar" width={30} height={30} style={{marginLeft:"5px"}}/>
-            exportar
-          </button> */}
           <button 
-            className={`${styles.btnSalvar} ${!habilitarExportar && styles.btnExportarDesabilitado}`} 
+            className={`${styles.btnSalvar}`} 
             onClick={() => finalizarAvaliacao()} 
-            disabled={!habilitarExportar}
           >
             <Image src="/assets/icons/file_export.svg" alt="Finalizar" width={30} height={30} style={{marginLeft:"5px"}}/>
             Finalizar Avaliação
