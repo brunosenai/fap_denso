@@ -167,29 +167,32 @@ export default function Fap() {
   // }; 
 
   const finalizarAvaliacao = async () => {
+    // Evita rodar se não houver dados
     if (listaCandidatos.length === 0 || fap.length === 0) return;
   
-    // 1. AGUARDA O SALVAMENTO ANTES DE CONTINUAR
+    // 1. AGUARDA O SALVAMENTO NO BANCO ANTES DE CONTINUAR
+    // A função salvar() já faz a validação e calcula as notas
     const salvouComSucesso = await salvar();
   
-    // 2. Se falhou na validação ou no banco, interrompe a geração dos PDFs
+    // Se falhou na validação ou no banco, interrompe o processo aqui
     if (!salvouComSucesso) {
       return; 
     }
   
-    // Altera o estado (opcional, para mostrar um loading na tela)
-    // setSalvandoPdf(true);
+    // Array para guardar os nomes dos PDFs gerados que serão anexados no e-mail
+    const arquivosGerados: string[] = [];
   
+    // 2. GERAÇÃO E ARMAZENAMENTO DOS PDFs
     for (let i = 0; i < listaCandidatos.length; i++) {
       const candidato = listaCandidatos[i];
       const fapCandidato = fap[i];
   
-      // 1. Gera o PDF em Blob usando o react-pdf
+      // Gera o PDF em Blob usando o react-pdf
       const blob = await pdf(
         <RelatorioFap candidato={candidato} fapCandidato={fapCandidato} />
       ).toBlob();
   
-      // 2. Converte o Blob para Base64 para enviar via JSON
+      // Converte o Blob para Base64 para poder enviar via JSON no corpo da requisição
       const base64 = await new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(blob);
@@ -199,13 +202,16 @@ export default function Fap() {
         };
       });
   
-      // 3. Define um nome único para o arquivo
+      // Define um nome único para o arquivo PDF
       const fileName = `FAP_${candidato.s_nome_candidato.replace(/\s+/g, '_')}_${candidato.n_id_candidato}_${fapCandidato.n_id_avaliacao}.pdf`;
+      
+      // Guarda o nome do arquivo na nossa lista para o e-mail
+      arquivosGerados.push(fileName);
   
-      // 4. Dispara a requisição para a nossa nova rota de API que guarda o PDF
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiFap`; // Use a rota unificada da apiFap
+      // Dispara a requisição POST para a apiFap (que configuramos para salvar o arquivo físico e fazer o UPDATE do path no banco)
+      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiFap`; 
       await fetch(endpoint, {
-        method: "POST", // POST porque configuramos o POST para receber e guardar o PDF na API
+        method: "POST", 
         headers: {
           "Content-Type": "application/json"
         },
@@ -217,14 +223,35 @@ export default function Fap() {
         })
       });
   
-      // Pequena pausa para o navegador não travar
+      // Pequena pausa para o navegador não travar e dar tempo de processamento
       await new Promise(resolve => setTimeout(resolve, 300));
     }
     
-    // Opcional: tira o estado de loading
-    // setSalvandoPdf(false);
-    
-    alert("Avaliação finalizada com sucesso!");
+    // 3. ENVIO DO E-MAIL PARA A EMPRESA
+    try {
+      const emailEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiEnviarEmail`;
+      const responseEmail = await fetch(emailEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assunto: `Relatórios FAP - Avaliação Concluída (${new Date().toLocaleDateString()})`,
+          arquivos: arquivosGerados // Manda apenas a lista com os nomes dos PDFs
+        })
+      });
+
+      if (!responseEmail.ok) {
+        throw new Error("Falha na resposta da API de e-mail");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar o e-mail:", error);
+      alert("A avaliação foi salva e os PDFs gerados, mas ocorreu um erro ao tentar enviar o e-mail para a empresa.");
+      // Redireciona mesmo com erro no e-mail, pois o trabalho principal foi concluído
+      router.push('/home');
+      return; 
+    }
+
+    // 4. FINALIZAÇÃO COM SUCESSO
+    alert("Avaliação finalizada, relatórios gerados e enviados para a empresa com sucesso!");
     router.push('/home');
   };
   
