@@ -38,8 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         s_nome_candidato
                     FROM
                         candidato
-                    WHERE
-                        n_id_candidato in (${listaIdsCandidatos})
                     ORDER BY
                         s_nome_candidato ASC
                     `,[]
@@ -50,8 +48,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         *
                     FROM
                         avacanfap
-                    WHERE
-                        n_id_candidato in (${listaIdsCandidatos})
                     ORDER BY
                         s_nome_candidato ASC
                     `,[]
@@ -59,6 +55,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const data={
                     rows_cadidatos:rows_cadidatos
                 }
+                res.status(200).json(rows_cadidatos)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action == "getAllCandidatosFap"){
+            try {
+                const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
+                    SELECT 
+                        c.n_id_candidato,
+                        c.s_nome_candidato, 
+                        c.s_email_candidato,
+                        JSON_ARRAYAGG(f.s_relatorio_fap) AS relatorios -- Agrupa os relatórios em um array JSON
+                    FROM 
+                        candidato c
+                    INNER JOIN 
+                        fap f ON c.n_id_candidato = f.n_id_candidato
+                    GROUP BY 
+                        c.n_id_candidato;
+                    `,[]
+                )
+
                 res.status(200).json(rows_cadidatos)
             } catch (error) {
                 console.error(error);

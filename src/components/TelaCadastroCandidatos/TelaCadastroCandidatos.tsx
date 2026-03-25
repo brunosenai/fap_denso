@@ -2,18 +2,33 @@ import styles from "@/styles/CadastroCandidado.module.css"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { tCandidatoFap } from "@/utils/Types"
 
 export default function TelaCadastroCandidatos(){
     const router=useRouter()
     const [nome,setNome]=useState<string>("")
     const [cpf,setCpf]=useState<string>("")
     const [email,setEmail]=useState<string>("")
+    const [candidatos,setCandidatos]=useState<tCandidatoFap[]>([])
+    const [candidatosFiltrados,setCandidatosFiltrados]=useState<tCandidatoFap[]>([])
+    const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
     const [screenWidth, setScreenWidth]=useState<number>()
     
     useEffect(()=>{
         const viewportWidth: number = window.innerWidth;
         setScreenWidth(viewportWidth)
+        obterCandidatos()
     },[])
+
+    const obterCandidatos=async()=>{
+        const endpoint=`/api/apiFap?action=getAllCandidatosFap`
+        fetch(endpoint)
+        .then(res=>res.json())
+        .then(res=>{
+            setCandidatos(res)
+            setCandidatosFiltrados(res)
+        })
+    }
 
     const cadastrarCandidato=async()=>{
         if(nome.trim()=="" || cpf.trim()=="" || email.trim()==""){
@@ -44,44 +59,99 @@ export default function TelaCadastroCandidatos(){
         })
     }
 
+    const baixaRelatorios=async(relatorios: any)=>{
+        const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
+
+        listaArquivos.forEach((nomeArquivo) => {
+            const url = `/relatorios/${nomeArquivo}`;
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', nomeArquivo);
+            
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+        });
+    }
+
+    const filtrar=(filtro:string)=>{
+        setFiltroAvaliadores(filtro)
+        const resFiltro=candidatos.filter((a,i)=>{
+            return a.s_nome_candidato.toLowerCase().includes(filtro.toLowerCase())
+        })
+        setCandidatosFiltrados(resFiltro)
+    }
+
+
     return(
         <div className={styles.telaCadastroCandidatos}>
-            <div className={styles.telaCadastroCandidatos_topo}>
-                
-                {screenWidth && screenWidth >= 1351 && (
-                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={110} height={110}/>
-                ) }
-                {screenWidth && screenWidth <= 1350 && (
-                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
-                ) }
-            </div>
-            <div className={styles.telaCadastroCandidatos_form}>
-                <h1>NOVO CANDIDATO</h1><br />
-                <div className={styles.fieldForm}>
-                    <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
-                    <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+            <div className={styles.telaCadastroCandidatos_esquerda}>
+                <div className={styles.telaCadastroCandidatos_topo}>
+                    {screenWidth && screenWidth >= 1351 && (
+                        <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
+                    ) }
+                    {screenWidth && screenWidth <= 1350 && (
+                        <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
+                    ) }
+                    <h1>NOVO CANDIDATO</h1><br />
                 </div>
-                <div className={styles.fieldForm}>
-                    <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                    <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
+                <div className={styles.telaCadastroCandidatos_form}>
+                    
+                    <div className={styles.fieldForm}>
+                        <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
+                        <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+                    </div>
+                    <div className={styles.fieldForm}>
+                        <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
+                        <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
+                    </div>
+                    <div className={styles.fieldForm}>
+                        <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
+                        <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
+                    </div>
+                    {/* <div className={styles.fieldForm}>
+                        <label htmlFor={`avaliacao`}>Avaliação<span className={styles.obrigatorio}>*</span></label>
+                        <select title='avaliacoes' value={avaliacao} onChange={(evt)=>setAvaliacao(evt.target.value)}>
+                            <option value="">Selecione a avaliação</option>
+                            {avaliacoes.map((avaliacao:tAvaliacao,index)=>(
+                                <option key={index} value={avaliacao.n_id_avaliacao}>{avaliacao.s_nome_avaliacao}</option>
+                            ))}
+                        </select>
+                    </div> */}
+                    <div className={styles.fieldForm_center}>
+                        <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
+                    </div>
                 </div>
-                <div className={styles.fieldForm}>
-                    <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                    <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
-                </div>
-                {/* <div className={styles.fieldForm}>
-                    <label htmlFor={`avaliacao`}>Avaliação<span className={styles.obrigatorio}>*</span></label>
-                    <select title='avaliacoes' value={avaliacao} onChange={(evt)=>setAvaliacao(evt.target.value)}>
-                        <option value="">Selecione a avaliação</option>
-                        {avaliacoes.map((avaliacao:tAvaliacao,index)=>(
-                            <option key={index} value={avaliacao.n_id_avaliacao}>{avaliacao.s_nome_avaliacao}</option>
+            </div> 
+            <div className={styles.telaCadastroCandidatos_direita}>
+                <div className={styles.telaCadastroCandidatos_lista}>
+                    <div className={styles.telaCadastroCandidatos_lista_filtro}>
+                        <div className={styles.fieldForm}>
+                            <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
+                        </div>
+                    </div>                
+                    <div className={styles.telaCadastroCandidatos_lista_titulos}>
+                        <div className={styles.c1}>Nome</div>
+                        <div className={styles.c2}>E-Mail</div>
+                        <div className={styles.c3}>Relatórios</div>
+                    </div>
+                    <div className={styles.telaCadastroCandidatos_lista_linhas}>
+                        {candidatosFiltrados.map((av,index)=>(
+                            <div key={index} className={styles.telaCadastroCandidatos_lista_l}>
+                                <div className={styles.c1}>{av.s_nome_candidato}</div>
+                                <div className={styles.c2}>{av.s_email_candidato}</div>
+                                <div className={styles.c3}>
+                                    <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
+                                    <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25}></Image>
+                                </div>
+                            </div>
                         ))}
-                    </select>
-                </div> */}
-                <div className={styles.fieldForm_center}>
-                    <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
-                </div>
+                    </div>
+                </div> 
             </div>
+            
             <div className={styles.telaCadastroCandidatos_rodape}>
                 <button className="btnPadrao_claro" onClick={()=>router.replace('/')}>Sair</button>
             </div>
