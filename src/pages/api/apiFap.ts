@@ -67,13 +67,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     } else if(req.method === 'PUT'){
         const { fap } = req.body;
-        console.log(fap)
         try {
             for (const itemFap of fap) {
                 let dataMySQL = itemFap.dt_date_fap;
                 if (dataMySQL && typeof dataMySQL === 'string' && dataMySQL.includes('T')) {
                     dataMySQL = dataMySQL.slice(0, 19).replace('T', ' ');
-                }                
+                }   
                 await pool.query<ResultSetHeader>(`
                     UPDATE 
                         fap
@@ -82,17 +81,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         n_posto1_fap=?, n_posto2_fap=?, n_posto3_fap=?, n_posto4_fap=?,
                         n_posto5_fap=?, n_posto6_fap=?, n_q6_fap=?, n_q7_fap=?,
                         n_q8_fap=?, n_q9_fap=?, n_q10_fap=?, n_q11_fap=?,
-                        n_q12_fap=?, s_q13_fap=?, s_q14_fap=?, s_q15_fap=?, s_q16_fap=?
+                        n_q12_fap=?, s_q13_fap=?, s_q14_fap=?, s_q15_fap=?, s_q16_fap=?,
+                        n_status_fap=?
                     WHERE 
-                        n_id_avaliacao = ? 
-                        AND n_id_candidato = ?;
+                        n_id_avaliacao = ? AND
+                        n_id_candidato = ?;
                 `, [
                     itemFap.n_id_pessoa, dataMySQL, itemFap.n_nota_fap, itemFap.n_resultado_fap,
                     itemFap.n_posto1_fap, itemFap.n_posto2_fap, itemFap.n_posto3_fap, itemFap.n_posto4_fap,
                     itemFap.n_posto5_fap, itemFap.n_posto6_fap, itemFap.n_q6_fap, itemFap.n_q7_fap,
                     itemFap.n_q8_fap, itemFap.n_q9_fap, itemFap.n_q10_fap, itemFap.n_q11_fap,
                     itemFap.n_q12_fap, itemFap.s_q13_fap, itemFap.s_q14_fap, itemFap.s_q15_fap, itemFap.s_q16_fap,
-                    itemFap.n_id_avaliacao, itemFap.n_id_candidato 
+                    itemFap.n_status_fap, itemFap.n_id_avaliacao, itemFap.n_id_candidato 
                 ]);
             }
 

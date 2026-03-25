@@ -25,6 +25,7 @@
     justify-content: center;
     width: 100%;
     height: var(--alturaTopoPagina);
+    padding: 0px 50px;
 }
 
 .titulo{
@@ -34,21 +35,39 @@
     text-transform: uppercase;
 }
 
-.fieldSelect{
+.selects{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap:20px;
+}
+
+.fieldSelect_c1{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 50%;
+    width: 75%;
     margin-top: 20px;
 }
 
-.fieldSelect label{
+.fieldSelect_c2{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 25%;
+    margin-top: 20px;
+}
+
+.label{
     color: #fff;
     font-size: x-large;
 }
 
-.fieldSelect select{
+.fieldForm{
     width: 100%;
     /* font-size: large; */
     padding: 10px;

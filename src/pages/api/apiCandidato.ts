@@ -54,7 +54,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         fap f
                     LEFT JOIN candidato c ON c.n_id_candidato=f.n_id_candidato
                     WHERE
-                        f.n_id_avaliacao=?
+                        f.n_id_avaliacao=? AND
+                        f.n_status_fap=0
                     ORDER BY
                         c.s_nome_candidato ASC
                     `,[n_id_avaliacao]

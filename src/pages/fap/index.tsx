@@ -120,7 +120,6 @@ export default function Fap() {
       f.n_resultado_fap = aprovado;
       f.n_status_fap=1;
     });
-  
     // 3. Envia para o banco de dados
     const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiFap`;
     try {
@@ -226,11 +225,13 @@ export default function Fap() {
     // setSalvandoPdf(false);
     
     alert("Avaliação finalizada com sucesso!");
-    // router.push('/dashboard'); // Redireciona de volta para a tela inicial/dashboard
+    router.push('/home');
   };
   
   const voltar=()=>{
-    router.back();
+    const res=confirm('Se você sair perderá todas as marcações!\nConfirma que deseja sair?')
+    if(res)
+      router.back();
   }
 
   return (
@@ -259,8 +260,8 @@ export default function Fap() {
         </main>
         <div className={styles.rodape}>
           <button title={'voltar'} className={styles.btnVoltar} onClick={()=>voltar()}>
-            <Image src="/assets/icons/arrow_back_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
-            voltar
+            <Image src="/assets/icons/exit_w.svg" alt="sair" width={40} height={40} style={{marginRight:"5px"}}/>
+            sair
           </button>
           <button 
             className={`${styles.btnSalvar}`} 
