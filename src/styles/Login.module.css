@@ -116,3 +116,46 @@
     width: 200px; 
     height: auto;
 }
+
+@media(min-width: 1351px){
+    .index{
+        width: 100%;
+        height: 100%;
+        padding: var(--margem);
+    }
+
+    .formLogin{
+        gap:30px;
+    }
+
+    .formLogin_title{  
+        font-size: 32px;
+        margin-top: 30px;
+
+    }
+
+    .fieldForm{
+        border-radius: 6px;
+        border:4px solid #fff;
+        width: 520px;
+        height: 45px;
+    }
+
+    .fieldForm div{ 
+        background-color: #fff;
+        width: 110px;
+        height: 60px;
+        /* border: 3px solid #fff; */
+    }
+
+    .fieldForm input{
+        height: 40px;
+        background-color: transparent !important;
+        font-size: 20px;
+    }
+
+    .fieldFormButton button{
+        width: 370px;
+        margin-top: 20px;
+    }
+}

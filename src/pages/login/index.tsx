@@ -9,6 +9,12 @@ export default function Login() {
   const [email,setEmail]=useState('')
   const [senha,setSenha]=useState('')
   const [modo,setModo]=useState(localStorage.getItem('modo'))//1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
+  const [screenWidth, setScreenWidth]=useState<number>()
+    
+  useEffect(()=>{
+      const viewportWidth: number = window.innerWidth;
+      setScreenWidth(viewportWidth)
+  },[])
 
   useEffect(() => {
     setModo(localStorage.getItem('modo'))
@@ -56,21 +62,42 @@ export default function Login() {
           <div className={styles.index}>
 
             <div className={styles.indexLogos}>
-              <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`${modo=='2'?styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={665} height={144} />
-              <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`${modo=='2'?styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={365} height={365} />
+              {screenWidth && screenWidth >= 1351 && (
+                  <>
+                    <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={332} height={72} />
+                    <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={182} height={182} />
+                  </>
+              ) }
+              {screenWidth && screenWidth <= 1350 && (
+                  <>
+                    <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={665} height={144} />
+                    <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={365} height={365} />
+                  </>
+              ) }
+             
             </div>
 
             <div className={styles.formLogin}>
               <div className={styles.formLogin_title}>login</div>
               <div className={styles.fieldForm}>
                 <div>
-                  <Image src="/assets/icons/person.png" alt="Email" width={51} height={51} />
+                  {screenWidth && screenWidth >= 1351 && (
+                      <Image src="/assets/icons/person.png" alt="Email" width={35} height={35} />
+                  ) }
+                  {screenWidth && screenWidth <= 1350 && (
+                     <Image src="/assets/icons/person.png" alt="Email" width={51} height={51} />
+                  ) }
                 </div>
                 <input title={''} type="email" name="email" id="email" placeholder="E-mail" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
               </div>
               <div className={styles.fieldForm}>
                 <div>
-                  <Image src="/assets/icons/lock.png" alt="Email" width={51} height={51} />
+                  {screenWidth && screenWidth >= 1351 && (
+                    <Image src="/assets/icons/lock.png" alt="Email" width={35} height={35} />
+                  )}
+                  {screenWidth && screenWidth <= 1350 && (
+                    <Image src="/assets/icons/lock.png" alt="Email" width={51} height={51} />
+                  )}
                 </div>
                 <input title={''} type="password" name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
               </div>    
