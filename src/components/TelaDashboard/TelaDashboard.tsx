@@ -49,12 +49,7 @@ export default function TelaDashboard(){
         nota3: [42, 39, 44, 37, 41], // Verde Claro
         nota4: [18, 22, 15, 20, 17]  // Verde Escuro (Melhor)
     };
-
-
-
-
-
-
+    
     return(
         <div className={styles.telaCadastroCandidatos}>
            <div className={styles.cardTopoContainer}>

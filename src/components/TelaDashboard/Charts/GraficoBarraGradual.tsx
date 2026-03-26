@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import styles from "@/styles/Graficos.module.css";
 import * as echarts from 'echarts';
 
 interface BarraGradualProps {
@@ -89,5 +90,6 @@ export default function GraficoBarraGradual({ dados }: BarraGradualProps) {
     };
   }, [dados]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: '400px' }} />;
+  //return <div className={styles.GraficoBarraGradual} ref={chartRef} style={{ width: '100%', height: '100%', minHeight: '400px' }} />;
+  return <div className={styles.GraficoBarraGradual} ref={chartRef} />;
 }

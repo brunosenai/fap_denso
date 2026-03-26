@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import styles from "@/styles/Graficos.module.css";
 import * as echarts from 'echarts';
 
 interface PizzaProps {
@@ -82,5 +83,6 @@ export default function GraficoPizza({ dados, titulo }: PizzaProps) {
     };
   }, [dados, titulo]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: '300px' }} />;
+  //return <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: '300px' }} />;
+  return <div ref={chartRef} className={styles.GraficoPizza}/>;
 }
