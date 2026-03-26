@@ -10,6 +10,7 @@ import TelaCadastroCandidatos from "@/components/TelaCadastroCandidatos/TelaCada
 import TelaCadastroAvaliador from "@/components/TelaCadastroAvaliador/TelaCadastroAvaliador";
 import TelaCadastroAvaliacao from "@/components/TelaCadastroAvaliacao/TelaCadastroAvaliacao";
 import TelaCandidatoAvaliacao from "@/components/TelaCandidatoAvaliacao/TelaCandidatoAvaliacao";
+import TelaDashboard from "@/components/TelaDashboard/TelaDashboard";
 
 export default function Home() {
   const router=useRouter()
@@ -20,9 +21,6 @@ export default function Home() {
     setMenuSelected(parseInt(menuSelectedStorage))
   },[])
 
-  const goto=(path:string)=>{
-    router.push(path)
-  }
 
   return (
     <>
@@ -43,7 +41,9 @@ export default function Home() {
                 <TelaCadastroAvaliador/>:
                 menuSelected==3?
                 <TelaCadastroCandidatos/>:
-                <TelaCandidatoAvaliacao/>
+                menuSelected==4?
+                <TelaCandidatoAvaliacao/>:
+                <TelaDashboard />
             }
           </div>
         </main>
