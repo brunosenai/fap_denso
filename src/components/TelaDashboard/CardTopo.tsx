@@ -1,7 +1,5 @@
 import styles from "@/styles/Dashboard.module.css"
-import Image from "next/image"
 import { useState, useEffect } from "react"
-import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 
 interface CardTopoProps {
@@ -35,7 +33,6 @@ export default function CardTopo({ titulo, texto, color }: CardTopoProps){
             break;
         }
     },[])
-
 
     return(
         <div className={styles.cardTopo}>

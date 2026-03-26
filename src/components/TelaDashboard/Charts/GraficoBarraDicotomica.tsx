@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import styles from "@/styles/Graficos.module.css";
 import * as echarts from 'echarts';
 
 export interface DadosDicotomicos {
@@ -107,5 +108,6 @@ export default function GraficoBarraDicotomica({ dados, titulo }: BarraDicotomic
     };
   }, [dados, titulo]); // Recarrega se os dados mudarem
 
-  return <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: '300px', textAlign: 'center' }} />;
+  //return <div ref={chartRef} style={{ width: '100%', height: '100%', minHeight: '300px', textAlign: 'center' }} />;
+  return <div ref={chartRef} className={styles.GraficoBarraDicotomica} />;
 }
