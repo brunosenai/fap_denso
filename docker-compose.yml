@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_fap
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: stellantissenaicentro402026_root
+      MYSQL_DATABASE: fap
+      MYSQL_USER: fab_user
+      MYSQL_PASSWORD: stellantissenaicentro402026
+    volumes:
+      - db_data:/var/lib/mysql # Salva os dados para não perder quando o container reiniciar
+
+  adminer:
+    image: adminer
+    container_name: adminer_fap
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  
+  app:
+    build: .
+    container_name: nextjs_fap
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=fab_user
+      - DB_PASS=stellantissenaicentro402026
+      - DB_NAME=fap
+      - API_KEY=re_9DKiyDmV_DYNWWFM7xaurNsXFwG2vEaTu
+      - JWT_SECRET=re_9DKiyDmV_DYNWWFM7xaurNsXFwG2vEaTu
+      - NEXT_PUBLIC_API_URL=http://localhost:3000/api
+      - MODO=2 #1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=brunopinhocampos@gmail.com
+      - SMTP_PASS=elzeinaynkaqwzqi
+      - EMAIL_DESTINO_EMPRESA=bpinho@fiemg.com.br
+
+volumes:
+  db_data:

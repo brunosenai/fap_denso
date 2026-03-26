@@ -8,17 +8,13 @@ export default function Login() {
   const router=useRouter()
   const [email,setEmail]=useState('')
   const [senha,setSenha]=useState('')
-  const [modo,setModo]=useState(localStorage.getItem('modo'))//1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
+ 
   const [screenWidth, setScreenWidth]=useState<number>()
     
   useEffect(()=>{
       const viewportWidth: number = window.innerWidth;
       setScreenWidth(viewportWidth)
   },[])
-
-  useEffect(() => {
-    setModo(localStorage.getItem('modo'))
-  }, [])
 
   const login=async()=>{
     sessionStorage.setItem('menuSelected','1')

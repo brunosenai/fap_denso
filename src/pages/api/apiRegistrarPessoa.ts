@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import pool from "../../../services/banco"
+import pool from "@/services/Banco"
 import { ResultSetHeader } from 'mysql2';
 
 //export const config = {
