@@ -123,7 +123,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             nota3: [rows[0].q8_p3, rows[0].q9_p3, rows[0].q10_p3, rows[0].q11_p3, rows[0].q12_p3],
             nota4: [rows[0].q8_p4, rows[0].q9_p4, rows[0].q10_p4, rows[0].q11_p4, rows[0].q12_p4]
         };
-
         return res.status(200).json({
             cards: {
                 totalAvaliados: rows[0].total_avaliados || 0,

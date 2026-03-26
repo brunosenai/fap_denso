@@ -21,39 +21,13 @@ export default function TelaDashboard(){
         .then(res=>res.json())
         .then(res=>{
             setDadosDashboard(res)
-            console.log(res)
         })
     }
 
-    const dadosDicotomicos = {
-        questoes: [
-            'Tratamento adequado de Não\nConformidade (Stop & Call)',
-            'Condução segura do ciclo\n(Uso do EPI)', 
-            
-        ],
 
-        acertos: [89, 82], 
-        erros: [31, 38]
-    };
-
-    const dadosEstaticosGradual = {
-        eixoX: [
-            'DISCIPLINA OPERACIONAL\n(C1, C9, C10)', 
-            'MONTAGEM CORRETA\n(C4, C5, C6)', 
-            'ORGANIZAÇÃO DO POSTO\n5S (C1, C3, C4)', 
-            'ACOMPANHAMENTO DO\nTASK TIME (C6, C8, C9)', 
-            'RESILIÊNCIA FÍSICA E\nMENTAL (C9, C11)'
-        ],
-        nota1: [24, 25, 23, 23, 27], // Vermelho (Pior)
-        nota2: [36, 34, 38, 40, 35], // Laranja
-        nota3: [42, 39, 44, 37, 41], // Verde Claro
-        nota4: [18, 22, 15, 20, 17]  // Verde Escuro (Melhor)
-    };
-
-
-
-
-
+    if (!dadosDashboard) {
+        return <div className={styles.loading}>Carregando Dashboard...</div>
+    }
 
     return(
         <div className={styles.telaCadastroCandidatos}>
