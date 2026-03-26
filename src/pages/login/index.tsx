@@ -8,10 +8,13 @@ export default function Login() {
   const router=useRouter()
   const [email,setEmail]=useState('')
   const [senha,setSenha]=useState('')
-  const [modo,setModo]=useState(localStorage.getItem('modo'))//1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
+  const [modo, setModo] = useState<string|null>(null);//1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
 
   useEffect(() => {
-    setModo(localStorage.getItem('modo'))
+    const valorLocal = localStorage.getItem('modo');
+    if (valorLocal) {
+      setModo(valorLocal);
+    }
   }, [])
 
   const login=async()=>{
