@@ -16,6 +16,7 @@
     font-family: var(--font-geist-sans);
     background-color: var(--azulStellantis);
     overflow: hidden; 
+    position: fixed;
 }
 
 .main {
@@ -26,6 +27,7 @@
     background-color: var(--azulFap);
     min-height: 0;
     padding: 10px;
+    overflow: hidden;
 }
 
 .telaMain {
