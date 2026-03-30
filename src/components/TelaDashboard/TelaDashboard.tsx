@@ -2,7 +2,7 @@ import styles from "@/styles/Dashboard.module.css"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import {formatDateToText} from  "@/utils/Utils"
-import { useRouter } from "next/router"
+import router, { useRouter } from "next/router"
 import CardTopo from "./CardTopo"
 import GraficoPizza from "./Charts/GraficoPizza"
 import GraficoBarraDicotomica from "./Charts/GraficoBarraDicotomica"
@@ -73,7 +73,11 @@ export default function TelaDashboard(){
                 <div className={styles.graficosGerais_desempenho}>
                     <GraficoBarraGradual dados={dadosDashboard.graficoGradual} />
                 </div>
+            
            </div>
+            <div className={styles.telaCadastroCandidatos_rodape}>
+                <button className="btnPadrao_claro" onClick={()=>router.replace('/')}>Sair</button>
+            </div>
         </div>
     )
 }

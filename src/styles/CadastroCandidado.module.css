@@ -13,6 +13,15 @@
     height: var(--topo);
 }
 
+.telaCadastroCandidatos_main{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaMenuCadastro));
+}
+
 .telaCadastroCandidatos_form{
     display: flex;
     flex-direction: column;
@@ -147,7 +156,13 @@
     gap:5px;
 }
 
-@media(min-width: 1351px){
+@media(orientation: landscape){
+
+    :root{
+        --alturaRodape:150px;
+        --topo:200px;
+        --alturaForm:400px;
+    }
 
     .telaCadastroCandidatos_topo{
         margin-top: 10px;
@@ -159,12 +174,6 @@
         padding: 50px;
         padding-top: 0px;
         height: 100%;
-    }
-
-    .telaCadastroCandidatos{
-        flex-direction: row;
-        
-        height: 74.6vh;
     }
 
     .telaCadastroCandidatos_esquerda{
@@ -193,10 +202,6 @@
         margin-top: 40px;
     }
 
-    .telaCadastroCandidatos_rodape{
-        display: none;
-    }
-
     .telaCadastroCandidatos_lista{
         height: 320px;
         overflow-y:hidden;
@@ -206,17 +211,6 @@
     .telaCadastroCandidatos_lista_linhas{
         flex: 1; /* Ocupa o espaço restante da lista */
         overflow-y: auto; /* CRIA O SCROLL APENAS NAS LINHAS */
-    }
-}
-
-
-@media(orientation: landscape) {
-    .telaCadastroCandidatos_esquerda{
-        width: 100%;
-    }
-
-    .telaCadastroCandidatos_direita{
-        width: 100%;
     }
 }
 

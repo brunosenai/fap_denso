@@ -195,12 +195,14 @@
     color: red;
 }
 
-@media(min-width: 1351px){
+@media(orientation: landscape){
 
-    .telaCadastroCandidatos{
-        align-items: start;
-        height: 74.6vh;
+    :root{
+        --alturaRodape:150px;
+        --topo:200px;
+        --alturaForm:400px;
     }
+
 
     .telaCadastroCandidatos_topo{
         flex-direction: row;
@@ -242,9 +244,6 @@
         padding: 6px;
     }
 
-    .telaCadastroCandidatos_rodape{
-        display: none;
-    }
 
     .telaCadastroCandidatos_lista_titulos{
         padding: 4px;
@@ -262,8 +261,11 @@
 
     .webContainer{
         display: flex;
-        height: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
         width: 100%;
+        height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaMenuCadastro));
     }
 
     .telaCadastroCandidatos_candidatosAvaliacao{
@@ -274,7 +276,7 @@
         width: 50%;
         gap:10px;
         padding: 0px;
-        margin-top: 6px;
+        margin-top: 145px;
         margin-right: 10px;
         height: 100%;
     }
