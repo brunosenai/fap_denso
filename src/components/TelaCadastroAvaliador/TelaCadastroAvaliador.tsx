@@ -110,18 +110,18 @@ export default function TelaCadastroAvaliador(){
                     </div>
                     <div className={styles.fieldForm}>
                         <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                        <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
+                        <input type="text" id={`cpf`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                     </div>
                     <div className={styles.fieldForm}>
                         <label htmlFor={`telefone`}>Telefone<span className={styles.obrigatorio}>*</span></label>
-                        <input type="text" id={`telefone`} value={telefone} onChange={(e)=>setTelefone(e.target.value)} />
+                        <input type="text" id={`telefone`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                     </div>
                     <div className={styles.fieldForm}>
                         <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                        <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
+                        <input type="text" id={`email`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                     </div>
                     <div className={styles.fieldForm_center}>
-                        <button className="btnPadrao" onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
+                        <button className="btnPadrao">cadastrar novo</button>
                     </div>
                 </div>
             </div>

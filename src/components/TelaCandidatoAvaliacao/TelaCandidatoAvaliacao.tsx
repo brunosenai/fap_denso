@@ -124,18 +124,22 @@ export default function TelaCandidatoAvaliacao(){
 
     return(
         <div className={styles.telaCadastroCandidatos}>
-            <div className={styles.telaCadastroCandidatos_topo}>
-                {screenWidth && screenWidth >= 1351 && (
-                    <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
-                ) }
-                {screenWidth && screenWidth <= 1350 && (
-                    <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
-                ) }
-                
-                <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
-            </div>
             <div className={styles.webContainer}>
+                {screenWidth && screenWidth <= 1351 && (
+                    <div className={styles.telaCadastroCandidatos_topo}>
+                        <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
+                        <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
+                    </div>
+                ) }
                 <div className={styles.telaCadastroCandidatos_form}>
+                    {screenWidth && screenWidth >= 1351 && (
+                        <div className={styles.telaCadastroCandidatos_topo}>
+                            <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
+                            <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
+                        </div>
+                            
+                    ) }
+
                     <div className={styles.areaLista}>
                         <div className={styles.telaCadastroCandidatos_lista_filtro}>
                             <div className={styles.fieldForm}>

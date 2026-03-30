@@ -116,71 +116,72 @@ export default function TelaCadastroCandidatos(){
         <div className={styles.telaCadastroCandidatos}>
             {load == true ? (<Load></Load>) : (
                 <>
-                    <div className={styles.telaCadastroCandidatos_esquerda}>
-                        <div className={styles.telaCadastroCandidatos_topo}>
-                            {screenWidth && screenWidth >= 1351 && (
-                                <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
-                            ) }
-                            {screenWidth && screenWidth <= 1350 && (
-                                <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
-                            ) }
-                            <h1>NOVO CANDIDATO</h1><br />
-                        </div>
-                        <div className={styles.telaCadastroCandidatos_form}>
-                            
-                            <div className={styles.fieldForm}>
-                                <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
-                                <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+                    <div className={styles.telaCadastroCandidatos_main}>
+                        <div className={styles.telaCadastroCandidatos_esquerda}>
+                            <div className={styles.telaCadastroCandidatos_topo}>
+                                {screenWidth && screenWidth >= 1351 && (
+                                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
+                                ) }
+                                {screenWidth && screenWidth <= 1350 && (
+                                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
+                                ) }
+                                <h1>NOVO CANDIDATO</h1><br />
                             </div>
-                            <div className={styles.fieldForm}>
-                                <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                                <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
-                            </div>
-                            <div className={styles.fieldForm}>
-                                <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                                <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
-                            </div>
-                            {/* <div className={styles.fieldForm}>
-                                <label htmlFor={`avaliacao`}>Avaliação<span className={styles.obrigatorio}>*</span></label>
-                                <select title='avaliacoes' value={avaliacao} onChange={(evt)=>setAvaliacao(evt.target.value)}>
-                                    <option value="">Selecione a avaliação</option>
-                                    {avaliacoes.map((avaliacao:tAvaliacao,index)=>(
-                                        <option key={index} value={avaliacao.n_id_avaliacao}>{avaliacao.s_nome_avaliacao}</option>
-                                    ))}
-                                </select>
-                            </div> */}
-                            <div className={styles.fieldForm_center}>
-                                <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
-                            </div>
-                        </div>
-                    </div> 
-                    <div className={styles.telaCadastroCandidatos_direita}>
-                        <div className={styles.telaCadastroCandidatos_lista}>
-                            <div className={styles.telaCadastroCandidatos_lista_filtro}>
+                            <div className={styles.telaCadastroCandidatos_form}>
+                                
                                 <div className={styles.fieldForm}>
-                                    <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
+                                    <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
+                                    <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                                 </div>
-                            </div>                
-                            <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                                <div className={styles.c1}>Nome</div>
-                                <div className={styles.c2}>E-Mail</div>
-                                <div className={styles.c3}>Relatórios</div>
-                            </div>
-                            <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                                {candidatosFiltrados.map((av,index)=>(
-                                    <div key={index} className={styles.telaCadastroCandidatos_lista_l}>
-                                        <div className={styles.c1}>{av.s_nome_candidato}</div>
-                                        <div className={styles.c2}>{av.s_email_candidato}</div>
-                                        <div className={styles.c3}>
-                                            <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
-                                            <Image src='/assets/icons/send_email.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
-                                        </div>
-                                    </div>
-                                ))}
+                                <div className={styles.fieldForm}>
+                                    <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
+                                    <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
+                                </div>
+                                <div className={styles.fieldForm}>
+                                    <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
+                                    <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
+                                </div>
+                                {/* <div className={styles.fieldForm}>
+                                    <label htmlFor={`avaliacao`}>Avaliação<span className={styles.obrigatorio}>*</span></label>
+                                    <select title='avaliacoes' value={avaliacao} onChange={(evt)=>setAvaliacao(evt.target.value)}>
+                                        <option value="">Selecione a avaliação</option>
+                                        {avaliacoes.map((avaliacao:tAvaliacao,index)=>(
+                                            <option key={index} value={avaliacao.n_id_avaliacao}>{avaliacao.s_nome_avaliacao}</option>
+                                        ))}
+                                    </select>
+                                </div> */}
+                                <div className={styles.fieldForm_center}>
+                                    <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
+                                </div>
                             </div>
                         </div> 
+                        <div className={styles.telaCadastroCandidatos_direita}>
+                            <div className={styles.telaCadastroCandidatos_lista}>
+                                <div className={styles.telaCadastroCandidatos_lista_filtro}>
+                                    <div className={styles.fieldForm}>
+                                        <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
+                                    </div>
+                                </div>                
+                                <div className={styles.telaCadastroCandidatos_lista_titulos}>
+                                    <div className={styles.c1}>Nome</div>
+                                    <div className={styles.c2}>E-Mail</div>
+                                    <div className={styles.c3}>Relatórios</div>
+                                </div>
+                                <div className={styles.telaCadastroCandidatos_lista_linhas}>
+                                    {candidatosFiltrados.map((av,index)=>(
+                                        <div key={index} className={styles.telaCadastroCandidatos_lista_l}>
+                                            <div className={styles.c1}>{av.s_nome_candidato}</div>
+                                            <div className={styles.c2}>{av.s_email_candidato}</div>
+                                            <div className={styles.c3}>
+                                                <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
+                                                <Image src='/assets/icons/send_email.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div> 
+                        </div>
                     </div>
-                    
                     <div className={styles.telaCadastroCandidatos_rodape}>
                         <button className="btnPadrao_claro" onClick={()=>router.replace('/')}>Sair</button>
                     </div>

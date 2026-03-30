@@ -1,3 +1,9 @@
+:root{
+    --alturaRodape:150px;
+    --topo:200px;
+    --alturaForm:400px;
+}
+
 .telaCadastroCandidatos{
     display: flex;
     flex-direction: column;
@@ -8,6 +14,7 @@
     gap: 0px;
     flex: 1;
     background-color: var(--azulFap);
+    
 }
 
 .cardTopoContainer{
@@ -102,6 +109,16 @@
     align-items: center;
     width: 63%;
     background-color: #fff;
+}
+
+.telaCadastroCandidatos_rodape{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--alturaRodape);
+    background-color: var(--azulStellantis);
 }
 
 .graficosGerais{

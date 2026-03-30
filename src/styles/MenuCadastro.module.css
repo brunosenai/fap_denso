@@ -27,3 +27,9 @@
     background-color: var(--azulFap) !important;
     color: #000 !important;
 }
+
+@media(orientation:portrait){
+    .esconderMenu{
+        display: none;
+    }
+}
