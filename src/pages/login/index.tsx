@@ -53,6 +53,14 @@ export default function Login() {
     router.replace(`/trocarSenha?email=${email}`)
   }
 
+  const esqueciSenha=async()=>{
+    if(email==''){
+      alert('Preencha o campo de email para trocar a senha!')
+      return
+    }
+    router.replace(`/esqueciSenha?email=${email}`)
+  }
+
   return (
     <>
       <Head>
@@ -108,6 +116,7 @@ export default function Login() {
               <div className={styles.fieldFormButton}>
                 <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
                 <p onClick={()=>trocarSenha()}>Trocar minha senha</p>
+                <p onClick={()=>esqueciSenha()}>Esqueci minha senha</p>
               </div>            
             </div>
 
