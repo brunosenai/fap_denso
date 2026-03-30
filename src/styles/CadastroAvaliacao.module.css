@@ -1,6 +1,6 @@
 :root{
     --alturaRodape:100px;
-    --topo:100px;
+    --topo:200px;
     --alturaForm:400px;
 }
 
@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaMenuCadastro));
 }
 
 .telaCadastroCandidatos_topo{
@@ -158,6 +158,10 @@
         --alturaRodape:150px;
         --topo:200px;
         --alturaForm:400px;
+    }
+
+    .telaCadastroCandidatos_main{
+        height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
     }
 
     .telaCadastroCandidatos_rodape{

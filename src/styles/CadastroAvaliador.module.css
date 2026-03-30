@@ -141,7 +141,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaMenuCadastro));
 }
 
 
@@ -162,6 +162,10 @@
         --alturaForm:400px;
     }
 
+    .telaCadastroCandidatos_main{
+        height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+    }
+    
     .telaCadastroCandidatos_rodape{
         display: none;
     }
