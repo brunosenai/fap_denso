@@ -13,6 +13,7 @@
     font-family: var(--font-geist-sans);
     background-color: var(--azulStellantis);
     overflow: hidden; 
+    position: fixed;
 }
 
 .main {
