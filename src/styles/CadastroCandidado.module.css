@@ -210,7 +210,7 @@
 }
 
 
-@media(max-width: 1350px) {
+@media(orientation: landscape) {
     .telaCadastroCandidatos_esquerda{
         width: 100%;
     }

@@ -17,3 +17,18 @@
     align-items: center;
     font-size: xx-large;
 }
+
+@media(orientation: landscape) {
+    .selecaoModulo{
+        gap:50px;
+    }
+
+    .selecaoModulo p{
+        font-size: medium;
+    }
+
+    .caixaSelecao img{
+        width: 100px;
+        height: auto;
+    }
+}

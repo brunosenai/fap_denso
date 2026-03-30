@@ -20,6 +20,17 @@
   }
 }
 
+@media(orientation: landscape) {
+  :root{
+    --alturaTopoGeral:144px;
+    --alturaTopoPagina:144px;
+    --alturaTopo_fap:320px;
+    --alturaTopo_telaSelecaoCandidato: 244px;
+    --alturaTopo_telaSelecaoAvaliacao: 244px;
+    --alturaMenuCadastro: 40px;  
+  }
+}
+
 html,
 body {
   max-width: 100vw;

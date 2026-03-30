@@ -1,7 +1,26 @@
 :root{
-    --alturaRodape:150px;
+    --alturaRodape:100px;
     --topo:200px;
     --alturaForm:400px;
+}
+
+.telaCadastroCandidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    background-color: var(--azulFap);
+}
+
+.telaCadastroCandidatos_main{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaMenuCadastro));
 }
 
 .telaCadastroCandidatos_topo{
@@ -94,6 +113,7 @@
     width: 100%;
     height: var(--alturaRodape);
     background-color: var(--azulStellantis);
+    border: 1px solid #f00;
 }
 
 .fieldForm{
@@ -125,17 +145,6 @@
     color: red;
 }
 
-.telaCadastroCandidatos{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    flex: 1;
-    background-color: var(--azulFap);
-}
-
-
 .fieldForm_center{
     display: flex;
     flex-direction: column;
@@ -145,7 +154,13 @@
     gap:5px;
 }
 
-@media(min-width: 1351px){
+@media(orientation: landscape){
+    :root{
+        --alturaRodape:150px;
+        --topo:200px;
+        --alturaForm:400px;
+    }
+    
     .telaCadastroCandidatos_form{
         gap:10px;
         padding: 50px;
@@ -158,10 +173,12 @@
         height: 118px;
     }
 
-    .telaCadastroCandidatos{
-        flex-direction: row;
-        align-items: start;
-        height: 74.6vh;
+    .telaCadastroCandidatos_esquerda{
+        width: 100%;
+    }
+
+    .telaCadastroCandidatos_direita{
+        width: 100%;
     }
 
     .telaCadastroCandidatos_esquerda{
@@ -191,10 +208,6 @@
         margin-top: 40px;
     }
 
-    .telaCadastroCandidatos_rodape{
-        display: none;
-    }
-
     .telaCadastroCandidatos_lista{
         height: 320px;
         overflow-y:hidden;
@@ -206,16 +219,3 @@
         overflow-y: auto; /* CRIA O SCROLL APENAS NAS LINHAS */
     }
 }
-
-
-@media(max-width: 1350px) {
-    .telaCadastroCandidatos_esquerda{
-        width: 100%;
-    }
-
-    .telaCadastroCandidatos_direita{
-        width: 100%;
-    }
-}
-
-
