@@ -3,10 +3,41 @@ import pool from "@/services/Banco";
 import { RowDataPacket } from "mysql2";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
+import nodemailer from 'nodemailer';
 import { Global } from "@/services/Global";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if(req.method === 'POST'){
+    if(req.method === 'GET'){
+        const {
+            email,
+            password,
+            action
+        } = req.query;
+
+        if(action=="validarEmailAtual"){
+            try {
+                const [rows_user] = await pool.query<RowDataPacket[]>(`
+                        SELECT
+                            n_id_pessoa
+                        FROM
+                            pessoa
+                        WHERE
+                            s_email_pessoa=?;
+                    `,[email]
+                )
+                if (rows_user.length > 0) {
+                    res.status(200).json({message:"E-Mail Existe"})
+                } else {
+                    res.status(401).json({message:"E-Mail Não Existe"})
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else{
+            res.status(401).json({message:"Unauthorized"})
+        }
+    }else if(req.method === 'POST'){
         const {
             email,
             password,
@@ -56,8 +87,69 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
+        }else if(action=="validarEmailAtual"){
+            try {
+                const [rows_user] = await pool.query<RowDataPacket[]>(`
+                        SELECT
+                            n_id_pessoa
+                        FROM
+                            pessoa
+                        WHERE
+                            s_email_pessoa=?;
+                    `,[email]
+                )
+                if (rows_user.length > 0) {
+                    res.status(200).json({message:"E-Mail Existe"})
+                } else {
+                    res.status(401).json({message:"E-Mail Não Existe"})
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action=="validarSenha"){
+            try {
+                const [rows_user] = await pool.query<RowDataPacket[]>(`
+                        SELECT
+                            n_id_pessoa
+                        FROM
+                            pessoa
+                        WHERE
+                            s_email_pessoa=? AND s_senha_pessoa=?;
+                    `,[email,password]
+                )
+                if (rows_user.length > 0) {
+                    res.status(200).json({message:"E-Mail Existe"})
+                } else {
+                    res.status(401).json({message:"E-Mail Não Existe"})
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }else{
             res.status(401).json({message:"Unauthorized"})
+        }
+    }else if(req.method === 'PUT'){
+        const {
+            email,
+            password,
+            action
+        } = req.body;
+        
+        if(action=="trocarSenha"){
+            try {
+                await pool.query<RowDataPacket[]>(`
+                        UPDATE pessoa
+                        SET s_senha_pessoa=?
+                        WHERE s_email_pessoa=?;
+                    `,[password, email]
+                )
+                res.status(200).json({message:"Senha trocada com sucesso"})
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }
     }else{
         res.status(405).json({message:"Method Not Allowed"})

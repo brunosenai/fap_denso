@@ -75,7 +75,7 @@
 
 .fieldFormButton{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     border-radius: 5px;
@@ -91,6 +91,12 @@
     text-transform: uppercase;
     font-weight: bold;
     border-radius: 10px;
+}
+
+.fieldFormButton p{
+    color: #7CF2FF;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
 .logoStellantis_tablet {

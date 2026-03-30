@@ -1,0 +1,59 @@
+.trocarSenha{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    gap:50px;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.inputField{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: xx-large;
+    width: 80%;
+}
+
+.inputField_c{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: xx-large;
+    width: 80%;
+}
+
+.inputField label{
+    font-size: xx-large;
+}
+
+.inputField input{
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    font-size: xx-large;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1); 
+}
+
+@media(orientation: landscape) {
+    .selecaoModulo{
+        gap:50px;
+    }
+
+    .selecaoModulo p{
+        font-size: medium;
+    }
+
+    .caixaSelecao img{
+        width: 100px;
+        height: auto;
+    }
+}
