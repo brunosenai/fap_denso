@@ -164,6 +164,14 @@
         --alturaForm:400px;
     }
 
+    .telaCadastroCandidatos_main{
+        height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+    }
+
+    .telaCadastroCandidatos_rodape{
+        display: none;
+    }
+
     .telaCadastroCandidatos_topo{
         margin-top: 10px;
         height: 118px;

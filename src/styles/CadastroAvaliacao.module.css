@@ -1,6 +1,6 @@
 :root{
     --alturaRodape:100px;
-    --topo:100px;
+    --topo:200px;
     --alturaForm:400px;
 }
 
@@ -158,6 +158,14 @@
         --alturaRodape:150px;
         --topo:200px;
         --alturaForm:400px;
+    }
+
+    .telaCadastroCandidatos_main{
+        height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+    }
+
+    .telaCadastroCandidatos_rodape{
+        display: none;
     }
     
     .telaCadastroCandidatos_form{
