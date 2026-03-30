@@ -28,11 +28,17 @@
     font-size: 40px;
 }
 
+.logoutIcon{
+    position: absolute;
+    right: 80;
+}
+
 @media(orientation: landscape){
     .logoStellantis{
         width: 300px;
         height: auto;
     }
+    
     .topoCentro40{
         margin-top: 1rem;
         width: 100px;

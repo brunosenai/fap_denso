@@ -75,9 +75,6 @@ export default function TelaDashboard(){
                 </div>
             
            </div>
-            <div className={styles.telaCadastroCandidatos_rodape}>
-                <button className="btnPadrao_claro" onClick={()=>router.replace('/')}>Sair</button>
-            </div>
         </div>
     )
 }

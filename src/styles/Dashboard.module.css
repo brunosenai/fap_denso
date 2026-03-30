@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    height: 100%;
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
     gap: 0px;
     flex: 1;
     background-color: var(--azulFap);
@@ -128,7 +128,7 @@
     display: flex;
     width: 100%;
     justify-content: center;
-    height: 360px;
+    height: 335px;
 }
 
 .graficosGerais_legenda{
