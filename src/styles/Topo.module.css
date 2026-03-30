@@ -31,6 +31,7 @@
 .logoutIcon{
     position: absolute;
     right: 80;
+    cursor: pointer;
 }
 
 @media(orientation: landscape){
