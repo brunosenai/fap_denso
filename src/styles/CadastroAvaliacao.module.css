@@ -113,7 +113,6 @@
     width: 100%;
     height: var(--alturaRodape);
     background-color: var(--azulStellantis);
-    border: 1px solid #f00;
 }
 
 .fieldForm{
