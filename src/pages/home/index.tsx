@@ -54,6 +54,7 @@ export default function Home() {
   }
 
   const getCandidatosByAvaliacao = async (idAvaliacao: number) => {
+    setLoad(true)
     try{
       const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}`;
       fetch(endpoint, {
@@ -64,9 +65,10 @@ export default function Home() {
         setCandidatos(data);
         const maxCandidatosSelecionados=Math.ceil(data.length / qtdAvaliadores)
         setMaxCandidatosSelecionados(maxCandidatosSelecionados)
-    
+        setLoad(false)
       });
     }catch(erro){
+      setLoad(false)
       console.error(`Erro:${erro}`)
     }
     finally{
