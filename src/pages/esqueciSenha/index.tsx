@@ -1,6 +1,7 @@
 import Head from "next/head";
 import styles from "@/styles/EsqueciSenha.module.css";
 import { useRouter } from "next/router";
+import Load from "@/components/Load/Load";
 import { useState, useEffect } from "react";
 
 export default function EsqueciSenha() {
@@ -10,75 +11,77 @@ const [codigoRedefinicao,setCodigoRedefinicao]=useState('')
 const [novaSenha1,setNovaSenha1]=useState('')
 const [novaSenha2,setNovaSenha2]=useState('')
 const [passo,setPasso]=useState(0)
+const [load,setLoad]=useState(false)
 
 useEffect(()=>{
     const getemail=router.query.email as string
     setEmail(getemail)
 },[])
 
-const goto=(path:string)=>{
-    router.push(path)
-}
+// const goto=(path:string)=>{
+//     router.push(path)
+// }
 
-const validarEmailAtual=async()=>{
-    const endpoint=`api/apiLogin?email=${email}&action=validarEmailAtual`
-    const response=await fetch(endpoint)
-    if(response.status!=200){
-        return false
-    }
-    return true
-}
+// const validarEmailAtual=async()=>{
+//     const endpoint=`api/apiLogin?email=${email}&action=validarEmailAtual`
+//     const response=await fetch(endpoint)
+//     if(response.status!=200){
+//         return false
+//     }
+//     return true
+// }
 
-const compararSenhas=()=>{
-    if(novaSenha1!=novaSenha2){
-        alert('As novas senhas não coincidem, por favor verifique e tente novamente!')
-        return false
-    }
-    return true
-}
+// const compararSenhas=()=>{
+//     if(novaSenha1!=novaSenha2){
+//         alert('As novas senhas não coincidem, por favor verifique e tente novamente!')
+//         return false
+//     }
+//     return true
+// }
 
-const trocarSenha=async()=>{
-    if(novaSenha1==''){
-        alert('Preencha o campo Nova Senha para trocar a senha!')
-        return
-    }else if(novaSenha2==''){
-        alert('Preencha o campo Redigite a Nova Senha para trocar a senha!')
-        return
-    }
+// const trocarSenha=async()=>{
+//     if(novaSenha1==''){
+//         alert('Preencha o campo Nova Senha para trocar a senha!')
+//         return
+//     }else if(novaSenha2==''){
+//         alert('Preencha o campo Redigite a Nova Senha para trocar a senha!')
+//         return
+//     }
 
-    if(!await validarEmailAtual()){
-        alert('O E-Mail atual informada está incorreto!')
-        return
-    }
+//     if(!await validarEmailAtual()){
+//         alert('O E-Mail atual informada está incorreto!')
+//         return
+//     }
 
-    if(!compararSenhas()){
-        return
-    }
+//     if(!compararSenhas()){
+//         return
+//     }
 
-    const endpoint=`/api/apiLogin`
-    fetch(endpoint, {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-        action:'trocarSenha',
-        email: `${email}`,
-        password: `${novaSenha1}`
-    }),
-    }).then((response)=>{
-    if(response.status==200){
-        alert('Senha alterada com sucesso!')
-    }else{
-        alert('Ocorreu um erro ao trocar a senha, tente novamente mais tarde!')
-    }
-    }).catch((error)=>{
-    console.error('Error:', error);
-    alert('Ocorreu um erro ao trocar a senha, tente novamente mais tarde!')
-    })
-}
+//     const endpoint=`/api/apiLogin`
+//     fetch(endpoint, {
+//     method: 'PUT',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//         action:'trocarSenha',
+//         email: `${email}`,
+//         password: `${novaSenha1}`
+//     }),
+//     }).then((response)=>{
+//     if(response.status==200){
+//         alert('Senha alterada com sucesso!')
+//     }else{
+//         alert('Ocorreu um erro ao trocar a senha, tente novamente mais tarde!')
+//     }
+//     }).catch((error)=>{
+//     console.error('Error:', error);
+//     alert('Ocorreu um erro ao trocar a senha, tente novamente mais tarde!')
+//     })
+// }
 
 const enviarCodigoRederinicao=()=>{
+    setLoad(true)
     const endpoint=`/api/apiLogin`
     fetch(endpoint, {
     method: 'POST',
@@ -90,18 +93,23 @@ const enviarCodigoRederinicao=()=>{
         email: `${email}`
     }),
     }).then((response)=>{
+        setLoad(false)
         if(response.status==200){
             setPasso(1)
         }else{
             alert('Ocorreu um erro ao enviar o código de redefinição, tente novamente mais tarde!')
         }
     }).catch((error)=>{
+        setLoad(false)
         console.error('Error:', error);
         alert('Ocorreu um erro ao enviar o código de redefinição, tente novamente mais tarde!')
+    }).finally(()=>{
+        setLoad(false)
     });
 }
 
 const validarCodigoRederinicao=()=>{
+    setLoad(true)
     const endpoint=`/api/apiLogin`
     fetch(endpoint, {
     method: 'POST',
@@ -114,18 +122,23 @@ const validarCodigoRederinicao=()=>{
         codigo:`${codigoRedefinicao}`
     }),
     }).then((response)=>{
+        setLoad(false)
         if(response.status==200){
             setPasso(2)
         }else{
             alert('Código de redefinição inválido!')
         }
     }).catch((error)=>{
+        setLoad(false)
         console.error('Error:', error);
         alert('Erro ao validar código de redefinição')
+    }).finally(()=>{
+        setLoad(false)
     });
 }
 
 const redefinirSenha=()=>{
+    setLoad(true)
     const endpoint=`/api/apiLogin`
     fetch(endpoint, {
     method: 'PUT',
@@ -138,6 +151,7 @@ const redefinirSenha=()=>{
         password:novaSenha1
     }),
     }).then((response)=>{
+        setLoad(false)
         if(response.status==200){
             alert('Senha redefinida com sucesso!')
             router.replace('/')
@@ -145,13 +159,17 @@ const redefinirSenha=()=>{
             alert('Erro ao redefinir senha!')
         }
     }).catch((error)=>{
+        setLoad(false)
         console.error('Error:', error);
         alert('Erro ao redefinir senha!')
+    }).finally(()=>{
+        setLoad(false)
     });
 }
 
 return (
     <>
+        {load&&<Load/>}
         <Head>
             <title>Stellantis - Teste de Aptidão Prática</title>
             <meta name="description" content="Generated by create next app" />
