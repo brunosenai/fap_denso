@@ -1,7 +1,7 @@
 :root{
     --alturaRodape:150px;
     --topo:200px;
-    --alturaCandidadosAvaliacao:500px;
+    --alturaCandidadosAvaliacao:100%;
 }
 
 .telaCadastroCandidatos{
@@ -12,6 +12,7 @@
     width: 100%;
     flex: 1;
     background-color: var(--azulFap);
+    position: fixed;
 }
 
 .telaCadastroCandidatos_topo{
@@ -23,6 +24,16 @@
     height: var(--topo);
 }
 
+.webContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 10px;
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+}
+
 .telaCadastroCandidatos_form{
     display: flex;
     flex-direction: row;
@@ -31,7 +42,8 @@
     width: 100%;
     gap:10px;
     padding: 10px;
-    height: calc(100vh - var(--topo) - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaCandidadosAvaliacao) - var(--alturaMenuCadastro));
+    /* height: calc(100vh - var(--topo) - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaCandidadosAvaliacao) - var(--alturaMenuCadastro)); */
+    /* height: 50%; */
 }
 
 .telaCadastroCandidatos_candidatosAvaliacao{
@@ -209,7 +221,7 @@
 
     .webContainer{
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         width: 100%;
@@ -224,16 +236,8 @@
     }
 
     .telaCadastroCandidatos_form{
-
-        flex-direction: column;
-        justify-content: start;
-        align-items: center;
+        flex-direction: row;
         gap:10px;
-        margin: 40px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding: 0px;
-        width: 50%;
         height: 100%;
     }
 
@@ -268,20 +272,18 @@
     }
 
     .btnMove{
-        margin-top: 0px;
+        margin-top: 100px;
     }
-
-
 
     .telaCadastroCandidatos_candidatosAvaliacao{
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        width: 50%;
+        width: 100%;
         gap:10px;
-        padding: 0px;
-        padding-top: 145px;
+        padding: 10px;
+        padding-top: 20px;
         margin-right: 10px;
         height: 100%;
     }
