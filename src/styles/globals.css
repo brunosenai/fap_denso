@@ -105,3 +105,12 @@ button, input, select, textarea {
   cursor: pointer;
   text-transform: uppercase;
 }
+
+.btnPadrao_claro:hover{
+  background-color: #fff;
+}
+
+.btnPadrao_claro:active{
+  background-color: #228;
+  color: #fff;
+}

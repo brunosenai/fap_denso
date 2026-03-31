@@ -15,7 +15,6 @@ CREATE TABLE `fap` (
   `n_id_avaliacao` int,
   `n_id_candidato` int,
   `n_id_pessoa` int,
-  `n_status_fap` int DEFAULT 0,
   `dt_date_fap` datetime,
   `n_nota_fap` int DEFAULT 0,
   `n_resultado_fap` int DEFAULT 0,
@@ -52,7 +51,8 @@ CREATE TABLE `pessoa` (
   `s_cpf_pessoa` varchar(255) UNIQUE,
   `s_telefone_pessoa` varchar(255),
   `s_email_pessoa` varchar(255),
-  `s_senha_pessoa` varchar(255)
+  `s_senha_pessoa` varchar(255),
+  `s_codredef_pessoa` varchar(255)
 );
 
 ALTER TABLE `fap` ADD FOREIGN KEY (`n_id_avaliacao`) REFERENCES `avaliacao` (`n_id_avaliacao`);
@@ -68,9 +68,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 INSERT INTO `avaliacao` (`n_id_avaliacao`, `s_nome_avaliacao`, `dt_data_avaliacao`)
 VALUES
-  (1, 'Senai Centro 4.0', '2026-12-09T00:00:00'),
-  (2, 'Senai CTTI', '2026-12-09T00:00:00'),
-  (3, 'Senai EL', '2026-12-09T00:00:00');
+  (1, 'Senai Centro 4.0', '2026-03-09T00:00:00'),
+  (2, 'Senai CTTI', '2026-03-09T00:00:00'),
+  (3, 'Senai EL', '2026-03-09T00:00:00');
 INSERT INTO `candidato` (`n_id_candidato`, `s_nome_candidato`, `s_cpf_candidato`, `s_email_candidato`)
 VALUES
   (1, 'Rambo', '11111111111', 'rambo@fap.com.br'),

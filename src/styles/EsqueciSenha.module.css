@@ -19,6 +19,26 @@
     text-transform: uppercase;
 }
 
+.areaField{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap:20px;
+    transition: opacity 0.2s ease, display 0.2s ease allow-discrete;
+    opacity: 0;
+    display: none;
+}
+
+.areaField_show{
+    display: flex;
+    opacity: 1;
+    transition-delay: 0.2s; 
+    @starting-style {
+        opacity: 0;
+    }
+}
+
 .inputField{
     display: flex;
     flex-direction: column;

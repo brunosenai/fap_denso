@@ -9,7 +9,7 @@ const [email,setEmail]=useState('')
 const [codigoRedefinicao,setCodigoRedefinicao]=useState('')
 const [novaSenha1,setNovaSenha1]=useState('')
 const [novaSenha2,setNovaSenha2]=useState('')
-const [passo,setPasso]=useState(1)
+const [passo,setPasso]=useState(0)
 
 useEffect(()=>{
     const getemail=router.query.email as string
@@ -79,11 +79,75 @@ const trocarSenha=async()=>{
 }
 
 const enviarCodigoRederinicao=()=>{
-    setPasso(2)
+    const endpoint=`/api/apiLogin`
+    fetch(endpoint, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        action:'enviarCodigoRedefinicao',
+        email: `${email}`
+    }),
+    }).then((response)=>{
+        if(response.status==200){
+            setPasso(1)
+        }else{
+            alert('Ocorreu um erro ao enviar o código de redefinição, tente novamente mais tarde!')
+        }
+    }).catch((error)=>{
+        console.error('Error:', error);
+        alert('Ocorreu um erro ao enviar o código de redefinição, tente novamente mais tarde!')
+    });
 }
 
 const validarCodigoRederinicao=()=>{
-    setPasso(3)
+    const endpoint=`/api/apiLogin`
+    fetch(endpoint, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        action:'validarCodigo',
+        email: `${email}`,
+        codigo:`${codigoRedefinicao}`
+    }),
+    }).then((response)=>{
+        if(response.status==200){
+            setPasso(2)
+        }else{
+            alert('Código de redefinição inválido!')
+        }
+    }).catch((error)=>{
+        console.error('Error:', error);
+        alert('Erro ao validar código de redefinição')
+    });
+}
+
+const redefinirSenha=()=>{
+    const endpoint=`/api/apiLogin`
+    fetch(endpoint, {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        action:'redefinirSenha',
+        email: email,
+        password:novaSenha1
+    }),
+    }).then((response)=>{
+        if(response.status==200){
+            alert('Senha redefinida com sucesso!')
+            router.replace('/')
+        }else{
+            alert('Erro ao redefinir senha!')
+        }
+    }).catch((error)=>{
+        console.error('Error:', error);
+        alert('Erro ao redefinir senha!')
+    });
 }
 
 return (
@@ -103,10 +167,10 @@ return (
                         <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email para receber a nova senha" readOnly/>
                     </div>
                     <div className={styles.inputField_c}>
-                        <button className='btnPadrao_claro' onClick={enviarCodigoRederinicao}>Enviar Código de redefinição</button>
+                        <button className='btnPadrao_claro' onClick={enviarCodigoRederinicao}>{passo>0?'Reenviar Código de redefinição':'Enviar Código de redefinição'}</button>
                     </div> 
-                    {passo>1&&
-                    <>
+
+                    <div className={`${styles.areaField} ${passo==1&&styles.areaField_show}`}>
                         <div className={styles.inputField}>
                             <label>Código de Recuperação</label>
                             <input type="text" value={codigoRedefinicao} onChange={(e)=>setCodigoRedefinicao(e.target.value)} placeholder="Código de recuperação" />
@@ -114,23 +178,22 @@ return (
                         <div className={styles.inputField_c}>
                             <button className='btnPadrao_claro' onClick={validarCodigoRederinicao}>Validar Código</button>
                         </div> 
-                    </>
-                    }
-                    {passo>2&&
-                    <>
+                    </div>
+
+                    <div className={`${styles.areaField} ${passo==2&&styles.areaField_show}`}>
                         <div className={styles.inputField}>
                             <label>Nova Senha</label>
-                            <input type="text" value={novaSenha1} onChange={(e)=>setNovaSenha1(e.target.value)} placeholder="Código de recuperação" />
+                            <input type="text" value={novaSenha1} onChange={(e)=>setNovaSenha1(e.target.value)} placeholder="Nova Senha" />
                         </div>
                         <div className={styles.inputField}>
                             <label>Redigite a Nova Senha</label>
-                            <input type="text" value={novaSenha2} onChange={(e)=>setNovaSenha2(e.target.value)} placeholder="Código de recuperação" />
+                            <input type="text" value={novaSenha2} onChange={(e)=>setNovaSenha2(e.target.value)} placeholder="Redigite a Nova Senha" />
                         </div>                        
                         <div className={styles.inputField_c}>
-                            <button className='btnPadrao_claro' onClick={trocarSenha}>Redefinir Senha</button>
+                            <button className='btnPadrao_claro' onClick={redefinirSenha}>Redefinir Senha</button>
                         </div>                     
-                    </>
-                    }
+                    </div>
+
                 </div>
                 <div className={styles.rodape}>
                     <button className='btnPadrao_claro' onClick={()=>router.push('/')}>voltar</button>

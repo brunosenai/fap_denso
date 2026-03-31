@@ -41,7 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const {
             email,
             password,
-            action
+            action,
+            codigo
         } = req.body;
         
         if(action=="login"){
@@ -127,6 +128,74 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
+        }else if(action=="enviarCodigoRedefinicao"){
+            try {
+                const gerarCodigoRedef=()=>{
+                    let cod:string[] = [];
+                    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                    for (let i = 0; i < 6; i++) {
+                        const indice = Math.floor(Math.random() * caracteres.length);
+                        cod[i] = caracteres.charAt(indice);
+                    }
+                    return cod.join('');
+                }
+
+                const v_codigo=gerarCodigoRedef()
+
+                await pool.query<RowDataPacket[]>(`
+                    UPDATE
+                        pessoa
+                    SET
+                        s_codredef_pessoa=?
+                    WHERE
+                        s_email_pessoa=?;
+                    `,[v_codigo,email]
+                )
+
+                const transporter = nodemailer.createTransport({
+                    host: process.env.SMTP_HOST,
+                    port: Number(process.env.SMTP_PORT) || 587,
+                    secure: false,
+                    auth: {
+                        user: process.env.SMTP_USER,
+                        pass: process.env.SMTP_PASS,
+                    },
+                });
+                
+                const emailEmpresa = process.env.EMAIL_DESTINO_EMPRESA;
+        
+                const info = await transporter.sendMail({
+                    from: `"Sistema FAP" <${process.env.SMTP_USER}>`, 
+                    to: emailEmpresa, // <-- Envia para o e-mail fixo da empresa
+                    subject: 'Código de redefinição - FAP Stellantis', 
+                    text: `Olá! Este é seu código de redefinição de senha: ${v_codigo}`, 
+                    html: `<p>Olá!</p><p>Este é seu código de redefinição de senha: <b>${v_codigo}</b></p>`, 
+                });
+                return res.status(200).json({ message: 'E-mail de redefinição se senha enviado com sucesso!' });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action=="validarCodigo"){
+            try {
+                const [rows_user] =await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_pessoa
+                    FROM
+                        pessoa
+                    WHERE
+                        s_codredef_pessoa=? AND s_email_pessoa=?;
+                    `,[codigo,email]
+                )
+                if(rows_user.length > 0){
+                    return res.status(200).json({ message: 'E-mail de redefinição se senha enviado com sucesso!' });
+                }else{
+                    return res.status(401).json({ message: 'Código de redefinição inválido!' });
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }else{
             res.status(401).json({message:"Unauthorized"})
         }
@@ -146,6 +215,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     `,[password, email]
                 )
                 res.status(200).json({message:"Senha trocada com sucesso"})
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action=="redefinirSenha"){
+            try {
+                await pool.query<RowDataPacket[]>(`
+                    UPDATE pessoa
+                    SET s_senha_pessoa=?, s_codredef_pessoa=null
+                    WHERE s_email_pessoa=?;
+                    `,[password, email]
+                )
+                return res.status(200).json({ message: 'E-mail de redefinição se senha enviado com sucesso!' });
             } catch (error) {
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
