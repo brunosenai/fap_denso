@@ -1,3 +1,11 @@
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `fap`;
+DROP TABLE IF EXISTS `pessoa`;
+DROP TABLE IF EXISTS `tipoPessoa`;
+DROP TABLE IF EXISTS `candidato`;
+DROP TABLE IF EXISTS `avaliacao`;
+SET FOREIGN_KEY_CHECKS = 1;
+
 CREATE TABLE `avaliacao` (
   `n_id_avaliacao` int PRIMARY KEY AUTO_INCREMENT,
   `s_nome_avaliacao` varchar(255),
