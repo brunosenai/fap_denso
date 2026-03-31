@@ -207,6 +207,28 @@
     color: red;
 }
 
+.webContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro) - var(--alturaRodape));
+}
+
+.telaCadastroCandidatos_candidatosAvaliacao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap:10px;
+    padding: 10px;
+    padding-top: 20px;
+    margin-right: 10px;
+    height: 100%;
+}
+
 @media(orientation: landscape){
 
     :root{
