@@ -44,6 +44,7 @@ CREATE TABLE `fap` (
   `s_q15_fap` varchar(255),
   `s_q16_fap` varchar(255),
   `s_relatorio_fap` varchar(255),
+  `n_status_fap` int DEFAULT 0,
   PRIMARY KEY (`n_id_avaliacao`, `n_id_candidato`)
 );
 
@@ -76,9 +77,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 INSERT INTO `avaliacao` (`n_id_avaliacao`, `s_nome_avaliacao`, `dt_data_avaliacao`)
 VALUES
-  (1, 'Senai Centro 4.0', '2026-03-09T00:00:00'),
-  (2, 'Senai CTTI', '2026-03-09T00:00:00'),
-  (3, 'Senai EL', '2026-03-09T00:00:00');
+  (1, 'Senai Centro 4.0', '2030-12-09T00:00:00'),
+  (2, 'Senai CTTI', '2030-12-09T00:00:00'),
+  (3, 'Senai EL', '2030-12-09T00:00:00');
 INSERT INTO `candidato` (`n_id_candidato`, `s_nome_candidato`, `s_cpf_candidato`, `s_email_candidato`)
 VALUES
   (1, 'Rambo', '11111111111', 'rambo@fap.com.br'),
