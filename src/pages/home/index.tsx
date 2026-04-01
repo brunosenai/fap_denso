@@ -32,7 +32,7 @@ export default function Home() {
   const getAvaliacoes = async () => {
     setLoad(true)
     try{
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiAvaliacao?action=getAvaliacoesHojeEmDiante`;
+      const endpoint = `/api/apiAvaliacao?action=getAvaliacoesHojeEmDiante`;
       fetch(endpoint, {
         method: "GET"
       })

@@ -8,9 +8,10 @@ interface FapProps {
   setFap: React.Dispatch<React.SetStateAction<tFap[]>>;
   abaObservacaoAberta: boolean; // Adicionado para controlar a visibilidade das observações
   setAbaObservacaoAberta: React.Dispatch<React.SetStateAction<boolean>>; // Função para atualizar o estado de observação aberta
+  abrirPopup:(i:number)=>void;
 }
 
-export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObservacaoAberta }: FapProps) {
+export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObservacaoAberta, abrirPopup}: FapProps) {
 
   const handleChange = (campo: keyof tFap, valor: number | string) => {
     setFap((prevFap) => {
@@ -61,10 +62,15 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
           </div>
         </div>
 
-        {/* --- USO ESPONTÂNEO DE EPI --- */}
+        {/* --- Condução segura do ciclo --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>Uso espontâneo de EPI (C2, C3, C4)</div>
-          <div className={styles.fapSection_descricao}>Critério: Utiliza todos os EPIs de forma correta, contínua e espontânea, do início ao fim.</div>
+          <div className={styles.fapSection_title}>
+            Condução segura do ciclo (C2, C3, C4, C5, C8)
+            <div onClick={()=>{abrirPopup(1)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a situações de risco ambiental e de segurança ao longo de toda a avaliação.</div>
           <div className={styles.fapSection_linhas}>
             <div className={styles.fapSection_lin}>
               <div className={styles.fapSection_field}>
@@ -81,8 +87,13 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
 
         {/* --- TRATAMENTO ADEQUADO DE NÃO CONFORMIDADE --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>Tratamento adequado de Não Conformidade - Stop & Call (C7, C10)</div>
-          <div className={styles.fapSection_descricao}>Critério: Ao encontrar qualquer dificuldade real do processo, para com segurança, sinaliza e comunica.</div>
+          <div className={styles.fapSection_title}>
+            Tratamento adequado de Não Conformidade - Stop & Call (C7, C10)
+            <div onClick={()=>{abrirPopup(2)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>            
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato identifica anomalia no processo, na peça ou na ferramenta e aciona corretamente o protocolo: Parar e sinalizar.</div>
           <div className={styles.fapSection_linhas}>
             <div className={styles.fapSection_lin}>
               <div className={styles.fapSection_field}>
@@ -99,26 +110,44 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
 
         {/* --- DISCIPLINA OPERACIONAL --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>DISCIPLINA OPERACIONAL (C1, C9, C10)</div>
-          <div className={styles.fapSection_descricao}>Critério: Segue o POP fielmente, sem atalhos ou improvisos e com conduta correta.</div>
-          <div className={styles.fapSection_linhas}>
-            <div className={styles.fapSection_lin}>
+          <div className={styles.fapSection_title}>
+            DISCIPLINA OPERACIONAL (C1, C9, C10)
+            <div onClick={()=>{abrirPopup(3)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato segue os padrões de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada.</div>
+          <div className={styles.fapSection_colunas}>
+            <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
-                <input type="radio" name={`q8_${iAba}`} id={`q8_sim_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 1} onChange={() => handleChange("n_q8_fap", 1)} />
-                <label htmlFor={`q8_sim_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Atende</label>
+                <input type="radio" name={`q8_${iAba}`} id={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 4} onChange={() => handleChange("n_q8_fap", 4)} />
+                <label htmlFor={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Montagem perfeita.</label>
               </div>
               <div className={styles.fapSection_field}>
-                <input type="radio" name={`q8_${iAba}`} id={`q8_nao_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 0} onChange={() => handleChange("n_q8_fap", 0)} />
-                <label htmlFor={`q8_nao_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Não atende</label>
+                <input type="radio" name={`q8_${iAba}`} id={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 3} onChange={() => handleChange("n_q8_fap", 3)} />
+                <label htmlFor={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Ajustes leves necessários na operação seguinte.</label>
+              </div>
+              <div className={styles.fapSection_field}>
+                <input type="radio" name={`q8_${iAba}`} id={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 2} onChange={() => handleChange("n_q8_fap", 2)} />
+                <label htmlFor={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Montagem incorreta</label>
+              </div>
+              <div className={styles.fapSection_field}>
+                <input type="radio" name={`q8_${iAba}`} id={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 1} onChange={() => handleChange("n_q8_fap", 1)} />
+                <label htmlFor={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Montagem incorreta com peças danificadas</label>
               </div>
             </div>
           </div>
-        </div>
+        </div>      
 
         {/* --- MONTAGEM CORRETA --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>MONTAGEM CORRETA (C4, C5, C6)</div>
-          <div className={styles.fapSection_descricao}>Critério: Monta/desmonta conforme POP, torque correto, encaixe adequado e autocontrole.</div>
+          <div className={styles.fapSection_title}>
+            MONTAGEM CORRETA (C4, C5, C6)
+            <div onClick={()=>{abrirPopup(4)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza a montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -141,10 +170,15 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
           </div>
         </div>
 
-        {/* --- ORGANIZAÇÃO DO POSTO - 5S --- */}
+        {/* --- MANUTENÇÃO DO POSTO DE TRABALHO - 5S --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>ORGANIZAÇÃO DO POSTO - 5S (C1, C3, C4)</div>
-          <div className={styles.fapSection_descricao}>Critério: Mantém o posto organizado antes, durante e após o ciclo.</div>
+          <div className={styles.fapSection_title}>
+            MANUTENÇÃO DO POSTO DE TRABALHO – 5S (C1, C3, C4)
+            <div onClick={()=>{abrirPopup(5)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada de ferramentas e peças de maneira racional.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -169,8 +203,13 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
 
         {/* --- ACOMPANHAMENTO DO TAKT TIME --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>ACOMPANHAMENTO DO TAKT TIME (C6, C8, C9)</div>
-          <div className={styles.fapSection_descricao}>Critério: Conclui ciclos do takt; baixa variabilidade. (takt determinado conforme POPs da linha simulada).</div>
+          <div className={styles.fapSection_title}>
+            ACOMPANHAMENTO DO TAKT TIME (C6, C8, C9)
+            <div onClick={()=>{abrirPopup(6)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -195,8 +234,13 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
 
         {/* --- RESILIÊNCIA FÍSICA E MENTAL --- */}
         <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>RESILIÊNCIA FÍSICA E MENTAL (C9, C11)</div>
-          <div className={styles.fapSection_descricao}>Critério: Mantém foco, postura e estabilidade ao longo do rodízio (montagem e desmontagem).</div>
+          <div className={styles.fapSection_title}>
+            RESILIÊNCIA FÍSICA E MENTAL (C9, C11)
+            <div onClick={()=>{abrirPopup(7)}}>
+              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
+            </div>
+          </div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato mantém foco, postura, constância e estabilidade emocional durante toda a atividade, mesmo sob repetitividade, desconforto controlado e micropressões.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -220,8 +264,8 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
         </div>
       </div>
 
-{/* OBSERVAÇÕES */}
-<div className={`${styles.camposPreenchimento} ${abaObservacaoAberta && styles.camposPreenchimento_show}`}>
+      {/* OBSERVAÇÕES */}
+      <div className={`${styles.camposPreenchimento} ${abaObservacaoAberta && styles.camposPreenchimento_show}`}>
         <div className={styles.btn_mostrarCamposPreenchimento} onClick={() => setAbaObservacaoAberta(!abaObservacaoAberta)}>
           {/* 3. Removido o onClick={()=>{}} vazio daqui */}
           <Image src={abaObservacaoAberta ? "/assets/icons/arrow_down_w.svg" : "/assets/icons/arrow_up_w.svg"} alt="Mostrar/Ocultar" width={40} height={40} className={styles.btn_camposPreenchimento_img} />

@@ -71,7 +71,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     )
                     const serialized=serialize('auth_token', token, {
                         httpOnly:true,
-                        secure:process.env.NODE_ENV === 'production',
+                        // secure:process.env.NODE_ENV === 'production',
+                        secure: false,
                         sameSite:'strict',
                         maxAge:60*60*8, //8 horas
                         path:'/' // Disponível em todas as rotas

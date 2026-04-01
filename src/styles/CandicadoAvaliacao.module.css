@@ -1,9 +1,3 @@
-:root{
-    --alturaRodape:150px;
-    --topo:200px;
-    --alturaCandidadosAvaliacao:100%;
-}
-
 .telaCadastroCandidatos{
     display: flex;
     flex-direction: column;
@@ -21,7 +15,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--topo);
+    height: var(--topoAva);
 }
 
 .webContainer{
@@ -42,7 +36,7 @@
     width: 100%;
     gap:10px;
     padding: 10px;
-    /* height: calc(100vh - var(--topo) - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaCandidadosAvaliacao) - var(--alturaMenuCadastro)); */
+    /* height: calc(100vh - var(--topoAva) - var(--alturaTopoGeral) - var(--alturaRodapeAva) - var(--alturaCandidadosAvaliacaoAva) - var(--alturaMenuCadastro)); */
     /* height: 50%; */
 }
 
@@ -54,7 +48,7 @@
     width: 100%;
     gap:10px;
     padding: 10px;
-    height: var(--alturaCandidadosAvaliacao);
+    height: var(--alturaCandidadosAvaliacaoAva);
 }
 
 .areaLista{
@@ -167,7 +161,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--alturaRodape);
+    height: var(--alturaRodapeAva);
     background-color: var(--azulStellantis);
 }
 
@@ -214,7 +208,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro) - var(--alturaRodape));
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro) - var(--alturaRodapeAva));
 }
 
 .telaCadastroCandidatos_candidatosAvaliacao{
@@ -231,13 +225,6 @@
 }
 
 @media(orientation: landscape){
-
-    :root{
-        --alturaRodape:150px;
-        --topo:200px;
-        --alturaForm:400px;
-    }
-
     .telaCadastroCandidatos_rodape{
         display: none;
     }

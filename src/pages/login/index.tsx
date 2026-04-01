@@ -10,7 +10,7 @@ export default function Login() {
   const [senha,setSenha]=useState('')
   const [mostrarSenha,setMostrarSenha]=useState(false)
   const [tipoCampoSenha,setTipoCampoSenha]=useState('password')
- 
+
   const [screenWidth, setScreenWidth]=useState<number>()
     
   useEffect(()=>{
@@ -99,10 +99,10 @@ export default function Login() {
                     <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={365} height={365} />
                   </>
               ) }
-             
+            
             </div>
 
-            <div className={styles.formLogin}>
+            <form className={styles.formLogin} onSubmit={(e)=>{e.preventDefault();login();}}>
               <div className={styles.formLogin_title}>login</div>
               <div className={styles.fieldForm}>
                 <div>
@@ -120,11 +120,12 @@ export default function Login() {
                 </div>
               </div>    
               <div className={styles.fieldFormButton}>
-                <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
+                {/* <button onClick={()=>login()} className='btnPadrao'>Entrar</button> */}
+                <button type="submit" className='btnPadrao'>Entrar</button>
                 <p onClick={()=>trocarSenha()}>Trocar minha senha</p>
                 <p onClick={()=>esqueciSenha()}>Esqueci minha senha</p>
               </div>            
-            </div>
+            </form>
 
             <div></div>
             <div></div>

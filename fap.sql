@@ -34,7 +34,7 @@ CREATE TABLE `fap` (
   `n_posto6_fap` int DEFAULT 0,
   `n_q6_fap` int DEFAULT -1,
   `n_q7_fap` int DEFAULT -1,
-  `n_q8_fap` int DEFAULT -1,
+  `n_q8_fap` int DEFAULT 0,
   `n_q9_fap` int DEFAULT 0,
   `n_q10_fap` int DEFAULT 0,
   `n_q11_fap` int DEFAULT 0,

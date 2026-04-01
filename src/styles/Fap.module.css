@@ -1,11 +1,3 @@
-:root{
-    --alturaRodape:150px;
-    --paddingTelaMain:40px;
-    --alturaCamposPreenchimento:350px;
-    --altura_btn_camposPreenchimento:25px;
-    --alturaTotalCamposPreenchimento:calc(var(--alturaCamposPreenchimento)+var(--altura_btn_camposPreenchimento));
-}
-
 .page {
     display: flex;
     flex-direction: column;
@@ -38,7 +30,7 @@
     align-items: center;
     justify-content: flex-start;
     background-color: #E0F5FF;
-    padding: var(--paddingTelaMain);
+    padding: var(--paddingTelaMainFap);
     min-height: 0; 
     overflow-y: auto; 
 }
@@ -108,7 +100,7 @@
     align-items: center;
     justify-content: space-around;
     width: 100%;
-    height: var(--alturaRodape);
+    height: var(--alturaRodapeFap);
     background-color: var(--azulStellantis);
     z-index: 10000;
 }
@@ -227,12 +219,18 @@
 }
 
 .fapSection_title{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
     font-weight: bold;
-    font-size: larger;
+    font-size: medium;
+    gap:20px;
 }
 
 .fapSection_descricao{
-    font-size: medium;
+    font-size: small;
 }
 
 .fapSection_colunas{
@@ -249,7 +247,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    gap: 10px;
+    gap: 5px;
 }
 
 .fapSection_linhas{
@@ -288,7 +286,7 @@
     justify-content: flex-start;
     width: 100%;
     flex: 1;
-    height: calc(var(--alturaTotalCamposPreenchimento));
+    height: calc(var(--alturaTotalCamposPreenchimentoFap));
     transition: all 0.2s ease-in-out;
 }
 
@@ -306,8 +304,8 @@
     border-radius: 10px 10px 0px 0px;
     cursor: pointer;
     width: 200px;
-    max-height: var(--altura_btn_camposPreenchimento);
-    height: var(--altura_btn_camposPreenchimento);
+    max-height: var(--altura_btn_camposPreenchimentoFap);
+    height: var(--altura_btn_camposPreenchimentoFap);
 }
 
 .area_camposPreenchimento{
@@ -316,7 +314,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    height: var(--alturaCamposPreenchimento);
+    height: var(--alturaCamposPreenchimentoFap);
     overflow: hidden;
     background-color: #ccc;
 }

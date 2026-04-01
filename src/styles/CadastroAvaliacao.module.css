@@ -1,9 +1,3 @@
-:root{
-    --alturaRodape:100px;
-    --topo:200px;
-    --alturaForm:400px;
-}
-
 .telaCadastroCandidatos{
     display: flex;
     flex-direction: column;
@@ -21,7 +15,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodape) - var(--alturaMenuCadastro));
+    height: calc(100vh - var(--alturaTopoGeral) - var(--alturaRodapeCadAva) - var(--alturaMenuCadastro));
     padding-top: 100px;
 }
 
@@ -47,7 +41,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--topo);
+    height: var(--topoCadAva);
 }
 
 .telaCadastroCandidatos_form{
@@ -67,7 +61,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    height: calc(100vh - var(--alturaMenuCadastro) - var(--topo) - var(--alturaForm) - var(--alturaRodape) - var(--alturaTopoGeral));
+    height: calc(100vh - var(--alturaMenuCadastro) - var(--topoCadAva) - var(--alturaFormCadAva) - var(--alturaRodapeCadAva) - var(--alturaTopoGeral));
     padding: 20px;
     overflow-y: auto; 
 }
@@ -129,7 +123,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--alturaRodape);
+    height: var(--alturaRodapeCadAva);
     background-color: var(--azulStellantis);
 }
 
@@ -172,12 +166,6 @@
 }
 
 @media(orientation: landscape){
-    :root{
-        --alturaRodape:150px;
-        --topo:200px;
-        --alturaForm:400px;
-    }
-
     .telaCadastroCandidatos_main{
         padding-top: 50px;
         flex-direction: column;

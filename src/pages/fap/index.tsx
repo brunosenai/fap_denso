@@ -9,6 +9,8 @@ import { pdf } from '@react-pdf/renderer';
 import { RelatorioFap } from "@/components/Pdf/RelatorioFap";
 import Image from "next/image";
 import Load from "@/components/Load/Load";
+import ConclusaoSeguraDoCiclo from "@/components/Popup/PopupFap";
+import PopupFap from "@/components/Popup/PopupFap";
 
 export default function Fap() {
   const router = useRouter();
@@ -18,6 +20,7 @@ export default function Fap() {
   const [abaAtual, setAbaAtual] = useState<number>(0);
   const [abaObservacaoAberta, setAbaObservacaoAberta] = useState<boolean>(false);
   const [load,setLoad]=useState(false)
+  const [popup,setPopup]=useState([false,false,false,false,false,false,false])
 
   useEffect(() => {   
     buscarDados();
@@ -57,10 +60,13 @@ export default function Fap() {
   const validarFap = (): boolean => {
     let res = true;
     fap.forEach((f, index) => {
+      // Validação dos Postos
       if(f.n_posto1_fap == 0 && f.n_posto2_fap == 0 && f.n_posto3_fap == 0 && f.n_posto4_fap == 0 && f.n_posto5_fap == 0 && f.n_posto6_fap == 0){
         console.log(`Candidato da aba ${index} está sem POSTO marcado.`);
         res = false;
       }
+      
+      // Validação Eliminatórias (Q6 e Q7) - Esperam 0 ou 1
       if(f.n_q6_fap < 0 || f.n_q6_fap > 1){
         console.log(`Candidato da aba ${index} está com a Q6 pendente.`);
         res = false;
@@ -69,52 +75,62 @@ export default function Fap() {
         console.log(`Candidato da aba ${index} está com a Q7 pendente.`);
         res = false;
       }
-      if(f.n_q8_fap < 0 || f.n_q8_fap > 1){
+      
+      // Validação de Escala (Q8 a Q12) - Esperam de 1 a 4
+      if(f.n_q8_fap < 1 || f.n_q8_fap > 4){
         console.log(`Candidato da aba ${index} está com a Q8 pendente.`);
         res = false;
       }
-      // if(f.n_q9_fap < 1 || f.n_q9_fap > 4){
-      //   console.log(`Candidato da aba ${index} está com a Q9 pendente.`);
-      //   res = false;
-      // }
-      // if(f.n_q10_fap < 1 || f.n_q10_fap > 4){
-      //   console.log(`Candidato da aba ${index} está com a Q10 pendente.`);
-      //   res = false;
-      // }
-      // if(f.n_q11_fap < 1 || f.n_q11_fap > 4){
-      //   console.log(`Candidato da aba ${index} está com a Q11 pendente.`);
-      //   res = false;
-      // }
-      // if(f.n_q12_fap < 1 || f.n_q12_fap > 4){
-      //   console.log(`Candidato da aba ${index} está com a Q12 pendente.`);
-      //   res = false;
-      // }
+      if(f.n_q9_fap < 1 || f.n_q9_fap > 4){
+        console.log(`Candidato da aba ${index} está com a Q9 pendente.`);
+        res = false;
+      }
+      if(f.n_q10_fap < 1 || f.n_q10_fap > 4){
+        console.log(`Candidato da aba ${index} está com a Q10 pendente.`);
+        res = false;
+      }
+      if(f.n_q11_fap < 1 || f.n_q11_fap > 4){
+        console.log(`Candidato da aba ${index} está com a Q11 pendente.`);
+        res = false;
+      }
+      if(f.n_q12_fap < 1 || f.n_q12_fap > 4){
+        console.log(`Candidato da aba ${index} está com a Q12 pendente.`);
+        res = false;
+      }
     });  
     return res;
   }
 
   const calcularNota = (itemFap: tFap): number[] => {
     let nota = 0;
-    const notaMax=19;
-    const mediaAprovacao=11;
+    
+    // ATENÇÃO: Q8 agora vale 4. O máximo passou de 19 para 22 (1+1+4+4+4+4+4)
+    const notaMax = 22; 
+    
+    // ATENÇÃO: Verifique com a equipe de negócio se a média de aprovação sobe
+    const mediaAprovacao = 13; // Ajuste conforme a nova regra da Stellantis
+    
+    // Somatório das notas (a lógica de soma não muda, pois n_q8_fap agora virá com valor de 1 a 4)
     if(itemFap.n_q6_fap == 1) nota += 1;
     if(itemFap.n_q7_fap == 1) nota += 1;
-    if(itemFap.n_q8_fap > 0) nota += itemFap.n_q8_fap; // Considera a pontuação da questão
-    if(itemFap.n_q9_fap > 0) nota += itemFap.n_q9_fap; // Considera a pontuação da questão
-    if(itemFap.n_q10_fap > 0) nota += itemFap.n_q10_fap; // Considera a pontuação da questão
-    if(itemFap.n_q11_fap > 0) nota += itemFap.n_q11_fap; // Considera a pontuação da questão
-    if(itemFap.n_q12_fap > 0) nota += itemFap.n_q12_fap; // Considera a pontuação da questão
+    if(itemFap.n_q8_fap > 0) nota += itemFap.n_q8_fap; 
+    if(itemFap.n_q9_fap > 0) nota += itemFap.n_q9_fap; 
+    if(itemFap.n_q10_fap > 0) nota += itemFap.n_q10_fap; 
+    if(itemFap.n_q11_fap > 0) nota += itemFap.n_q11_fap; 
+    if(itemFap.n_q12_fap > 0) nota += itemFap.n_q12_fap; 
 
     let aprovado = 0;
     if(nota >= mediaAprovacao){
+      // A regra eliminatória já estava certa focando só na Q6 e Q7
       if(itemFap.n_q6_fap == 0 || itemFap.n_q7_fap == 0)
-        aprovado=0;
+        aprovado = 0;
       else
         aprovado = 1;
     } else {
       aprovado = 0;
     }
-    return [nota,aprovado];
+    
+    return [nota, aprovado];
   }
 
   const salvar = async (): Promise<boolean> => {
@@ -276,9 +292,63 @@ export default function Fap() {
       router.back();
   }
 
+  const fecharPopup=(i:number)=>{
+    let novaLista=[...popup]
+    novaLista[i]=false
+    setPopup(novaLista)
+  }
+
+  const abrirPopup=(i:number)=>{
+    let novaLista=[...popup]
+    novaLista[i-1]=true
+    setPopup(novaLista)
+  }
+
   return (
     <>
       {load&&<Load/>}
+      {popup[0]&&<PopupFap
+        titulo="Condução segura do ciclo (C2, C3, C4, C5, C8)"
+        mediacao="O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a situações de risco ambiental e de segurança ao longo de toda a avaliação."
+        evidencias="EPIs colocados antes dodo início do teste e mantidos durante todo o ciclo;Ferramentas utilizadas sem improvisações ou uso indevido;Posto mantido em condição segura, organizado e sem riscos evidentes;Demonstra percepção riscos e ajusta conduta espontaneamente."
+        i={1} fecharPopup={fecharPopup}/>
+      }
+      {popup[1]&&<PopupFap
+        titulo="Tratamento adequado de Não Conformidade – Stop & Call (C7, C8, C10)"
+        mediacao="O candidato identifica anomalia no processo, na peça ou na ferramenta e aciona corretamente o protocolo: Parar e sinalizar."
+        evidencias="Identifica e interrompe o ciclo ao identificar desvios;Sinaliza ao avaliador imediatamente;Não prossegue com a peça defeituosa."
+        i={2} fecharPopup={fecharPopup}/>
+      }
+      {popup[2]&&<PopupFap
+        titulo="DISCIPLINA OPERACIONAL (C1, C9, C10)"
+        mediacao="O candidato segue os padrões de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada."
+        evidencias="Segue a sequência passo a passo;Não improvisa métodos;Não utiliza o celular ou realiza atos incompatíveis com o posto."
+        i={3} fecharPopup={fecharPopup}/>
+      }
+      {popup[3]&&<PopupFap
+        titulo="MONTAGEM CORRETA (C4, C5, C10)"
+        mediacao="O candidato realiza a montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem."
+        evidencias="Encaixes perfeitos e montagens sem folgas;Aperto de adequado de todos os elementos de fixação;Zero danos à peça;Montagem conforme peça-padrão."
+        i={4} fecharPopup={fecharPopup}/>
+      }
+      {popup[4]&&<PopupFap
+        titulo="MANUTENÇÃO DO POSTO DE TRABALHO – 5S (C1, C3, C4) "
+        mediacao="O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada de ferramentas e peças de maneira racional."
+        evidencias="Ferramentas mantidas no local designado;Peças e contenedores mantidas organizadas na quantidade certa e no local designado;Posto livre de resíduos ou objetos alhieos à atividade."
+        i={5} fecharPopup={fecharPopup}/>
+      }
+      {popup[5]&&<PopupFap
+        titulo="ACOMPANHAMENTO DO TAKT TIME (C6, C8, C9)"
+        mediacao="O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos."
+        evidencias="Deslocamentos laterais junto ao motor para montagem;Montagens dentro do takt time."
+        i={6} fecharPopup={fecharPopup}/>
+      }
+      {popup[6]&&<PopupFap
+        titulo="RESILIÊNCIA FÍSICA E MENTAL (C9, C11)"
+        mediacao="O candidato mantém foco, postura, constância e estabilidade emocional durante toda a atividade, mesmo sob repetitividade, desconforto controlado e micropressões."
+        evidencias="Constância de ritmo;Zero reclamações improdutivas;Zero quedas de desempenho;Reações equilibradas diante de eventuais frustrações."
+        i={7} fecharPopup={fecharPopup}/>
+      }
       <Head>
         <title>Stellantis - Teste de Aptidão Prática</title>
         <meta name="description" content="Generated by create next app" />
@@ -297,7 +367,7 @@ export default function Fap() {
             </div>
             <div className={styles.areaFap}>
               {fap.length > 0 && fap.map((f, i) => (
-                (i === abaAtual && <FapFap key={i} fap={f} iAba={i} setFap={setFap} abaObservacaoAberta={abaObservacaoAberta} setAbaObservacaoAberta={setAbaObservacaoAberta}/>)
+                (i === abaAtual && <FapFap key={i} fap={f} iAba={i} setFap={setFap} abaObservacaoAberta={abaObservacaoAberta} setAbaObservacaoAberta={setAbaObservacaoAberta} abrirPopup={abrirPopup}/>)
               ))}
             </div>
         </main>

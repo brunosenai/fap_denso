@@ -77,7 +77,9 @@ const getOperacionalBadge = (nota: number) => {
 export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
   const isAprovado = fapCandidato?.n_resultado_fap === 1;
   const notaFinal = fapCandidato?.n_nota_fap || 0;
-  const percentual = Math.round((notaFinal / 19) * 100); 
+  
+  // ATUALIZADO: O divisor agora é 22 (pontuação máxima)
+  const percentual = Math.round((notaFinal / 22) * 100); 
   const classificacaoText = isAprovado ? "ADEQUADO" : "INADEQUADO"; 
   
   const dataAvaliacao = fapCandidato?.dt_date_fap 
@@ -170,23 +172,16 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
           <Text style={styles.sectionTitle}>CRITÉRIOS OPERACIONAIS</Text>
           
           <View style={styles.criterionRow}>
-            <Text style={styles.criterionText}>Uso espontâneo de EPI (C2, C3, C4)</Text>
+            <Text style={styles.criterionText}>Condução segura do ciclo (C2, C3, C4, C5, C8)</Text>
             <View style={[styles.badge, getOperacionalBadge(fapCandidato?.n_q6_fap).style]}>
               <Text style={styles.badgeText}>{getOperacionalBadge(fapCandidato?.n_q6_fap).text}</Text>
             </View>
           </View>
 
           <View style={styles.criterionRow}>
-            <Text style={styles.criterionText}>Tratamento adequado de Não Conformidade - Stop & Call</Text>
+            <Text style={styles.criterionText}>Tratamento adequado de Não Conf. - Stop & Call</Text>
             <View style={[styles.badge, getOperacionalBadge(fapCandidato?.n_q7_fap).style]}>
               <Text style={styles.badgeText}>{getOperacionalBadge(fapCandidato?.n_q7_fap).text}</Text>
-            </View>
-          </View>
-
-          <View style={styles.criterionRow}>
-            <Text style={styles.criterionText}>Disciplina Operacional (C1, C9, C10)</Text>
-            <View style={[styles.badge, getOperacionalBadge(fapCandidato?.n_q8_fap).style]}>
-              <Text style={styles.badgeText}>{getOperacionalBadge(fapCandidato?.n_q8_fap).text}</Text>
             </View>
           </View>
 
@@ -199,23 +194,33 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
           </View>
 
           <View style={styles.criterionRow}>
-            <Text style={styles.criterionText}>Montagem Correta (C$, C5, C6)</Text>
+            <Text style={styles.criterionText}>Disciplina Operacional (C1, C9, C10)</Text>
+            <View style={[styles.badge, getDesempenhoBadge(fapCandidato?.n_q8_fap).style]}>
+              <Text style={styles.badgeText}>{getDesempenhoBadge(fapCandidato?.n_q8_fap).text}</Text>
+            </View>
+          </View>
+
+          <View style={styles.criterionRow}>
+            <Text style={styles.criterionText}>Montagem Correta (C4, C5, C6)</Text>
             <View style={[styles.badge, getDesempenhoBadge(fapCandidato?.n_q9_fap).style]}>
               <Text style={styles.badgeText}>{getDesempenhoBadge(fapCandidato?.n_q9_fap).text}</Text>
             </View>
           </View>
+
           <View style={styles.criterionRow}>
-            <Text style={styles.criterionText}>Organização do posto - 5S (C1, C3, C4)</Text>
+            <Text style={styles.criterionText}>Manutenção do Posto de Trabalho - 5S (C1, C3, C4)</Text>
             <View style={[styles.badge, getDesempenhoBadge(fapCandidato?.n_q10_fap).style]}>
               <Text style={styles.badgeText}>{getDesempenhoBadge(fapCandidato?.n_q10_fap).text}</Text>
             </View>
           </View>
+
           <View style={styles.criterionRow}>
-            <Text style={styles.criterionText}>Acompanhamento de Task Time (C6, C8, C9)</Text>
+            <Text style={styles.criterionText}>Acompanhamento do Takt Time (C6, C8, C9)</Text>
             <View style={[styles.badge, getDesempenhoBadge(fapCandidato?.n_q11_fap).style]}>
               <Text style={styles.badgeText}>{getDesempenhoBadge(fapCandidato?.n_q11_fap).text}</Text>
             </View>
           </View>
+
           <View style={styles.criterionRow}>
             <Text style={styles.criterionText}>Resiliência Física e Mental (C9, C11)</Text>
             <View style={[styles.badge, getDesempenhoBadge(fapCandidato?.n_q12_fap).style]}>

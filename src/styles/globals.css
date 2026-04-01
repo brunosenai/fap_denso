@@ -12,6 +12,29 @@
   --azulDestaque:#7CF2FF;
   --alturaFieldFormIni:40px;
   --azulFap:#E0F5FF;
+  --alturaRodapeCadAva:100px;
+  --topoCadAva:200px;
+  --alturaFormCadAva:400px;  
+  --alturaRodapeCand:100px;
+  --topoCand:200px;
+  --alturaFormCand:400px;
+  --alturaRodapeAva:150px;
+  --topoAva:200px;
+  --alturaCandidadosAvaliacaoAva:100%;
+  --alturaFieldFormCand:110px;
+  --alturaFieldFormCandButton:50px;
+  --alturaFieldFormCandBotton:50px;
+  --alturaTituloCand:50px;
+  --alturaRodapeDash:150px;
+  --topoDash:200px;
+  --alturaFormDash:400px;
+  --alturaRodapeFap:150px;
+  --paddingTelaMainFap:40px;
+  --alturaCamposPreenchimentoFap:350px;
+  --altura_btn_camposPreenchimentoFap:25px;
+  --alturaTotalCamposPreenchimentoFap:calc(var(--alturaCamposPreenchimentoFap)+var(--altura_btn_camposPreenchimentoFap));
+  --alturaRodapeHome:150px;
+  --paddingTelaMainHome:40px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,6 +51,17 @@
     --alturaTopo_telaSelecaoCandidato: 200px;
     --alturaTopo_telaSelecaoAvaliacao: 200px;
     --alturaMenuCadastro: 40px;  
+    --alturaRodape:150px;
+    --topo:200px;
+    --alturaForm:400px;
+    --alturaRodapeCand:150px;
+    --topoCand:200px;
+    --alturaFormCand:400px;
+    --alturaRodapeCadAva:150px;
+    --topoCadAva:200px;
+    --alturaFormCadAva:400px;
+    --alturaRodapeAva:150px;
+    --topoAva:200px;
   }
 }
 
