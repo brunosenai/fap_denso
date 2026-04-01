@@ -30,7 +30,7 @@ export default function Fap() {
     setLoad(true)
     const candidatosSelecionados = localStorage.getItem("candidatos")?.split(",").map(id => parseInt(id)) || [];
     const idavaliacao = localStorage.getItem("n_id_avaliacao") ? parseInt(localStorage.getItem("n_id_avaliacao")!) : -1;
-    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiCandidato?action=getDadosByFap&listaIds=${candidatosSelecionados}&n_id_avaliacao=${idavaliacao}`;
+    const endpoint = `/api/apiCandidato?action=getDadosByFap&listaIds=${candidatosSelecionados}&n_id_avaliacao=${idavaliacao}`;
     
     try{
       fetch(endpoint, {
@@ -147,7 +147,7 @@ export default function Fap() {
       f.n_status_fap=1;
     });
     // 3. Envia para o banco de dados
-    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiFap`;
+    const endpoint = `/api/apiFap`;
     try {
       const response = await fetch(endpoint, {
         method: "PUT",
@@ -237,7 +237,7 @@ export default function Fap() {
       arquivosGerados.push(fileName);
   
       // Dispara a requisição POST para a apiFap (que configuramos para salvar o arquivo físico e fazer o UPDATE do path no banco)
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiFap`; 
+      const endpoint = `/api/apiFap`; 
       await fetch(endpoint, {
         method: "POST", 
         headers: {

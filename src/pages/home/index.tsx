@@ -56,7 +56,7 @@ export default function Home() {
   const getCandidatosByAvaliacao = async (idAvaliacao: number) => {
     setLoad(true)
     try{
-      const endpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}`;
+      const endpoint = `/api/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}`;
       fetch(endpoint, {
         method: "GET"
       })
