@@ -3,6 +3,7 @@ import styles from "@/styles/TrocarSenha.module.css";
 import Load from "@/components/Load/Load";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function TrocarSenha() {
   const router=useRouter()
@@ -11,6 +12,9 @@ export default function TrocarSenha() {
   const [novaSenha1,setNovaSenha1]=useState('')
   const [novaSenha2,setNovaSenha2]=useState('')
   const [load,setLoad]=useState(false)
+  const [tipoCampoSenha_s1,setTipoCampoSenha_s1]=useState('password')
+  const [tipoCampoSenha_s2,setTipoCampoSenha_s2]=useState('password')  
+  const [tipoCampoSenha_s3,setTipoCampoSenha_s3]=useState('password')  
 
   useEffect(()=>{
     const getemail=router.query.email as string
@@ -116,6 +120,30 @@ export default function TrocarSenha() {
     })
   }
 
+  const mudarTipoCampoSenha_s1=()=>{
+    if(tipoCampoSenha_s1=='password'){
+      setTipoCampoSenha_s1('text')
+    }else{
+      setTipoCampoSenha_s1('password')
+    }
+  }
+
+  const mudarTipoCampoSenha_s2=()=>{
+    if(tipoCampoSenha_s2=='password'){
+      setTipoCampoSenha_s2('text')
+    }else{
+      setTipoCampoSenha_s2('password')
+    }
+  }
+
+  const mudarTipoCampoSenha_s3=()=>{
+    if(tipoCampoSenha_s3=='password'){
+      setTipoCampoSenha_s3('text')
+    }else{
+      setTipoCampoSenha_s3('password')
+    }
+  }  
+
   return (
     <>
       {load&&<Load/>}
@@ -135,15 +163,24 @@ export default function TrocarSenha() {
             </div>
             <div className={styles.inputField}>
                 <label>Senha Atual</label>
-                <input type="password" value={senhaAtual} onChange={(e)=>setSenhaAtual(e.target.value)} placeholder="Senha atual" />
+                <div className={styles.fieldSenha}>
+                  <input type={tipoCampoSenha_s1=='password'?'password':'text'} value={senhaAtual} onChange={(e)=>setSenhaAtual(e.target.value)} placeholder="Senha atual" />
+                  <Image src={tipoCampoSenha_s1=='password'?'/assets/icons/visibility_off_b.svg':'/assets/icons/visibility_on_b.svg'} alt="Mostrar Senha" width={35} height={35} onClick={mudarTipoCampoSenha_s1}/>
+                </div>
             </div>
             <div className={styles.inputField}>
                 <label>Nova Senha</label>
-                <input type="password" value={novaSenha1} onChange={(e)=>setNovaSenha1(e.target.value)} placeholder="Nova Senha" />
+                <div className={styles.fieldSenha}>
+                  <input type={tipoCampoSenha_s2=='password'?'password':'text'} value={novaSenha1} onChange={(e)=>setNovaSenha1(e.target.value)} placeholder="Nova Senha" />
+                  <Image src={tipoCampoSenha_s2=='password'?'/assets/icons/visibility_off_b.svg':'/assets/icons/visibility_on_b.svg'} alt="Mostrar Senha" width={35} height={35} onClick={mudarTipoCampoSenha_s2}/>
+                </div>
             </div>   
             <div className={styles.inputField}>
                 <label>Redigite a Nova Senha</label>
-                <input type="password" value={novaSenha2} onChange={(e)=>setNovaSenha2(e.target.value)} placeholder="Redigite a Nova Senha" />
+                <div className={styles.fieldSenha}>
+                  <input type={tipoCampoSenha_s3=='password'?'password':'text'} value={novaSenha2} onChange={(e)=>setNovaSenha2(e.target.value)} placeholder="Redigite a Nova Senha" />
+                  <Image src={tipoCampoSenha_s3=='password'?'/assets/icons/visibility_off_b.svg':'/assets/icons/visibility_on_b.svg'} alt="Mostrar Senha" width={35} height={35} onClick={mudarTipoCampoSenha_s3}/>
+                </div>
             </div>
             <div className={styles.inputField_c}>
                 <button className='btnPadrao_claro' onClick={()=>router.push('/')}>voltar</button>

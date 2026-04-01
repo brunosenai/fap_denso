@@ -73,6 +73,21 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.1); 
 }
 
+.fieldSenha{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.fieldSenha img{
+    margin: 10px;
+}
+
 @media(orientation: landscape) {
     .selecaoModulo{
         gap:50px;

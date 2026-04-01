@@ -8,6 +8,8 @@ export default function Login() {
   const router=useRouter()
   const [email,setEmail]=useState('')
   const [senha,setSenha]=useState('')
+  const [mostrarSenha,setMostrarSenha]=useState(false)
+  const [tipoCampoSenha,setTipoCampoSenha]=useState('password')
  
   const [screenWidth, setScreenWidth]=useState<number>()
     
@@ -61,6 +63,17 @@ export default function Login() {
     router.replace(`/esqueciSenha?email=${email}`)
   }
 
+  const mudarTipoCampoSenha=()=>{
+    setMostrarSenha(!mostrarSenha)
+    if(tipoCampoSenha=='password'){
+      setTipoCampoSenha('text')
+      setMostrarSenha(true)
+    }else{
+      setTipoCampoSenha('password')
+      setMostrarSenha(false)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -93,25 +106,18 @@ export default function Login() {
               <div className={styles.formLogin_title}>login</div>
               <div className={styles.fieldForm}>
                 <div>
-                  {screenWidth && screenWidth >= 1351 && (
-                      <Image src="/assets/icons/person.png" alt="Email" width={35} height={35} />
-                  ) }
-                  {screenWidth && screenWidth <= 1350 && (
-                     <Image src="/assets/icons/person.png" alt="Email" width={51} height={51} />
-                  ) }
+                  <Image src="/assets/icons/person.png" alt="Email" width={35} height={35} />
                 </div>
                 <input title={''} type="email" name="email" id="email" placeholder="E-mail" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
               </div>
               <div className={styles.fieldForm}>
                 <div>
-                  {screenWidth && screenWidth >= 1351 && (
-                    <Image src="/assets/icons/lock.png" alt="Email" width={35} height={35} />
-                  )}
-                  {screenWidth && screenWidth <= 1350 && (
-                    <Image src="/assets/icons/lock.png" alt="Email" width={51} height={51} />
-                  )}
+                  <Image src="/assets/icons/lock.png" alt="Email" width={35} height={35} />
                 </div>
-                <input title={''} type="password" name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
+                <input title={''} type={`${tipoCampoSenha=='password'?'password':'text'}`} name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
+                <div onClick={()=>mudarTipoCampoSenha()}>
+                  <Image src={`/assets/icons/${mostrarSenha?'visibility_on_b.svg':'visibility_off_b.svg'}`} alt="Email" width={35} height={35} />
+                </div>
               </div>    
               <div className={styles.fieldFormButton}>
                 <button onClick={()=>login()} className='btnPadrao'>Entrar</button>
