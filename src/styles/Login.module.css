@@ -31,7 +31,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;    
-    font-size: 48px;
+    font-size: xx-large;
     text-transform: uppercase;
     color:#fff;
 }
@@ -44,7 +44,7 @@
     border-radius: 10px;
     overflow: hidden;
     border:4px solid #fff;
-    width: 750px;
+    width: 100%;
 }
 
 .fieldForm div{
@@ -136,7 +136,7 @@
     }
 
     .formLogin_title{  
-        font-size: 32px;
+        font-size: xx-large;
         margin-top: 30px;
 
     }

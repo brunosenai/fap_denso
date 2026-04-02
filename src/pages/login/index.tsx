@@ -87,19 +87,8 @@ export default function Login() {
           <div className={styles.index}>
 
             <div className={styles.indexLogos}>
-              {screenWidth && screenWidth >= 1351 && (
-                  <>
-                    <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={332} height={72} />
-                    <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={182} height={182} />
-                  </>
-              ) }
-              {screenWidth && screenWidth <= 1350 && (
-                  <>
-                    <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={665} height={144} />
-                    <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={365} height={365} />
-                  </>
-              ) }
-            
+              <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={332} height={72} />
+              <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={182} height={182} />            
             </div>
 
             <form className={styles.formLogin} onSubmit={(e)=>{e.preventDefault();login();}}>
@@ -115,9 +104,9 @@ export default function Login() {
                   <Image src="/assets/icons/lock.png" alt="Email" width={35} height={35} />
                 </div>
                 <input title={''} type={`${tipoCampoSenha=='password'?'password':'text'}`} name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
-                <div onClick={()=>mudarTipoCampoSenha()}>
+                {/* <div onClick={()=>mudarTipoCampoSenha()}>
                   <Image src={`/assets/icons/${mostrarSenha?'visibility_on_b.svg':'visibility_off_b.svg'}`} alt="Email" width={35} height={35} />
-                </div>
+                </div> */}
               </div>    
               <div className={styles.fieldFormButton}>
                 {/* <button onClick={()=>login()} className='btnPadrao'>Entrar</button> */}

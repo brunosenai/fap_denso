@@ -5,9 +5,17 @@
     align-items: center;
     width: 100%;
     height: 100vh;
-    gap:200px;
+    gap:100px;
     color: #fff;
     text-transform: uppercase;
+}
+
+.selecaoModulo h1{
+    color:#fff !important;
+}
+
+.selecaoModulo p{
+    color:#fff !important;
 }
 
 .caixaSelecao{

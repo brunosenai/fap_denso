@@ -4,7 +4,8 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    max-height: var(--alturaTopo_telaSelecaoAvaliacao);
+    max-height: var(--alturaMaxTopoSelecaoAvaliacao);
+    min-height: var(--alturaMaxTopoSelecaoAvaliacao);
     background-image: linear-gradient(to bottom, #243783, #253059);
     overflow: hidden;
 }
@@ -15,7 +16,6 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: var(--alturaTopoGeral);
 }
 
 .topoSelecaoCandidato{
@@ -24,12 +24,11 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--alturaTopoPagina);
     padding: 0px 50px;
 }
 
 .titulo{
-    font-size: 40px;
+    font-size: large;
     font-weight: bold;
     color: #7CF2FF;
     text-transform: uppercase;
@@ -64,13 +63,12 @@
 
 .label{
     color: #fff;
-    font-size: x-large;
+    font-size: large;
 }
 
 .fieldForm{
     width: 100%;
-    /* font-size: large; */
-    padding: 10px;
+    padding: 5px;
     border-radius: 10px;
     overflow: hidden;
 }

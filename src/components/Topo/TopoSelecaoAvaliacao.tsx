@@ -14,8 +14,8 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
     return(
         <div className={styles.topo}>
             <div className={styles.topoLogos}>
-                <Image src={'/assets/logo-stellantis-branco.png'} alt={'Logo Stellantis'} width={473} height={102} />
-                <Image src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={152} height={152} />
+                <Image src={'/assets/logo-stellantis-branco.png'} alt={'Logo Stellantis'} width={200} height={-1} />
+                <Image src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={75} height={-1} />
             </div>
             <div className={styles.topoSelecaoCandidato}>
                 <div className={styles.titulo}>seleção de avaliação</div>
@@ -31,7 +31,7 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                     </div>
                     <div className={styles.fieldSelect_c2}>
                         <label className={styles.label} htmlFor="qtde">Qtd avaliadores</label>
-                        <input className={styles.fieldForm} type="text" title='qtde' id={'qtde'} value={props.qtdAvaliadores} onChange={(e)=>{props.setQtdAvaliadores(Number(e.target.value))}} />
+                        <input className={styles.fieldForm} type="number" title='qtde' id={'qtde'} value={props.qtdAvaliadores} onChange={(e)=>{props.setQtdAvaliadores(Number(e.target.value))}} />
                     </div>
                 </div>
             </div>

@@ -2,11 +2,11 @@
   --background: #f4f4f8;
   --foreground: #224;
   --margem:50px;
-  --alturaTopoGeral:244px;
-  --alturaTopoPagina:244px;
-  --alturaTopo_fap:320px;
-  --alturaTopo_telaSelecaoCandidato: 488px;
-  --alturaTopo_telaSelecaoAvaliacao: 488px;
+  --alturaTopoGeral:122px;
+  --alturaTopoPagina:122px;
+  --alturaTopo_fap:80px;
+  --alturaTopo_telaSelecaoCandidato: 244px;
+  --alturaTopo_telaSelecaoAvaliacao: 244px;
   --alturaMenuCadastro: 40px;
   --azulStellantis:#243783;
   --azulDestaque:#7CF2FF;
@@ -28,13 +28,15 @@
   --alturaRodapeDash:150px;
   --topoDash:200px;
   --alturaFormDash:400px;
-  --alturaRodapeFap:150px;
+  --alturaRodapeFap:70px;
   --paddingTelaMainFap:40px;
   --alturaCamposPreenchimentoFap:350px;
   --altura_btn_camposPreenchimentoFap:25px;
   --alturaTotalCamposPreenchimentoFap:calc(var(--alturaCamposPreenchimentoFap)+var(--altura_btn_camposPreenchimentoFap));
-  --alturaRodapeHome:150px;
+  --alturaRodapeHome:70px;
   --paddingTelaMainHome:40px;
+
+  --alturaMaxTopoSelecaoAvaliacao:180px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,8 +50,8 @@
     --alturaTopoGeral:100px;
     --alturaTopoPagina:100px;
     --alturaTopo_fap:320px;
-    --alturaTopo_telaSelecaoCandidato: 200px;
-    --alturaTopo_telaSelecaoAvaliacao: 200px;
+    --alturaTopo_telaSelecaoCandidato: 100px;
+    --alturaTopo_telaSelecaoAvaliacao: 100px;
     --alturaMenuCadastro: 40px;  
     --alturaRodape:150px;
     --topo:200px;
@@ -116,10 +118,9 @@ button, input, select, textarea {
   color: #fff;
   border: none;
   border-radius: 4px;
-  width: 300px;
-  max-height: 60px;
-  height: 60px;
-  font-size: 16px;
+  width: 200px;
+  height: 40px;
+  font-size: large;
   cursor: pointer;
   text-transform: uppercase;
 }
@@ -133,12 +134,29 @@ button, input, select, textarea {
   color: var(--azulStellantis);
   border: none;
   border-radius: 4px;
-  width: 300px;
-  max-height: 60px;
-  height: 60px;
-  font-size: 24px;
+  width: 200px;
+  height: 40px;
+  font-size: large;
   cursor: pointer;
   text-transform: uppercase;
+  gap:10px;
+}
+
+.btnPadrao_escuro{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;  
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  width: 200px;
+  height: 40px;
+  font-size: large;
+  cursor: pointer;
+  text-transform: uppercase;
+  gap:10px;
 }
 
 .btnPadrao_claro:hover{

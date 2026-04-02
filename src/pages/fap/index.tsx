@@ -372,16 +372,16 @@ export default function Fap() {
             </div>
         </main>
         <div className={styles.rodape}>
-          <button title={'voltar'} className={styles.btnVoltar} onClick={()=>voltar()}>
-            <Image src="/assets/icons/exit_w.svg" alt="sair" width={40} height={40} style={{marginRight:"5px"}}/>
+          <button title={'voltar'} className='btnPadrao_escuro' onClick={()=>voltar()}>
+            <Image src="/assets/icons/exit_w.svg" alt="sair" width={20} height={20} style={{marginRight:"5px"}}/>
             sair
           </button>
           <button 
-            className={`${styles.btnSalvar}`} 
+            className='btnPadrao_claro' 
             onClick={() => finalizarAvaliacao()} 
           >
-            <Image src="/assets/icons/file_export.svg" alt="Finalizar" width={30} height={30} style={{marginLeft:"5px"}}/>
-            Finalizar Avaliação
+            <Image src="/assets/icons/file_export.svg" alt="Finalizar" width={20} height={20} style={{marginLeft:"5px"}}/>
+            Finalizar
           </button>          
         </div>
       </div>

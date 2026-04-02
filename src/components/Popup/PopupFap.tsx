@@ -31,7 +31,7 @@ export default function PopupFap(props:PopupFapProps) {
                 <div className={styles.popupFap_conteudo_corpo}>
                     <div><b>Mediação:</b>{props.mediacao}</div>
                     <h3>Evidências observáveis:</h3>
-                    <div>{criarLista(props.evidencias)}</div>
+                    <div className={styles.popupFap_conteudo_evidencias}>{criarLista(props.evidencias)}</div>
                 </div>
             </div>
         </div>

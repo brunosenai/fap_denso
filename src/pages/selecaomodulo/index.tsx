@@ -23,11 +23,11 @@ export default function SelecaoModulo() {
           <div className={styles.selecaoModulo}>
             <h1>Selecione o módulo desejado</h1>
             <div className={styles.caixaSelecao} onClick={()=>goto('/home')}>
-                <Image src="/assets/icons/avaliacao_w.svg" alt="Avaliação" width={665} height={144} />
+                <Image src="/assets/icons/avaliacao_w.svg" alt="Avaliação" width={100} height={-1} />
                 <p>Módulo de Avaliação</p>
             </div>
             <div className={styles.caixaSelecao} onClick={()=>goto('/cadastro')}>
-                <Image src="/assets/icons/office_edit_w.svg" alt="Escritório" width={665} height={144} />
+                <Image src="/assets/icons/office_edit_w.svg" alt="Escritório" width={100} height={-1} />
                 <p>Módulo de Escritório</p>
             </div>
           </div>
