@@ -92,8 +92,14 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
         
         {/* HEADER */}
         <View style={styles.headerTop}>
-          <Image src="/assets/logo-centro-branco.png" style={styles.logo} /> 
-          <Image src="/assets/logo-stellantis-branco.png" style={styles.logo} />
+          <Image 
+            src={`${typeof window !== 'undefined' ? window.location.origin : ''}/assets/logo-centro-branco.png`} 
+            style={styles.logo} 
+          /> 
+          <Image 
+            src={`${typeof window !== 'undefined' ? window.location.origin : ''}/assets/logo-stellantis-branco.png`} 
+            style={styles.logo} 
+          />
         </View>
 
         <View style={styles.body}>

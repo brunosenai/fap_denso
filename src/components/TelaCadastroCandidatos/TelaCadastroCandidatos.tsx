@@ -68,16 +68,19 @@ export default function TelaCadastroCandidatos(){
         console.log(listaArquivos)
 
         listaArquivos.forEach((nomeArquivo) => {
-            const url = `/relatorios/${nomeArquivo}`;
+            if(nomeArquivo!=null){
+                const url = `${nomeArquivo}`;
+                console.log(url)
 
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', nomeArquivo);
-            
-            document.body.appendChild(link);
-            link.click();
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', nomeArquivo);
+                
+                document.body.appendChild(link);
+                link.click();
 
-            document.body.removeChild(link);
+                document.body.removeChild(link);
+            }
         });
     }
 

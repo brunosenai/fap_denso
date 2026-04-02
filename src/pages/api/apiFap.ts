@@ -163,6 +163,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             fs.writeFileSync(filePath, fileBuffer);
 
             const s_relatorio_fap = `/relatorios/${fileName}`;
+            console.log(s_relatorio_fap)
 
             // Utilizando a sua mesma conexão de pool para o update!
             await pool.query<ResultSetHeader>(`

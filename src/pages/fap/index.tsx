@@ -219,6 +219,17 @@ export default function Fap() {
       const blob = await pdf(
         <RelatorioFap candidato={candidato} fapCandidato={fapCandidato} />
       ).toBlob();
+
+      // === CÓDIGO DE TESTE INÍCIO ===
+      const testUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = testUrl;
+      a.download = "teste-direto.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(testUrl);
+      // === CÓDIGO DE TESTE FIM ===      
   
       // Converte o Blob para Base64 para poder enviar via JSON no corpo da requisição
       const base64 = await new Promise<string>((resolve) => {
