@@ -32,13 +32,13 @@
 }
 
 .cardTopo_titulo{
-    color: var(--azulDestaque);
+    color: var(--azulDestaque) !important;
     font-size: 16px;
 }
 
 
 .cardTopo1{
-    color: #fff;
+    color: #fff !important;
     font-size: 40px;
     width: 100%;
     height: 100%;
@@ -46,33 +46,33 @@
 }
 
 .cardTopo2{
-    color: #9DFF9D;
+    color: #9DFF9D !important;
     font-size: 40px;
     width: 100%;
     height: 100%;
 }
 
 .cardTopo3{
-    color: #FF9D9D;
+    color: #FF9D9D !important;
     font-size: 40px;
     width: 100%;
     height: 100%;
 }
 
 .cardTopo1:hover{
-    color: #253059;
+    color: #253059 !important;
     background-color: var(--azulDestaque);
     font-size: 40px;
 }
 
 .cardTopo2:hover{
-    color: #253059;
+    color: #253059 !important;
     background-color: var(--azulDestaque);
     font-size: 40px;
 }
 
 .cardTopo3:hover{
-    color: #253059;
+    color: #253059 !important;
     background-color: var(--azulDestaque);
     font-size: 40px;
 }

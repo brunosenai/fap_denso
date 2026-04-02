@@ -35,6 +35,7 @@
   --alturaTotalCamposPreenchimentoFap:calc(var(--alturaCamposPreenchimentoFap)+var(--altura_btn_camposPreenchimentoFap));
   --alturaRodapeHome:70px;
   --paddingTelaMainHome:40px;
+  --alturaFormAvaliador:305px;
 
   --alturaMaxTopoSelecaoAvaliacao:180px;
 }

@@ -115,7 +115,7 @@
 
 .btnAdd{
     background-color: var(--azulStellantis);
-    color: #fff;
+    color: #fff !important;
     border: none;
     border-radius: 4px;
     padding: 10px 20px;

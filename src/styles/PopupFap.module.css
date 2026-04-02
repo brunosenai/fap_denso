@@ -29,7 +29,7 @@
     font-size: large;
     font-weight: bold;
     background-color: var(--azulStellantis);
-    color: #fff;
+    color: #fff !important;
     width: 100%;
     padding: 10px;
 }
@@ -41,7 +41,7 @@
     align-items: center;
     font-size: large;
     background-color: #fff;
-    color: #222;
+    color: #222 !important;
     width: 100%;
     padding: 20px;
     gap:30px;
@@ -67,7 +67,7 @@
     justify-content: center;
     align-items: center;
     background-color: var(--azulDestaque);
-    color: var(--azulStellantis);
+    color: var(--azulStellantis) !important;
     width: 30px;
     height: 30px;
     cursor: pointer;

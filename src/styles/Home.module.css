@@ -128,7 +128,7 @@
     width: 100%;
     height:var(--alturaRodapeHome);
     background-color: var(--azulStellantis);
-    color: #fff;
+    color: #fff !important;
 }
 
 .btnHome{
@@ -141,6 +141,6 @@
     cursor: pointer;
     font-size: large;
     text-transform: uppercase;
-    color: #fff;
+    color: #fff !important;
     width: 200px;
 }

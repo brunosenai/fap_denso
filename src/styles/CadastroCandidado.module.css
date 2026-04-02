@@ -82,7 +82,7 @@
     justify-content: flex-start;
     width: 100%;
     background-color: var(--azulStellantis);
-    color: #fff;
+    color: #fff !important;
     font-weight: bold;
 }
 
@@ -153,7 +153,7 @@
 }
 
 .obrigatorio{
-    color: red;
+    color: red !important;
 }
 
 .fieldForm_center{

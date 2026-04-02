@@ -23,7 +23,7 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    color: #7CF2FF;
+    color: #7CF2FF !important;
     font-weight: bold;
     font-size: 40px;
 }
@@ -53,6 +53,6 @@
         flex-direction: column;
         gap: 2px;
         padding-top: 10px;
-        color: #fff;
+        color: #fff !important;
     }
 }

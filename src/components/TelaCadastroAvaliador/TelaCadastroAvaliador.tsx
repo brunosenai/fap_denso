@@ -96,13 +96,7 @@ export default function TelaCadastroAvaliador(){
             <div className={styles.telaCadastroCandidatos_main}>
                 <div className={styles.telaCadastroCandidatos_esquerda}>
                     <div className={styles.telaCadastroCandidatos_topo}>
-                        {screenWidth && screenWidth >= 1351 && (
-                            <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={80} height={80}/>
-                        ) }
-                        {screenWidth && screenWidth <= 1350 && (
-                            <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={129} height={129}/>
-                        ) }
-                        
+                        <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
                         <h1>NOVO AVALIADOR</h1>
                     </div>
                     <div className={styles.telaCadastroCandidatos_form}>

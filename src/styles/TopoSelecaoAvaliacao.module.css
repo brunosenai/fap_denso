@@ -30,7 +30,7 @@
 .titulo{
     font-size: large;
     font-weight: bold;
-    color: #7CF2FF;
+    color: #7CF2FF !important;
     text-transform: uppercase;
 }
 
@@ -62,7 +62,7 @@
 }
 
 .label{
-    color: #fff;
+    color: #fff !important;
     font-size: large;
 }
 

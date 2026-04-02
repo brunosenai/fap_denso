@@ -54,19 +54,19 @@ export default function TelaDashboard(){
                     <div className={styles.graficosGerais_legendaTexto}>
                         <div className={styles.legandaContainer}>
                             <div className={styles.legendaBox1}></div>
-                            <h5>Avançado - Adapta-se rápido a mudanças sem perda de foco.</h5>
+                            <h5>Avançado</h5>
                         </div>
                         <div className={styles.legandaContainer}>
                             <div className={styles.legendaBox2}></div>
-                            <h5>Adequado - Adapta-se a mudanças mas perde o foco momentáneamento.</h5>
+                            <h5>Adequado</h5>
                         </div >
                         <div className={styles.legandaContainer}>
                             <div className={styles.legendaBox3}></div>
-                            <h5>Básico - Oscilações perceptíveis, mas mantém o engajamento à atividade.</h5>
+                            <h5>Básico</h5>
                         </div>
                         <div className={styles.legandaContainer}>
                             <div className={styles.legendaBox4}></div>
-                            <h5>Abaixo do Básico - Perde o ritmo, o foco e demonstra resistência.</h5>
+                            <h5>Abaixo do Básico</h5>
                         </div>
                     </div>
                 </div>
