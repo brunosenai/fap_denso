@@ -76,6 +76,7 @@ export default function TelaCadastroAvaliador(){
                 .then(res=>{
                     if(res.status==200){
                         alert('Avaliador cadastrado com sucesso!')
+                        obterAvaliadores()
                     }else if(res.status==400){
                         alert('Cadastro não efetuado, já existe este email cadastrado')
                     }
@@ -122,7 +123,7 @@ export default function TelaCadastroAvaliador(){
                             <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
                         </div>
                         <div className={styles.fieldForm_center}>
-                            <button className="btnPadrao">cadastrar novo</button>
+                            <button className="btnPadrao" onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
                         </div>
                     </div>
                 </div>
