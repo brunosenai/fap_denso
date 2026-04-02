@@ -63,26 +63,64 @@ export default function TelaCadastroCandidatos(){
         })
     }
 
-    const baixaRelatorios=async(relatorios: any)=>{
-        const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
-        console.log(listaArquivos)
+    // const baixaRelatorios=async(relatorios: any)=>{
+    //     const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
+    //     console.log(listaArquivos)
 
-        listaArquivos.forEach((nomeArquivo) => {
-            if(nomeArquivo!=null){
-                const url = `${nomeArquivo}`;
-                console.log(url)
+    //     listaArquivos.forEach((nomeArquivo) => {
+    //         if(nomeArquivo!=null){
+    //             const url = `${nomeArquivo}`;
+    //             console.log(url)
 
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', nomeArquivo);
+    //             const link = document.createElement('a');
+    //             link.href = url;
+    //             link.setAttribute('download', nomeArquivo);
                 
-                document.body.appendChild(link);
-                link.click();
+    //             document.body.appendChild(link);
+    //             link.click();
 
-                document.body.removeChild(link);
+    //             document.body.removeChild(link);
+    //         }
+    //     });
+    // }
+
+    const baixaRelatorios = async (relatorios: any) => {
+        const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
+        console.log("Arquivos originais do banco:", listaArquivos);
+    
+        // 1. Tira todo o "lixo" da lista (null, undefined, string vazia)
+        const relatoriosValidos = listaArquivos.filter(arquivo => arquivo !== null && arquivo !== undefined && arquivo !== "");
+    
+        // 2. Se depois de limpar a lista não sobrar nada, avisa o usuário e para a função
+        if (relatoriosValidos.length === 0) {
+          alert("Ainda não há relatórios em PDF gerados para este candidato.");
+          return;
+        }
+    
+        // 3. Se passou pela trava, baixa os relatórios válidos
+        relatoriosValidos.forEach((nomeArquivo) => {
+            let urlCorreta = nomeArquivo;
+    
+            if (urlCorreta.includes('/relatorios/')) {
+                urlCorreta = urlCorreta.replace('/relatorios/', '/api/downloadPdf?file=');
+            } else if (!urlCorreta.includes('/api/downloadPdf')) {
+                urlCorreta = `/api/downloadPdf?file=${urlCorreta}`;
             }
+    
+            console.log("Baixando pela API:", urlCorreta);
+    
+            const nomePuroParaDownload = urlCorreta.split('file=')[1] || 'relatorio_fap.pdf';
+    
+            const link = document.createElement('a');
+            link.href = urlCorreta;
+            link.setAttribute('target', '_blank'); 
+            link.setAttribute('download', nomePuroParaDownload);
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
-    }
+    }  
 
     const filtrar=(filtro:string)=>{
         setFiltroAvaliadores(filtro)
@@ -147,15 +185,6 @@ export default function TelaCadastroCandidatos(){
                                     <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
                                     <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
                                 </div>
-                                {/* <div className={styles.fieldForm}>
-                                    <label htmlFor={`avaliacao`}>Avaliação<span className={styles.obrigatorio}>*</span></label>
-                                    <select title='avaliacoes' value={avaliacao} onChange={(evt)=>setAvaliacao(evt.target.value)}>
-                                        <option value="">Selecione a avaliação</option>
-                                        {avaliacoes.map((avaliacao:tAvaliacao,index)=>(
-                                            <option key={index} value={avaliacao.n_id_avaliacao}>{avaliacao.s_nome_avaliacao}</option>
-                                        ))}
-                                    </select>
-                                </div> */}
                                 <div className={styles.fieldForm_center}>
                                     <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
                                 </div>
