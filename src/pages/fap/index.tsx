@@ -257,7 +257,7 @@ export default function Fap() {
     
     // 3. ENVIO DO E-MAIL PARA A EMPRESA
     try {
-      const emailEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiEnviarEmail`;
+      const emailEndpoint = `/api/apiEnviarEmail`;
       const responseEmail = await fetch(emailEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -133,7 +133,7 @@ export default function TelaCadastroCandidatos(){
     const enviarEmail=async (relatorios: any)=>{
         try{
             setLoad(true)
-            const emailEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/apiEnviarEmail`;
+            const emailEndpoint = `/api/apiEnviarEmail`;
             const responseEmail = await fetch(emailEndpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
