@@ -217,7 +217,7 @@
 
     .telaCadastroCandidatos_lista{
         height: 100%;
-        overflow-y:hidden;
+        overflow-y:auto;
         padding: 20px;
     } 
 

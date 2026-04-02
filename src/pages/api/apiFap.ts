@@ -60,6 +60,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
+        }else if(action == "getAllCandidatosFap_cad"){
+            try {
+                const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
+                    SELECT 
+                        *
+                    FROM 
+                        candidato
+                    GROUP BY 
+                        n_id_candidato;
+                    `,[]
+                )
+                res.status(200).json(rows_cadidatos)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }else if(action == "getAllCandidatosFap"){
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`

@@ -23,7 +23,7 @@ export default function TelaCadastroCandidatos(){
     },[])
 
     const obterCandidatos=async()=>{
-        const endpoint=`/api/apiFap?action=getAllCandidatosFap`
+        const endpoint=`/api/apiFap?action=getAllCandidatosFap_cad`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
