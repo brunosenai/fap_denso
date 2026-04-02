@@ -65,6 +65,7 @@ export default function TelaCadastroCandidatos(){
 
     const baixaRelatorios=async(relatorios: any)=>{
         const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
+        console.log(listaArquivos)
 
         listaArquivos.forEach((nomeArquivo) => {
             const url = `/relatorios/${nomeArquivo}`;

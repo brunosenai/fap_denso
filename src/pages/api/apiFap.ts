@@ -64,11 +64,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     SELECT 
-                        *
+                        c.n_id_candidato,
+                        c.s_nome_candidato, 
+                        c.s_email_candidato,
+                        JSON_ARRAYAGG(f.s_relatorio_fap) AS relatorios -- Agrupa os relatórios em um array JSON
                     FROM 
-                        candidato
+                        candidato c
+                    LEFT JOIN 
+                        fap f ON c.n_id_candidato = f.n_id_candidato
                     GROUP BY 
-                        n_id_candidato;
+                        c.n_id_candidato;
                     `,[]
                 )
                 res.status(200).json(rows_cadidatos)
