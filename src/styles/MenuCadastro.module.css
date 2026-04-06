@@ -3,7 +3,8 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-    height: var(--alturaMenuCadastro);
+    max-height: var(--alturaMenuPC);
+    min-height: var(--alturaMenuPC);
     width: 100%;
     background-color: #253059;
 }
@@ -13,8 +14,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: var(--alturaMenuCadastro);
-    height: var(--alturaMenuCadastro);
+    height: var(--alturaMenuPC);
+    height: var(--alturaMenuPC);
     border-radius: 10px 10px 0px 0px;
     background-color: #253059;
     color: var(--azulDestaque);

@@ -79,7 +79,6 @@ export default function TelaCandidatoAvaliacao(){
             if(res.status!=200){
                 alert("Erro ao associar candidado à avaliação!")
             }else{
-                setCandidatoSel(-1)
                 obterCandidatosAvaliacao(avaliacaoSel)
             }
         })
@@ -124,22 +123,12 @@ export default function TelaCandidatoAvaliacao(){
 
     return(
         <div className={styles.telaCadastroCandidatos}>
-            <div className={styles.webContainer}>
-                {/* {screenWidth && screenWidth <= 1351 && ( */}
-                    <div className={styles.telaCadastroCandidatos_topo}>
-                        <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={133} height={133}/>
-                        <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
-                    </div>
-                {/* ) } */}
+            <div className={styles.telaCadastroCandidatos_esquerda}>
+                <div className={styles.telaCadastroCandidatos_topo}>
+                    <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
+                    <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
+                </div>
                 <div className={styles.telaCadastroCandidatos_form}>
-                    {/* {screenWidth && screenWidth >= 1351 && (
-                        <div className={styles.telaCadastroCandidatos_topo}>
-                            <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={70} height={70}/>
-                            <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
-                        </div>
-                            
-                    ) } */}
-
                     <div className={styles.areaLista}>
                         <div className={styles.telaCadastroCandidatos_lista_filtro}>
                             <div className={styles.fieldForm}>
@@ -190,9 +179,14 @@ export default function TelaCandidatoAvaliacao(){
                         </div>
                     </div>
                 </div>
+            </div>
+            
+            <div className={styles.telaCadastroCandidatos_direita}>
+                <div className={styles.telaCadastroCandidatos_topo}>
+                    <h1>LISTA DE ASSOCIADOS</h1>
+                </div>
 
                 <div className={styles.telaCadastroCandidatos_candidatosAvaliacao}>
-                    <h1>LISTA DE ASSOCIADOS</h1>
                     <div className={styles.telaCadastroCandidatos_lista}>
                         <div className={styles.telaCadastroCandidatos_lista_titulos}>
                             <div className={styles.c1_ca}>id</div>
@@ -214,10 +208,6 @@ export default function TelaCandidatoAvaliacao(){
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div className={styles.telaCadastroCandidatos_rodape}>
-                <button className="btnPadrao_claro" onClick={()=>router.replace('/')}>Sair</button>
             </div>
         </div>
     )

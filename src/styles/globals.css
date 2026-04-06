@@ -38,6 +38,12 @@
   --alturaFormAvaliador:305px;
 
   --alturaMaxTopoSelecaoAvaliacao:180px;
+  --alturaTopoPC:100px;
+  --alturaMenuPC:40px;
+  --alturaFormNovaAvaliação:350px;
+  --alturaFormNovaAvaliador:520px;
+  --alturaFormNovoCandidado:440px;
+  --alturaRelacionarCandidadoAvaliacao:340px;
 }
 
 @media (prefers-color-scheme: dark) {

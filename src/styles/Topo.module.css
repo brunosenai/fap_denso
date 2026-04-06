@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: var(--alturaTopoGeral);
+    max-height: var(--alturaTopoPC);
+    min-height: var(--alturaTopoPC);
     background-image: linear-gradient(to bottom, #243783, #253059);
 }
 
