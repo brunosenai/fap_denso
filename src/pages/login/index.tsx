@@ -19,6 +19,7 @@ export default function Login() {
   },[])
 
   const login=async()=>{
+    console.log('iniciar')
     sessionStorage.setItem('menuSelected','1')
     const response = await fetch('/api/apiLogin', {
       method: 'POST',

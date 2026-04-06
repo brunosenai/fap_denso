@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useState, useEffect, useEffectEvent } from "react"
 import { tAvaliador } from "@/utils/Types"
 import { useRouter } from "next/router"
+import Load from "../Load/Load"
 
 export default function TelaCadastroAvaliador(){
     const router=useRouter()
@@ -15,6 +16,7 @@ export default function TelaCadastroAvaliador(){
     const [avaliadoresFiltrados,setAvaliadoresFiltrados]=useState<tAvaliador[]>([])
     const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
     const [screenWidth, setScreenWidth]=useState<number>()
+    const [loading, setLoading]=useState<boolean>(false)
 
     useEffect(()=>{
         const viewportWidth: number = window.innerWidth;
@@ -60,6 +62,7 @@ export default function TelaCadastroAvaliador(){
 
     const cadastrarAvaliador=async()=>{
         try{
+            setLoading(true)
             if(validarCampos()){
                 const endpoint=`/api/apiPessoa`
                 fetch(endpoint,{
@@ -68,6 +71,7 @@ export default function TelaCadastroAvaliador(){
                         "Content-Type":"application/json"
                     },
                     body:JSON.stringify({
+                        n_id_tipoPessoa:1,
                         s_nome_pessoa:nome,
                         s_cpf_pessoa:cpf,
                         s_email_pessoa:email,
@@ -76,24 +80,29 @@ export default function TelaCadastroAvaliador(){
                 })
                 .then(res=>{
                     if(res.status==200){
+                        setLoading(false)
                         alert('Avaliador cadastrado com sucesso!')
                         obterAvaliadores()
                     }else if(res.status==400){
+                        setLoading(false)
                         alert('Cadastro não efetuado, já existe este email cadastrado')
                     }
                 })
             }
         }catch(error){
+            setLoading(false)
             console.error(error)
             alert("Ocorreu um erro ao cadastrar o avaliador")
         }
         finally{
+            setLoading(false)
             obterAvaliadores()
         }
     }
 
     return(                         
         <div className={styles.telaCadastroAvaliador}>
+            {loading && <Load/>}
             <div className={styles.telaCadastroAvaliador_esquerda}>
                 <div className={styles.telaCadastroCandidatos_topo}>
                     <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>

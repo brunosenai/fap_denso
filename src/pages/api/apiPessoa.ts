@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
     }else if(req.method === 'POST'){
-        const { s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa } = req.body;
+        const { n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa } = req.body;
         
         const [rows_pessoa]=await pool.query<RowDataPacket[]>(`
             SELECT
@@ -92,10 +92,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             await pool.query<ResultSetHeader>(`
                 INSERT INTO
-                    pessoa (s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, s_senha_pessoa)
+                    pessoa (n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, s_senha_pessoa)
                 VALUES
-                    (?,?,?,?,?);
-            `,[s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, senha]
+                    (?,?,?,?,?,?);
+            `,[n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, senha]
             )
             return res.status(200).json({ 
                 message: 'Candidato cadastrado com sucesso!',
