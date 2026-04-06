@@ -9,9 +9,13 @@
     min-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
     background-color: var(--azulFap);
     position: fixed;
+    top: calc(var(--alturaTopoPC) + var(--alturaMenuPC));
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
-.telaCadastroCandidatos_esquerda{
+.telaCadastroCandidatos_cima{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -20,52 +24,87 @@
     max-height: var(--alturaRelacionarCandidadoAvaliacao);
     min-height: var(--alturaRelacionarCandidadoAvaliacao);
     overflow: hidden;
-    border: 3px solid #f00;
 }
 
-.telaCadastroCandidatos_direita {
+.telaCadastroCandidatos_baixo {
     display: flex;
     flex-direction: column;
     width: 100%;
+    /* O cálculo da altura já está no seu código, mas garantimos o flex */
     height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC) - var(--alturaRelacionarCandidadoAvaliacao));
     overflow: hidden;
-    border: 3px solid #00f;
+    background-color: var(--azulFap);
+}
+
+.telaCadastroCandidatos_candidatosAvaliacao {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Faz esta área ocupar todo o espaço abaixo do título "LISTA DE ASSOCIADOS" */
+    width: 100%;
+    overflow: hidden;
+    padding: 10px;
+    min-height: 0;
 }
 
 .telaCadastroCandidatos_lista {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
     width: 100%;
     flex: 1;
     overflow: hidden;
     margin-top: 5px;
+    min-height: 0;
+    /* Altera o alinhamento para o topo */
+    justify-content: flex-start !important; 
+    align-items: stretch;
 }
 
 .telaCadastroCandidatos_lista_linhas {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start; 
     align-items: flex-start;
-    justify-content: flex-start;
     width: 100%;
     flex: 1;
     height: 0;
-    overflow-y: scroll; 
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    /* Adicione isso para garantir que não haja margem interna empurrando os itens */
+    padding: 0;
+    margin: 0;
 }
 
+/* Melhorando a visibilidade da barra de rolagem (Webkit) */
 .telaCadastroCandidatos_lista_linhas::-webkit-scrollbar {
-    width: 6px; 
-    background-color: transparent;
+    width: 8px; /* Aumentei um pouco para ficar visível */
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .telaCadastroCandidatos_lista_linhas::-webkit-scrollbar-thumb {
-    background-color: rgba(36, 55, 131, 0.3);
+    background-color: var(--azulStellantis); /* Use uma cor forte para teste */
     border-radius: 10px;
 }
 
-.telaCadastroCandidatos_lista_linhas::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(36, 55, 131, 0.7);
+/* Estilo para navegadores modernos (Firefox) */
+.telaCadastroCandidatos_lista_linhas {
+    scrollbar-width: thin;
+    scrollbar-color: var(--azulStellantis) transparent;
+}
+
+.telaCadastroCandidatos_lista_l{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.telaCadastroCandidatos_lista_l_selecionada {
+    background-color: var(--azulDestaque) !important; 
+    color: var(--azulStellantis);
 }
 
 .telaCadastroCandidatos_topo{
@@ -78,23 +117,29 @@
     gap:20px;
 }
 
-.telaCadastroCandidatos_form{
+/* Modifique estas classes no seu CandicadoAvaliacao.module.css */
+
+.telaCadastroCandidatos_form {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch; /* Mudado de flex-start para stretch */
     justify-content: center;
     width: 100%;
-    gap:20px;
+    gap: 10px;
     padding: 10px;
-    border: 3px solid #ff0;
+    /* Importante: define que o formulário ocupa o espaço restante da div 'cima' */
+    flex: 1; 
+    overflow: hidden; 
 }
 
-.areaLista{
+.areaLista {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-start; /* Garante que filtro e lista fiquem no topo */
     width: 100%;
+    height: 100%; 
+    overflow: hidden;
 }
 
 .fieldForm{
@@ -103,6 +148,7 @@
     align-items: flex-start;
     justify-content: center;
     width: 100%;
+    gap:1px;
 }
 
 
@@ -112,11 +158,11 @@
 
 .fieldForm input{
     width: 100%;
-    height: 40px;
+    height: 30px;
     padding: 10px;
     border-radius: 10px;
     background-color: #fff;
-    font-size: x-large;
+    font-size: large;
     outline: none;
     box-shadow: 0 0 5px rgba(0,0,0,0.1); 
 }
@@ -189,16 +235,26 @@
     width: 10%;
 }
 
-.telaCadastroCandidatos_lista_l{
+
+
+.btnMove{
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
+    align-items: center;
+    justify-content: center;  
+    background-color: var(--azulStellantis);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    font-size: large;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 60px;
 }
-
 /* @media(orientation: landscape){
     .telaCadastroCandidatos_main{
         padding-top: 50px;

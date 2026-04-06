@@ -1,5 +1,4 @@
-// import styles from "@/styles/CandicadoAvaliacao.module.css"
-import styles from "@/styles/Cadastros.module.css"
+import styles from "@/styles/CandicadoAvaliacao.module.css"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { tCandidado,tAvaliacao } from "@/utils/Types"
@@ -124,7 +123,7 @@ export default function TelaCandidatoAvaliacao(){
 
     return(
         <div className={styles.telaCadastroCandidatos}>
-            <div className={styles.telaCadastroCandidatos_esquerda}>
+            <div className={styles.telaCadastroCandidatos_cima}>
                 <div className={styles.telaCadastroCandidatos_topo}>
                     <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
                     <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
@@ -142,19 +141,19 @@ export default function TelaCandidatoAvaliacao(){
                                 <div className={styles.c2_c}>Candidato</div>
                                 <div className={styles.c3_c}>cpf</div>
                             </div>
-                        </div>
-                        <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                            {candidatosFiltrados.length>0 && candidatosFiltrados.map((c,i)=>(
-                                <div key={i} className={`${candidatoSel==c.n_id_candidato&&styles.telaCadastroCandidatos_lista_l_selecionada} ${styles.telaCadastroCandidatos_lista_l}`} onClick={(evt)=>selecionarCandidato(c.n_id_candidato)}>
-                                    <div className={styles.c1_c}>{c.n_id_candidato}</div>
-                                    <div className={styles.c2_c}>{c.s_nome_candidato}</div>
-                                    <div className={styles.c3_c}>{c.s_cpf_candidato}</div>
-                                </div>
-                            ))}
+                            <div className={styles.telaCadastroCandidatos_lista_linhas}>
+                                {candidatosFiltrados.length > 0 && candidatosFiltrados.map((c, i) => (
+                                    <div key={i} className={`${candidatoSel == c.n_id_candidato && styles.telaCadastroCandidatos_lista_l_selecionada} ${styles.telaCadastroCandidatos_lista_l}`} onClick={() => selecionarCandidato(c.n_id_candidato)}>
+                                        <div className={styles.c1_c}>{c.n_id_candidato}</div>
+                                        <div className={styles.c2_c}>{c.s_nome_candidato}</div>
+                                        <div className={styles.c3_c}>{c.s_cpf_candidato}</div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     <div className={styles.btnMove} onClick={()=>associarCandidato()}>
-                        <Image src='/assets/icons/move_w.svg' alt='Cadastro de Candidatos' width={35} height={35}/>
+                        <Image src='/assets/icons/move_w.svg' alt='Cadastro de Candidatos' width={30} height={30}/>
                     </div>
                     <div className={styles.areaLista}>
                         <div className={styles.telaCadastroCandidatos_lista_filtro}>
@@ -175,14 +174,14 @@ export default function TelaCandidatoAvaliacao(){
                                         <div className={styles.c2_a}>{a.s_nome_avaliacao}</div>
                                         <div className={styles.c3_a}>{formatDateToText(a.dt_data_avaliacao)}</div>
                                     </div>
-                                ))}
+                                ))}                                                                                                                                                                                                                              
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div className={styles.telaCadastroCandidatos_direita}>
+            <div className={styles.telaCadastroCandidatos_baixo}>
                 <div className={styles.telaCadastroCandidatos_topo}>
                     <h1>LISTA DE ASSOCIADOS</h1>
                 </div>
@@ -195,14 +194,15 @@ export default function TelaCandidatoAvaliacao(){
                             <div className={styles.c3_ca}>cpf</div>
                             <div className={styles.c4_ca}></div>
                         </div>
+
                         <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                            {candidatosAva.length>0 && candidatosAva.map((c,i)=>(
+                            {candidatosAva.length > 0 && candidatosAva.map((c, i) => (
                                 <div key={i} className={styles.telaCadastroCandidatos_lista_l}>
                                     <div className={styles.c1_ca}>{c.n_id_candidato}</div>
                                     <div className={styles.c2_ca}>{c.s_nome_candidato}</div>
                                     <div className={styles.c3_ca}>{c.s_cpf_candidato}</div>
-                                    <div className={styles.c4_ca} onClick={()=>desassociarCandidato(c.n_id_candidato,avaliacaoSel)}>
-                                        <Image src='/assets/icons/delete.svg' alt='Cadastro de Candidatos' width={25} height={25}/>
+                                    <div className={styles.c4_ca} onClick={() => desassociarCandidato(c.n_id_candidato, avaliacaoSel)}>
+                                        <Image src='/assets/icons/delete.svg' alt='Excluir' width={25} height={25} />
                                     </div>
                                 </div>
                             ))}
