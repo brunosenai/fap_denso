@@ -1,0 +1,299 @@
+.telaCadastroAvaliacao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    max-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
+    min-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
+    background-color: var(--azulFap);
+    position: fixed;
+}
+
+.telaCadastroAvaliacao_esquerda{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;    
+    width: 100%;
+    max-height: var(--alturaFormNovaAvaliação);
+    min-height: var(--alturaFormNovaAvaliação);
+    overflow: hidden;
+}
+
+.telaCadastroAvaliacao_direita {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC) - var(--alturaFormNovaAvaliação));
+    overflow: hidden;
+}
+
+.telaCadastroAvaliador{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    max-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
+    min-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
+    background-color: var(--azulFap);
+    position: fixed;
+}
+
+.telaCadastroAvaliador_esquerda{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;    
+    width: 100%;
+    max-height: var(--alturaFormNovaAvaliador);
+    min-height: var(--alturaFormNovaAvaliador);
+    overflow: hidden;
+}
+
+.telaCadastroAvaliador_direita {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC) - var(--alturaFormNovaAvaliador));
+    overflow: hidden;
+}
+
+.telaCadastroCandidatos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    max-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
+    min-height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC));
+    background-color: var(--azulFap);
+    position: fixed;
+}
+
+.telaCadastroCandidatos_esquerda{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;    
+    width: 100%;
+    max-height: var(--alturaFormNovoCandidado);
+    min-height: var(--alturaFormNovoCandidado);
+    overflow: hidden;
+}
+
+.telaCadastroCandidatos_direita {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - var(--alturaTopoPC) - var(--alturaMenuPC) - var(--alturaFormNovoCandidado));
+    overflow: hidden;
+}
+
+/*///////////////////////////////////////////////*/
+
+.telaCadastroCandidatos_lista {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.telaCadastroCandidatos_lista_linhas {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    height: 0;
+    overflow-y: scroll; 
+}
+
+.telaCadastroCandidatos_lista_linhas::-webkit-scrollbar {
+    width: 6px; 
+    background-color: transparent;
+}
+
+.telaCadastroCandidatos_lista_linhas::-webkit-scrollbar-thumb {
+    background-color: rgba(36, 55, 131, 0.3);
+    border-radius: 10px;
+}
+
+.telaCadastroCandidatos_lista_linhas::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(36, 55, 131, 0.7);
+}
+
+.telaCadastroCandidatos_topo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.telaCadastroCandidatos_form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap:5px;
+    padding: 10px;
+}
+
+.fieldForm{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    gap:1px;
+}
+
+
+.fieldForm label{
+    font-size: x-large;
+}
+
+.fieldForm input{
+    width: 100%;
+    height: 30px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    font-size: large;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1); 
+}
+
+.fieldForm_center{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap:5px;
+}
+
+.obrigatorio{
+    color: red !important;
+}
+
+.telaCadastroCandidatos_lista_filtro{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.telaCadastroCandidatos_lista_titulos {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: var(--azulStellantis);
+    color: #fff !important;
+    font-weight: bold;
+    scrollbar-gutter: stable; 
+}
+.telaCadastroCandidatos_lista_titulos div{
+    color: #fff !important;
+}
+
+.c1{
+    width: 40%;
+    padding: 10px;
+}
+.c2{
+    width: 40%;
+    padding: 10px;
+}
+.c3{
+    width: 20%;
+    padding: 10px;
+}
+
+.telaCadastroCandidatos_lista_l{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+}
+
+/* @media(orientation: landscape){
+    .telaCadastroCandidatos_main{
+        padding-top: 50px;
+        flex-direction: column;
+        justify-content: flex-start;
+        height: calc(100vh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
+    }
+
+    .telaCadastroCandidatos_rodape{
+        display: none;
+    }
+    
+    .telaCadastroCandidatos_form{
+        gap:10px;
+        padding: 50px;
+        padding-top: 0px;
+        height: 100%;
+    }
+    
+    .telaCadastroCandidatos_topo{
+        margin-top: 10px;
+        height: 118px;
+    }
+
+    .telaCadastroCandidatos_esquerda{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .telaCadastroCandidatos_direita{
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+    }
+
+    .fieldForm label{
+        font-size: 1.4rem;
+    }
+
+    .fieldForm input{
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .fieldForm_center{
+        margin-top: 40px;
+    }
+
+    .telaCadastroCandidatos_lista{
+        height: 320px;
+        overflow-y:hidden;
+        padding: 20px;
+    } 
+
+    .telaCadastroCandidatos_lista_linhas{
+        flex: 1;
+        overflow-y: auto;
+    }
+} */

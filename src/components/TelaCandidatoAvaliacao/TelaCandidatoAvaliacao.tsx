@@ -1,4 +1,5 @@
-import styles from "@/styles/CandicadoAvaliacao.module.css"
+// import styles from "@/styles/CandicadoAvaliacao.module.css"
+import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { tCandidado,tAvaliacao } from "@/utils/Types"

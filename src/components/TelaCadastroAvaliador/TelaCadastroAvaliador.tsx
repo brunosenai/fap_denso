@@ -1,4 +1,5 @@
-import styles from "@/styles/CadastroAvaliador.module.css"
+// import styles from "@/styles/CadastroAvaliador.module.css"
+import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import { useState, useEffect, useEffectEvent } from "react"
 import { tAvaliador } from "@/utils/Types"
@@ -92,8 +93,8 @@ export default function TelaCadastroAvaliador(){
     }
 
     return(                         
-        <div className={styles.telaCadastroCandidatos}>
-            <div className={styles.telaCadastroCandidatos_esquerda}>
+        <div className={styles.telaCadastroAvaliador}>
+            <div className={styles.telaCadastroAvaliador_esquerda}>
                 <div className={styles.telaCadastroCandidatos_topo}>
                     <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
                     <h1>NOVO AVALIADOR</h1>
@@ -120,7 +121,7 @@ export default function TelaCadastroAvaliador(){
                     </div>
                 </div>
             </div>
-            <div className={styles.telaCadastroCandidatos_direita}>
+            <div className={styles.telaCadastroAvaliador_direita}>
                 <div className={styles.telaCadastroCandidatos_lista}>
                     <div className={styles.telaCadastroCandidatos_lista_filtro}>
                         <div className={styles.fieldForm}>

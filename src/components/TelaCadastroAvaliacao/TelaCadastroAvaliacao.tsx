@@ -1,4 +1,5 @@
-import styles from "@/styles/CadastroAvaliacao.module.css"
+// import styles from "@/styles/CadastroAvaliacao.module.css"
+import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { tAvaliacao } from "@/utils/Types"
@@ -84,9 +85,9 @@ export default function TelaCadastroAvaliacao(){
     }
 
     return(
-        <div className={styles.telaCadastroCandidatos}>
+        <div className={styles.telaCadastroAvaliacao}>
 
-            <div className={styles.telaCadastroCandidatos_esquerda}>
+            <div className={styles.telaCadastroAvaliacao_esquerda}>
                 <div className={styles.telaCadastroCandidatos_topo}>
                     <Image src='/assets/icons/nova_avaliacao.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
                     <h1>NOVA AVALIAÇÃO</h1>
@@ -106,7 +107,7 @@ export default function TelaCadastroAvaliacao(){
                 </div>
             </div>
 
-            <div className={styles.telaCadastroCandidatos_direita}>
+            <div className={styles.telaCadastroAvaliacao_direita}>
                 <div className={styles.telaCadastroCandidatos_lista}>
                     <div className={styles.telaCadastroCandidatos_lista_filtro}>
                         <div className={styles.fieldForm}>

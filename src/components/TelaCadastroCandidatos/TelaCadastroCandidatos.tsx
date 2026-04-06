@@ -1,4 +1,5 @@
-import styles from "@/styles/CadastroCandidado.module.css"
+// import styles from "@/styles/CadastroCandidado.module.css"
+import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
