@@ -137,9 +137,9 @@ export default function TelaCandidatoAvaliacao(){
                         </div>
                         <div className={styles.telaCadastroCandidatos_lista}>
                             <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                                <div className={styles.c1_c}>id</div>
-                                <div className={styles.c2_c}>Candidato</div>
-                                <div className={styles.c3_c}>cpf</div>
+                                <div className={styles.c1_c_titulo}>id</div>
+                                <div className={styles.c2_c_titulo}>Candidato</div>
+                                <div className={styles.c3_c_titulo}>cpf</div>
                             </div>
                             <div className={styles.telaCadastroCandidatos_lista_linhas}>
                                 {candidatosFiltrados.length > 0 && candidatosFiltrados.map((c, i) => (
@@ -163,9 +163,9 @@ export default function TelaCandidatoAvaliacao(){
                         </div>                    
                         <div className={styles.telaCadastroCandidatos_lista}>
                             <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                                <div className={styles.c1_a}>id</div>
-                                <div className={styles.c2_a}>avaliacao</div>
-                                <div className={styles.c3_a}>data</div>
+                                <div className={styles.c1_a_titulo}>id</div>
+                                <div className={styles.c2_a_titulo}>avaliacao</div>
+                                <div className={styles.c3_a_titulo}>data</div>
                             </div>
                             <div className={styles.telaCadastroCandidatos_lista_linhas}>
                                 {avaliacoesFiltrados.length>0 && avaliacoesFiltrados.map((a,i)=>(
@@ -189,10 +189,10 @@ export default function TelaCandidatoAvaliacao(){
                 <div className={styles.telaCadastroCandidatos_candidatosAvaliacao}>
                     <div className={styles.telaCadastroCandidatos_lista}>
                         <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                            <div className={styles.c1_ca}>id</div>
-                            <div className={styles.c2_ca}>nome</div>
-                            <div className={styles.c3_ca}>cpf</div>
-                            <div className={styles.c4_ca}></div>
+                            <div className={styles.c1_ca_titulo}>id</div>
+                            <div className={styles.c2_ca_titulo}>nome</div>
+                            <div className={styles.c3_ca_titulo}>cpf</div>
+                            <div className={styles.c4_ca_titulo}></div>
                         </div>
 
                         <div className={styles.telaCadastroCandidatos_lista_linhas}>

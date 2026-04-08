@@ -216,14 +216,20 @@
 .c1{
     width: 40%;
     padding: 10px;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .c2{
     width: 40%;
     padding: 10px;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .c3{
     width: 20%;
     padding: 10px;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 
 .telaCadastroCandidatos_lista_l{
@@ -234,6 +240,7 @@
     width: 100%;
     background-color: #fff;
     border-bottom: 1px solid #ccc;
+    overflow: hidden;
 }
 
 /* @media(orientation: landscape){
