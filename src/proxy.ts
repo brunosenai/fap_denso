@@ -27,5 +27,5 @@ export async function proxy(request: NextRequest) {
 // 3. Configura quais rotas devem ser protegidas
 export const config = {
     // Protege /home e qualquer sub-rota dela, e outras rotas que desejar
-    matcher: ['/home/:path*', '/fap/:path*', '/selecaomodulo/:path*', '/cadastro/:path*'],
+    matcher: ['/home/:path*', '/fap/:path*', '/selecaomodulo/:path*', '/cadastro/:path*','/cadastro/:path*'],
 };
