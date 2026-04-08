@@ -15,7 +15,10 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
         <div className={styles.topo}>
             <div className={styles.topoLogos}>
                 <Image src={'/assets/logo-stellantis-branco.png'} alt={'Logo Stellantis'} width={200} height={-1} />
-                <Image src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={75} height={-1} />
+                <div>
+                    <Image src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={75} height={-1} />
+                    {/* <Image src={'/assets/icons/fullscreen_w.svg'} alt={'Fullscreen'} width={50} height={-1} /> */}
+                </div>
             </div>
             <div className={styles.topoSelecaoCandidato}>
                 <div className={styles.titulo}>seleção de avaliação</div>

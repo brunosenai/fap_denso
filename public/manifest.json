@@ -8,78 +8,78 @@
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "icons/favicon-16.png",
+      "src": "assets/icons/favicon-16.png",
       "sizes": "16x16",
       "type": "image/png"
     },
     {
-      "src": "icons/favicon-32.png",
+      "src": "assets/icons/favicon-32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "icons/android-icon-48.png",
+      "src": "assets/icons/android-icon-48.png",
       "sizes": "48x48",
       "type": "image/png"
     },
     {
-      "src": "icons/android-icon-72.png",
+      "src": "assets/icons/android-icon-72.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "icons/android-icon-96.png",
+      "src": "assets/icons/android-icon-96.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-128.png",
+      "src": "assets/icons/icon-128.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "icons/android-icon-144.png",
+      "src": "assets/icons/android-icon-144.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "icons/apple-touch-icon-120.png",
+      "src": "assets/icons/apple-touch-icon-120.png",
       "sizes": "120x120",
       "type": "image/png"
     },
     {
-      "src": "icons/apple-touch-icon-152.png",
+      "src": "assets/icons/apple-touch-icon-152.png",
       "sizes": "152x152",
       "type": "image/png"
     },
     {
-      "src": "icons/apple-touch-icon-167.png",
+      "src": "assets/icons/apple-touch-icon-167.png",
       "sizes": "167x167",
       "type": "image/png"
     },
     {
-      "src": "icons/apple-touch-icon-180.png",
+      "src": "assets/icons/apple-touch-icon-180.png",
       "sizes": "180x180",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-192.png",
+      "src": "assets/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icons/ms-icon-150.png",
+      "src": "assets/icons/ms-icon-150.png",
       "sizes": "150x150",
       "type": "image/png"
     },
     {
-      "src": "icons/ms-icon-310.png",
+      "src": "assets/icons/ms-icon-310.png",
       "sizes": "310x310",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "assets/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

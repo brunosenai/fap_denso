@@ -12,7 +12,7 @@ export default function Document() {
         
         {/* Ícone para a tela inicial do iOS. 
             NOTA: O ideal é ter um apple-touch-icon-180.png, mas se só tiver o de 192, pode deixar como abaixo: */}
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
       </Head>
       <body>
         <Main />
