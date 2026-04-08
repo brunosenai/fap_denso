@@ -10,6 +10,11 @@ export default function Topo({ titulo = "" }: TopoProps){
 
     const sair=async()=>{
         await fetch('/api/apiLogout');
+        localStorage.removeItem('n_id_pessoa');
+        localStorage.removeItem('menuCadastroSelected');
+        localStorage.removeItem('modo');
+        localStorage.removeItem('n_id_avaliacao');
+        localStorage.removeItem('candidatos');
         localStorage.clear
         router.replace('/');
     }
