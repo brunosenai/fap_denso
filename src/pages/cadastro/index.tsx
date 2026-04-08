@@ -16,7 +16,7 @@ export default function Home() {
   const router=useRouter()
   const [menuSelected,setMenuSelected]=useState<number>(1)
 
-  useEffect(()=>{
+  useEffect(()=>{      
     const menuSelectedStorage=localStorage.getItem('menuCadastroSelected')||'1'
     setMenuSelected(parseInt(menuSelectedStorage))
   },[])
