@@ -10,6 +10,7 @@ export default function Topo({ titulo = "" }: TopoProps){
 
     const sair=async()=>{
         await fetch('/api/apiLogout');
+        localStorage.clear
         router.replace('/');
     }
 
