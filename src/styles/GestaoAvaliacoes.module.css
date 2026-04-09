@@ -1,0 +1,217 @@
+.page{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    /* max-height: calc(100vh - var(--alturaTopoPC));
+    min-height: calc(100vh - var(--alturaTopoPC)); */
+    max-height: 100vh;
+    min-height: 100vh;
+    border: 3px solid #000;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    min-height: 0px;
+    padding: 10px;
+    color: #fff;
+    overflow: hidden;
+    gap:20px;
+}
+
+.dadosAvaliador{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap:10px;
+}
+
+.dadosAvaliador_col{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.dadosAvaliador_field{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap:5px;
+}
+
+.dadosAvaliador_field_label{
+    font-size: small;
+    color: #ccc !important;
+    font-weight: bold;
+}
+.dadosAvaliador_field_input{
+    font-size: small;
+    color: #fff !important;
+}
+
+.filtros{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap:20px;
+}
+
+.filtros_col{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap:5px;
+}
+
+.filtros_field{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.filtros_field_button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.filtros_field_label{
+    font-size: small;
+    color: #ccc !important;
+    font-weight: bold;
+}
+.filtros_field_input{
+    font-size: small;
+    color: #000 !important;
+    width: 100%;
+}
+
+.filtros_button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--azulDestaque);
+    color: #000 !important;
+    width: 80%;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.lista{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 1;
+    min-height: 0px;
+}
+
+.lista_titulos{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    background-color: #005;
+    scrollbar-gutter: stable;
+}
+
+.lista_titulo_c1{
+    width: 10%;
+    padding: 5px;
+    color: #fff;
+}
+.lista_titulo_c2{
+    width: 40%;
+    padding: 5px;
+    color: #fff;
+}
+.lista_titulo_c3{
+    width: 40%;
+    padding: 5px;
+    color: #fff;
+}
+.lista_titulo_c4{
+    width: 10%;
+    padding: 5px;
+    color: #fff;
+}
+
+.lista_dados{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    overflow-y: scroll;
+    background-color: #fff;
+    scrollbar-gutter: stable;
+}
+
+.lista_dados_linha{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    border-bottom: 1px solid #888;
+    color: #000;
+}
+
+.lista_dado_c1{
+    width: 10%;
+    padding: 5px;
+    color: #000;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+.lista_dado_c2{
+    width: 40%;
+    padding: 5px;
+    color: #000;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+.lista_dado_c3{
+    width: 40%;
+    padding: 5px;
+    color: #000;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+.lista_dado_c4{
+    width: 10%;
+    padding: 5px;
+    color: #fff;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+
+@media(orientation: landscape) {
+    .lista_titulo_espaco_barraRolagem{
+        min-width: 15px;
+    }
+}

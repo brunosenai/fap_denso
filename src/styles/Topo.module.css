@@ -24,10 +24,10 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: -25px;
     color: #7CF2FF !important;
     font-weight: bold;
-    font-size: 40px;
+    font-size: x-large;
 }
 
 .areaDireira{

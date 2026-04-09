@@ -18,7 +18,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if(req.method === 'GET'){
         const {
-            action
+            action,
+            n_id_pessoa
         } = req.query
 
         if(action == "getAvaliacoesHojeEmDiante"){
@@ -33,6 +34,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ORDER BY
                         dt_data_avaliacao ASC
                     `,[]
+                )
+                res.status(200).json(rows)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action == "getAvaliacoesPorAvaliador"){
+            try {
+                const [rows] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        *
+                    FROM
+                        avaliacao
+                    WHERE
+                        n_id_avaliacao in (
+                            SELECT
+                                n_id_avaliacao
+                            FROM
+                                fap
+                            WHERE
+                                n_id_pessoa=1
+                            group by n_id_avaliacao
+                        );
+                    `,[n_id_pessoa]
                 )
                 res.status(200).json(rows)
             } catch (error) {

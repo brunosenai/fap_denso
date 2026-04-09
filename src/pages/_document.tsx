@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="pt-BR">
       <Head>
-        <link rel="icon" href="/favicon.ico?v=2" />
+        <link rel="icon" href="/assets/icons/favicon.ico?v=2" />
         <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png?v=2" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png?v=2" />
         <link rel="manifest" href="/manifest.json" />

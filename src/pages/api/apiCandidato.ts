@@ -43,6 +43,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
+        }else if(action == "getCandidatosPorAvaliacao"){
+            try {
+                const [rows_cell] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        *
+                    FROM
+                        candidato
+                    WHERE 
+                        n_id_candidato in (
+                        SELECT
+                            n_id_candidato
+                        FROM
+                            fap
+                        WHERE
+                            n_id_avaliacao=?
+                    )
+                    ORDER BY
+                        n_id_candidato ASC;
+                    `,[n_id_avaliacao]
+                )
+                res.status(200).json(rows_cell)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }else if(action == "getCandidatosByAvaliacao"){
             try {
                 const [rows_cell] = await pool.query<RowDataPacket[]>(`
