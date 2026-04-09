@@ -4,7 +4,6 @@
   --margem:50px;
   --alturaTopoGeral:122px;
   --alturaTopoPagina:122px;
-  --alturaTopo_fap:80px;
   --alturaTopo_telaSelecaoCandidato: 244px;
   --alturaTopo_telaSelecaoAvaliacao: 244px;
   --alturaMenuCadastro: 40px;
@@ -36,6 +35,7 @@
   --paddingTelaMainHome:40px;
   --alturaFormAvaliador:305px;
 
+  --alturaTopo_fap:80px;
   --alturaRodapeHome:70px;
   --alturaMaxTopoSelecaoAvaliacao:180px;
   --alturaTopoPC:100px;

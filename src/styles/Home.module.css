@@ -20,7 +20,7 @@
     min-height: 0; 
 }
 
-.telaMain_fullScreen {
+.telaMain{
     display: flex;
     flex-direction: column;
     flex: 1; 
@@ -30,18 +30,6 @@
     background-color: var(--azulFap);
     padding: var(--paddingTelaMainHome);
     min-height: 0; 
-    overflow-y: auto; 
-}
-
-.telaMain {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: calc(100vh - var(--alturaMaxTopoSelecaoAvaliacao) - var(--alturaBarraFerrametasTablet) - var(--alturaRodapeHome));
-    align-items: center;
-    justify-content: flex-start;
-    background-color: var(--azulFap);
-    padding: var(--paddingTelaMainHome);
     overflow-y: auto; 
 }
 

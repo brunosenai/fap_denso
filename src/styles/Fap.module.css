@@ -11,7 +11,7 @@
     position: fixed;
 }
 
-.main {
+.main{
     display: flex;
     flex-direction: column;
     flex: 1; 
@@ -19,7 +19,6 @@
     background-color: var(--azulFap);
     min-height: 0;
     padding: 10px;
-    /* overflow: hidden; */
     overflow-y: auto;
 }
 
@@ -93,6 +92,18 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 24px 24px; 
+}
+
+.rodape_fullscreen{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    max-height: var(--alturaRodapeFap);
+    min-height: var(--alturaRodapeFap);
+    background-color: var(--azulStellantis);
+    z-index: 10000;
 }
 
 .rodape{

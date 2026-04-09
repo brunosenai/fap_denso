@@ -21,8 +21,14 @@ export default function Fap() {
   const [abaObservacaoAberta, setAbaObservacaoAberta] = useState<boolean>(false);
   const [load,setLoad]=useState(false)
   const [popup,setPopup]=useState([false,false,false,false,false,false,false])
+  const [fullscreen,setFullscreen]=useState(false)
 
-  useEffect(() => {   
+  useEffect(() => { 
+    if(document.fullscreen){
+      setFullscreen(true)
+    }else{
+      setFullscreen(false)
+    }  
     buscarDados();
   }, []);
 
