@@ -26,6 +26,10 @@ export default function SelecaoModulo() {
                 <Image src="/assets/icons/avaliacao_w.svg" alt="Avaliação" width={100} height={-1} />
                 <p>Módulo de Avaliação</p>
             </div>
+            <div className={styles.caixaSelecao} onClick={()=>goto('/gestaoAvaliacoes')}>
+                <Image src="/assets/icons/computer_w.svg" alt="Escritório" width={100} height={-1} />
+                <p>Módulo de Gestão</p>
+            </div>            
             <div className={styles.caixaSelecao} onClick={()=>goto('/cadastro')}>
                 <Image src="/assets/icons/office_edit_w.svg" alt="Escritório" width={100} height={-1} />
                 <p>Módulo de Escritório</p>
