@@ -16,8 +16,14 @@ export default function Home() {
   const [qtdAvaliadores,setQtdAvaliadores]=useState<number>(1);
   const [maxCandidatosSelecionados, setMaxCandidatosSelecionados]=useState(0);
   const [load,setLoad]=useState<boolean>(false)
+  const [fullscreen,setFullscreen]=useState(false)
 
   useEffect(() => {
+    if(document.fullscreen){
+      setFullscreen(true)
+    }else{
+      setFullscreen(false)
+    }
     getAvaliacoes();
   }, []);
 

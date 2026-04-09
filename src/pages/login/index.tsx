@@ -10,12 +10,17 @@ export default function Login() {
   const [senha,setSenha]=useState('')
   const [mostrarSenha,setMostrarSenha]=useState(false)
   const [tipoCampoSenha,setTipoCampoSenha]=useState('password')
-
+  const [fullscreen,setFullscreen]=useState(false)
   const [screenWidth, setScreenWidth]=useState<number>()
     
   useEffect(()=>{
-      const viewportWidth: number = window.innerWidth;
-      setScreenWidth(viewportWidth)
+    if(document.fullscreen){
+      setFullscreen(true)
+    }else{
+      setFullscreen(false)
+    }
+    const viewportWidth: number = window.innerWidth;
+    setScreenWidth(viewportWidth)
   },[])
 
   const login=async()=>{

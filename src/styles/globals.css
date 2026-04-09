@@ -33,10 +33,10 @@
   --alturaCamposPreenchimentoFap:350px;
   --altura_btn_camposPreenchimentoFap:25px;
   --alturaTotalCamposPreenchimentoFap:calc(var(--alturaCamposPreenchimentoFap)+var(--altura_btn_camposPreenchimentoFap));
-  --alturaRodapeHome:70px;
   --paddingTelaMainHome:40px;
   --alturaFormAvaliador:305px;
 
+  --alturaRodapeHome:70px;
   --alturaMaxTopoSelecaoAvaliacao:180px;
   --alturaTopoPC:100px;
   --alturaMenuPC:40px;
@@ -44,6 +44,9 @@
   --alturaFormNovaAvaliador:405px;
   --alturaFormNovoCandidado:360px;
   --alturaRelacionarCandidadoAvaliacao:340px;
+
+  --alturaBarraFerrametasTablet:70px;
+  --alturaBarraComandosTablet:50px;
 }
 
 @media (prefers-color-scheme: dark) {
