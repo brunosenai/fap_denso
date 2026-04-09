@@ -138,7 +138,7 @@ export default function Home() {
       <div className={styles.page}>
         <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores}/>
         <main className={styles.main}>
-          <div className={styles.telaMain}>
+          <div className={fullscreen?styles.telaMain_fullScreen:styles.telaMain}>
             <div className={styles.formCandidatos}>
               {candidatos.length > 0 && candidatos.map((c, i) => {
                 const estaSelecionado = candidatosSelecionados.includes(c.n_id_candidato);
