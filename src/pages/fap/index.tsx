@@ -11,6 +11,7 @@ import Image from "next/image";
 import Load from "@/components/Load/Load";
 import ConclusaoSeguraDoCiclo from "@/components/Popup/PopupFap";
 import PopupFap from "@/components/Popup/PopupFap";
+import PopupConfirmation from "@/components/Popup/PopupConfirmation";
 
 export default function Fap() {
   const router = useRouter();
@@ -21,7 +22,9 @@ export default function Fap() {
   const [abaObservacaoAberta, setAbaObservacaoAberta] = useState<boolean>(false);
   const [load,setLoad]=useState(false)
   const [popup,setPopup]=useState([false,false,false,false,false,false,false])
+  const [popupConfirm,setPopupConfirm]=useState(false)
   const [fullscreen,setFullscreen]=useState(false)
+
 
   useEffect(() => { 
     if(document.fullscreen){
@@ -174,30 +177,6 @@ export default function Fap() {
     }
   };
 
-  // const exportarTodosPDFs = async () => {
-  //   if (listaCandidatos.length === 0 || fap.length === 0) return;
-  //   for (let i = 0; i < listaCandidatos.length; i++) {
-  //     const candidato = listaCandidatos[i];
-  //     const fapCandidato = fap[i];
-
-  //     const blob = await pdf(
-  //       <RelatorioFap candidato={candidato} fapCandidato={fapCandidato} />
-  //     ).toBlob();
-
-  //     const url = URL.createObjectURL(blob);
-
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.download = `FAP_${candidato.s_nome_candidato.replace(/\s+/g, '_')}.pdf`; // Troca espaços por _
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //     URL.revokeObjectURL(url);
-
-  //     await new Promise(resolve => setTimeout(resolve, 300));
-  //   }
-  // }; 
-
   const finalizarAvaliacao = async () => {
     // Evita rodar se não houver dados
     if (listaCandidatos.length === 0 || fap.length === 0) return;
@@ -293,9 +272,10 @@ export default function Fap() {
   };
   
   const voltar=()=>{
-    const res=confirm('Se você sair perderá todas as marcações!\nConfirma que deseja sair?')
-    if(res)
-      router.back();
+    setPopupConfirm(true)
+    // const res=confirm('Se você sair perderá todas as marcações!\nConfirma que deseja sair?')
+    // if(res)
+    //   router.back();
   }
 
   const fecharPopup=(i:number)=>{
@@ -310,9 +290,21 @@ export default function Fap() {
     setPopup(novaLista)
   }
 
+  const comandoSim=()=>{
+    setPopupConfirm(false)
+    router.back();
+  }
+
+  const comandoNao=()=>{
+    setPopupConfirm(false)
+    console.log("não")
+  }
+
+
   return (
     <>
       {load&&<Load/>}
+      {popupConfirm&&<PopupConfirmation titulo="Sair" mensagem={'Se você sair perderá todas as marcações!'} pergunta="Confirma que deseja sair?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
       {popup[0]&&<PopupFap
         titulo="Condução segura do ciclo (C2, C3, C4, C5, C8)"
         mediacao="O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a situações de risco ambiental e de segurança ao longo de toda a avaliação."
