@@ -1,0 +1,90 @@
+.popupFap{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popupFap_conteudo{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 80%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.popupFap_conteudo_titulo{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: large;
+    font-weight: bold;
+    background-color: var(--azulStellantis);
+    color: #fff !important;
+    width: 100%;
+    padding: 10px;
+}
+
+.popupFap_conteudo_corpo{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: large;
+    background-color: #fff;
+    color: #222 !important;
+    width: 100%;
+    padding: 20px;
+    gap:30px;
+}
+
+.popupFap_conteudo_rodape{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: large;
+    background-color: #ccc;
+    color: #222 !important;
+    width: 100%;
+    padding: 20px;
+    gap:30px;
+}
+
+
+.popupFap_btnSim{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--azulStellantis);
+    color: #fff;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    text-transform: uppercase;
+}
+
+.popupFap_btnNao{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--azulStellantis);
+    color: #fff;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    text-transform: uppercase;
+}

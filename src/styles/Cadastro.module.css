@@ -1,11 +1,22 @@
-.cadastro{
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100vh; 
+    overflow: hidden;
+}
+
+.cadastro {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     flex: 1;
+    min-height: 0px;
     width: 100%;
-    background-color: #f5f5f5;
+    background-color: var(--azulFap);
 }
 
 @media(orientation: landscape) {

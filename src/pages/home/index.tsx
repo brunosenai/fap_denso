@@ -122,6 +122,7 @@ export default function Home() {
     localStorage.removeItem('modo');
     localStorage.removeItem('n_id_avaliacao');
     localStorage.removeItem('candidatos');
+    localStorage.removeItem('isTablet');
     localStorage.clear()
     router.replace('/');
   }

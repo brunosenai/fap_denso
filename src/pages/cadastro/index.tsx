@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import styles from "@/styles/CandicadoAvaliacao.module.css";
+import styles from "@/styles/Cadastro.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Topo from "@/components/Topo/Topo";
@@ -30,23 +30,22 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/icons/favicon.ico?v=2" />
       </Head>
-      <div className='page'>
+      <div className={styles.page}>
         <Topo />
-        <main className='main'>
-          <div className={styles.cadastro}>
-            <MenuCadastro setMenuSelected={setMenuSelected}/>
-            {menuSelected==1?
-                <TelaCadastroAvaliacao/>:
-                menuSelected==2?
-                <TelaCadastroAvaliador/>:
-                menuSelected==3?
-                <TelaCadastroCandidatos/>:
-                menuSelected==4?
-                <TelaCandidatoAvaliacao/>:
-                <TelaDashboard />
-            }
-          </div>
-        </main>
+        <div className={styles.cadastro}>
+          <MenuCadastro setMenuSelected={setMenuSelected}/>
+          {
+            menuSelected==1?
+              <TelaCadastroAvaliacao/>:
+            menuSelected==2?
+              <TelaCadastroAvaliador/>:
+            menuSelected==3?
+              <TelaCadastroCandidatos/>:
+            menuSelected==4?
+              <TelaCandidatoAvaliacao/>:
+              <TelaDashboard />
+          }
+        </div>
       </div>
     </>
   );

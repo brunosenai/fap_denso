@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { tCandidatoFap } from "@/utils/Types"
+import { verifyIsTablet } from "@/utils/Utils"
 import Load from "../Load/Load"
 
 export default function TelaCadastroCandidatos(){
@@ -14,12 +15,11 @@ export default function TelaCadastroCandidatos(){
     const [candidatos,setCandidatos]=useState<tCandidatoFap[]>([])
     const [candidatosFiltrados,setCandidatosFiltrados]=useState<tCandidatoFap[]>([])
     const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
-    const [screenWidth, setScreenWidth]=useState<number>()
+    const [isTablet, setIsTablet]=useState<boolean>()
     const [load, setLoad]=useState<boolean>(false)
     
     useEffect(()=>{
-        const viewportWidth: number = window.innerWidth;
-        setScreenWidth(viewportWidth)
+        setIsTablet(verifyIsTablet())
         obterCandidatos()
     },[])
 
@@ -158,62 +158,60 @@ export default function TelaCadastroCandidatos(){
     }
 
     return(
-        <div className={styles.telaCadastroCandidatos}>
-            {load == true ? (<Load></Load>) : (
-                <>
-                    <div className={styles.telaCadastroCandidatos_esquerda}>
-                        <div className={styles.telaCadastroCandidatos_topo}>
-                            <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
-                            <h1>NOVO CANDIDATO</h1><br />
-                        </div>
-                        <div className={styles.telaCadastroCandidatos_form}>
-                            <div className={styles.fieldForm}>
-                                <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
-                                <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
-                            </div>
-                            <div className={styles.fieldForm}>
-                                <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                                <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
-                            </div>
-                            <div className={styles.fieldForm}>
-                                <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                                <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
-                            </div>
-                            <div className={styles.fieldForm_center}>
-                                <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
-                            </div>
-                        </div>
-                    </div> 
-                    <div className={styles.telaCadastroCandidatos_direita}>
-                        <div className={styles.telaCadastroCandidatos_lista}>
-                            <div className={styles.telaCadastroCandidatos_lista_filtro}>
-                                <div className={styles.fieldForm}>
-                                    <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
-                                </div>
-                            </div>                
-                            <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                                <div className={styles.c1}>Nome</div>
-                                <div className={styles.c2}>E-Mail</div>
-                                <div className={styles.c3}>Relatórios</div>
-                            </div>
-                            <div className={styles.telaCadastroCandidatos_lista_linhas}>
-                                {candidatosFiltrados.map((av,index)=>(
-                                    <div key={index} className={styles.telaCadastroCandidatos_lista_l}>
-                                        <div className={styles.c1}>{av.s_nome_candidato}</div>
-                                        <div className={styles.c2}>{av.s_email_candidato}</div>
-                                        <div className={styles.c3}>
-                                            <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
-                                            <Image src='/assets/icons/send_email.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div> 
+        <div className={styles.telaCadastro}>
+            <div className={styles.telaCadastro_sessao1}>
+                <div className={styles.telaCadastro_topo}>
+                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
+                    <h1>NOVO CANDIDATO</h1><br />
+                </div>
+                <div className={styles.telaCadastro_form}>
+                    <div className={styles.fieldForm}>
+                        <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
+                        <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                     </div>
-                </>
-            )}
-            
-            
+                    <div className={styles.fieldForm}>
+                        <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
+                        <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
+                    </div>
+                    <div className={styles.fieldForm}>
+                        <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
+                        <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
+                    </div>
+                    <div className={styles.fieldForm_center}>
+                        <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
+                    </div>
+                </div>
+            </div> 
+            <div className={styles.telaCadastro_sessao2}>
+                <div className={styles.telaCadastro_lista}>
+                    <div className={styles.telaCadastro_lista_filtro}>
+                        <div className={styles.fieldForm}>
+                            <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
+                        </div>
+                    </div>                
+                    <div className={styles.telaCadastro_lista_titulos}>
+                        <div className={`${styles.c_titulo} ${styles.c1_candidato}`}>Nome</div>
+                        <div className={`${styles.c_titulo} ${styles.c2_candidato}`}>E-Mail</div>
+                        <div className={`${styles.c_titulo} ${styles.c3_candidato} ${styles.c_comandos}`}>
+                            <Image src='/assets/icons/file_export_w.svg' alt={""} width={25} height={25}></Image>
+                            <Image src='/assets/icons/send_email_w.svg' alt={""} width={25} height={25}></Image>
+                        </div>
+                        {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
+                    </div>
+                    <div className={styles.telaCadastro_lista_dados}>
+                        {candidatosFiltrados.map((av,index)=>(
+                            <div key={index} className={styles.telaCadastro_lista_dados_linha}>
+                                <div className={`${styles.c_dado} ${styles.c1_candidato}`}>{av.s_nome_candidato}</div>
+                                <div className={`${styles.c_dado} ${styles.c2_candidato}`}>{av.s_email_candidato}</div>
+                                <div className={`${styles.c_dado} ${styles.c3_candidato} ${styles.c_comandos}`}>
+                                    <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
+                                    <Image src='/assets/icons/send_email.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div> 
+            </div>
         </div>
     )
 }

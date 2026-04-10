@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Login.module.css";
+import { verifyIsTablet } from "@/utils/Utils";
 import { useRouter } from "next/router";
 import { useState,useEffect } from "react";
 
@@ -10,17 +11,9 @@ export default function Login() {
   const [senha,setSenha]=useState('')
   const [mostrarSenha,setMostrarSenha]=useState(false)
   const [tipoCampoSenha,setTipoCampoSenha]=useState('password')
-  const [fullscreen,setFullscreen]=useState(false)
-  const [screenWidth, setScreenWidth]=useState<number>()
     
   useEffect(()=>{
-    if(document.fullscreen){
-      setFullscreen(true)
-    }else{
-      setFullscreen(false)
-    }
-    const viewportWidth: number = window.innerWidth;
-    setScreenWidth(viewportWidth)
+    verifyIsTablet()
   },[])
 
   const login=async()=>{

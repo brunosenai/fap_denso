@@ -1,6 +1,13 @@
 // import CryptoJS from "crypto-js";
 // import pool from "@/components/Banco/Banco";
 
+export const verifyIsTablet=()=>{
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+  localStorage.setItem('isTablet',isTablet.toString())
+  return isTablet
+}
+
 export const formatDateToText = (dateString: string): string => {
     if (!dateString) return "";
     const date = new Date(dateString);

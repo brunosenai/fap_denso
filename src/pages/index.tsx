@@ -6,21 +6,14 @@ import { useEffect } from "react";
 
 export default function Index() {
   const router=useRouter()
-
-  let modo=2;//1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
-  
+ 
   useEffect(() => {
-    localStorage.setItem('modo',modo.toString())
     const checkDeviceAndRedirect = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
-      if (isTablet || modo==2) {
-        router.push('/login'); 
-      } else if (!isTablet || modo==1) {
-        router.push('/pc/login'); 
-      }
+      localStorage.setItem('isTablet',isTablet.toString())
+      router.push('/login'); 
     };
-
     checkDeviceAndRedirect();
   }, [router]);
 

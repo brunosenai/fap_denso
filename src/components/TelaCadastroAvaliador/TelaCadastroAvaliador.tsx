@@ -1,7 +1,10 @@
 // import styles from "@/styles/CadastroAvaliador.module.css"
 import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
-import { useState, useEffect, useEffectEvent } from "react"
+import PopupConfirmation from "../Popup/PopupConfirmation"
+import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
+import { verifyIsTablet } from "@/utils/Utils"
+import { useState, useEffect } from "react"
 import { tAvaliador } from "@/utils/Types"
 import { useRouter } from "next/router"
 import Load from "../Load/Load"
@@ -15,12 +18,11 @@ export default function TelaCadastroAvaliador(){
     const [avaliadores,setAvaliadores]=useState<tAvaliador[]>([])
     const [avaliadoresFiltrados,setAvaliadoresFiltrados]=useState<tAvaliador[]>([])
     const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
-    const [screenWidth, setScreenWidth]=useState<number>()
+    const [isTablet, setIsTablet]=useState<boolean>()
     const [loading, setLoading]=useState<boolean>(false)
 
     useEffect(()=>{
-        const viewportWidth: number = window.innerWidth;
-        setScreenWidth(viewportWidth)
+        setIsTablet(verifyIsTablet())
         obterAvaliadores()
     },[])
 
@@ -101,14 +103,14 @@ export default function TelaCadastroAvaliador(){
     }
 
     return(                         
-        <div className={styles.telaCadastroAvaliador}>
+        <div className={styles.telaCadastro}>
             {loading && <Load/>}
-            <div className={styles.telaCadastroAvaliador_esquerda}>
-                <div className={styles.telaCadastroCandidatos_topo}>
+            <div className={styles.telaCadastro_sessao1}>
+                <div className={styles.telaCadastro_topo}>
                     <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
                     <h1>NOVO AVALIADOR</h1>
                 </div>
-                <div className={styles.telaCadastroCandidatos_form}>
+                <div className={styles.telaCadastro_form}>
                     <div className={styles.fieldForm}>
                         <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
                         <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
@@ -126,28 +128,35 @@ export default function TelaCadastroAvaliador(){
                         <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
                     </div>
                     <div className={styles.fieldForm_center}>
-                        <button className="btnPadrao" onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
+                        <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
                     </div>
                 </div>
             </div>
-            <div className={styles.telaCadastroAvaliador_direita}>
-                <div className={styles.telaCadastroCandidatos_lista}>
-                    <div className={styles.telaCadastroCandidatos_lista_filtro}>
+            <div className={styles.telaCadastro_sessao2}>
+                <div className={styles.telaCadastro_lista}>
+                    <div className={styles.telaCadastro_lista_filtro}>
                         <div className={styles.fieldForm}>
                             <input type="text" placeholder="Pesquise pelo nome do avaliador" id={`filtro`} value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
                         </div>
                     </div>                
-                    <div className={styles.telaCadastroCandidatos_lista_titulos}>
-                        <div className={styles.c1}>Nome</div>
-                        <div className={styles.c2}>E-Mail</div>
-                        <div className={styles.c3}>Telefone</div>
+                    <div className={styles.telaCadastro_lista_titulos}>
+                        <div className={`${styles.c_titulo} ${styles.c1_avalidador}`}>Nome</div>
+                        <div className={`${styles.c_titulo} ${styles.c2_avalidador}`}>E-Mail</div>
+                        <div className={`${styles.c_titulo} ${styles.c3_avalidador}`}>Telefone</div>
+                        <div className={`${styles.c_titulo} ${styles.c4_avalidador} ${styles.c_comandos}`}>
+                            <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                        </div>
+                        {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                     </div>
-                    <div className={styles.telaCadastroCandidatos_lista_linhas}>
+                    <div className={styles.telaCadastro_lista_dados}>
                         {avaliadoresFiltrados.map((av,index)=>(
-                            <div key={index} className={styles.telaCadastroCandidatos_lista_l}>
-                                <div className={styles.c1}>{av.s_nome_pessoa}</div>
-                                <div className={styles.c2}>{av.s_email_pessoa}</div>
-                                <div className={styles.c3}>{av.s_telefone_pessoa}</div>
+                            <div key={index} className={styles.telaCadastro_lista_dados_linha}>
+                                <div className={`${styles.c_dado} ${styles.c1_avalidador}`}>{av.s_nome_pessoa}</div>
+                                <div className={`${styles.c_dado} ${styles.c2_avalidador}`}>{av.s_email_pessoa}</div>
+                                <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{av.s_telefone_pessoa}</div>
+                                <div className={`${styles.c_dado} ${styles.c4_avalidador} ${styles.c_comandos}`}>
+                                    <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                </div>                                
                             </div>
                         ))}
                     </div>

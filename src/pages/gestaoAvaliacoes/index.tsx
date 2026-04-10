@@ -15,6 +15,9 @@ export default function GestaoAvaliacoes() {
     });
     const [avaliacoesFiltradas,setAvaliacoesFiltradas] = useState<tAvaliacao[]>([]);
     const [candidatos,setCandidatos] = useState<tCandidato[]>([]);
+    const [filtroDataInicio, setFiltroDataInicio] = useState("");
+    const [filtroDataFim, setFiltroDataFim] = useState("");
+    const [filtroNome, setFiltroNome] = useState("");
     const [load,setLoad]=useState(false);
     const [showCandidatos,setShowCandidatos]=useState(false);
 
@@ -44,6 +47,32 @@ export default function GestaoAvaliacoes() {
         })
         .catch(err => console.error("Erro ao buscar candidatos: ", err))
         .finally(() => setLoad(false));
+    }
+
+    const filtrarAvaliacoes=() => {
+        let dadosFiltrados = avaliacoes;
+        if (filtroNome.trim() !== "") {
+            dadosFiltrados = dadosFiltrados.filter(a => 
+                a.s_nome_avaliacao.toLowerCase().includes(filtroNome.toLowerCase())
+            );
+        }
+
+        if (filtroDataInicio) {
+            const dataIni = new Date(filtroDataInicio).getTime();
+            dadosFiltrados = dadosFiltrados.filter(a => 
+                new Date(a.dt_data_avaliacao).getTime() >= dataIni
+            );
+        }
+
+        if (filtroDataFim) {
+            const dataF = new Date(filtroDataFim);
+            dataF.setUTCHours(23, 59, 59, 999);
+            
+            dadosFiltrados = dadosFiltrados.filter(a => 
+                new Date(a.dt_data_avaliacao).getTime() <= dataF.getTime()
+            );
+        }
+        setAvaliacoesFiltradas(dadosFiltrados);
     }
 
     const comandoAbrirAvaliacao=async(n_id_candidato:number) => {
@@ -83,20 +112,20 @@ export default function GestaoAvaliacoes() {
                     <div className={styles.filtros_col}>
                         <div className={styles.filtros_field}>
                             <label className={styles.filtros_field_label}>Data Início:</label>
-                            <input type="date" title="dataini" className={styles.filtros_field_input}/>
+                            <input type="date" title="dataini" value={filtroDataInicio} onChange={(evt)=>setFiltroDataInicio(evt.target.value)} className={styles.filtros_field_input}/>
                         </div>
                         <div className={styles.filtros_field}>
                             <label className={styles.filtros_field_label}>Data Fim:</label>
-                            <input type="date" title="dataini" className={styles.filtros_field_input}/>
+                            <input type="date" title="dataini" value={filtroDataFim} onChange={(evt)=>setFiltroDataFim(evt.target.value)} className={styles.filtros_field_input}/>
                         </div>
                     </div>
                     <div className={styles.filtros_col}>
                         <div className={styles.filtros_field}>
                             <label className={styles.filtros_field_label}>Nome Avaliação</label>
-                            <input type="text" title="nomeava" className={styles.filtros_field_input}/>
+                            <input type="text" title="nomeava" value={filtroNome} onChange={(evt)=>setFiltroNome(evt.target.value)} className={styles.filtros_field_input}/>
                         </div>
                         <div className={styles.filtros_field_button}>
-                            <button className={styles.filtros_button}>Pesquisar</button>
+                            <button className={styles.filtros_button} onClick={filtrarAvaliacoes}>Pesquisar</button>
                         </div>                        
                     </div>
                 </div>
