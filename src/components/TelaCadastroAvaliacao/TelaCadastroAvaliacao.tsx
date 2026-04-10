@@ -29,7 +29,6 @@ export default function telaCadastro(){
     const [idAvaliacaoExcluir,setIdAvaliacaoExcluir]=useState<number>(0)
 
     useEffect(()=>{
-        const aux=localStorage.getItem('isTablet')
         setIsTablet(verifyIsTablet())
         obterAvaliacoes()
     },[])

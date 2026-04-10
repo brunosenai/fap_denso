@@ -31,6 +31,31 @@
     min-height: 0px;
 }
 
+.telaCadastro_area_ladoLado {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;    
+    width: 100%;
+    overflow: hidden;
+    padding: 10px;
+    flex: 1;
+    min-height: 0px;
+}
+
+.area_lado{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;    
+    width: 100%;
+    overflow: hidden;
+    padding: 10px;
+    flex: 1;
+    min-height: 0px;
+    border: 3px solid;
+}
+
 .telaCadastro_topo{
     display: flex;
     flex-direction: column;
