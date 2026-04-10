@@ -41,7 +41,7 @@ export default function TelaDashboard(){
                 <div className={styles.cardsGraficos_1}>
                     <GraficoPizza 
                         titulo="Aprovados vs Reprovados" 
-                        dados={dadosDashboard.cards.totalAprovados} 
+                        dados={dadosDashboard.graficoPizzaGeral} 
                     />
                 </div>
                 <div className={styles.cardsGraficos_2}>
