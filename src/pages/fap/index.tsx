@@ -355,29 +355,28 @@ export default function Fap() {
       </Head>
       <div className={styles.page}>
         <TopoFap/>
-        <main className={styles.main}>
-            <div className={styles.areaAbasCandidatos}>
-              {listaCandidatos.length > 0 && listaCandidatos.map((c, i) => (
-                <div key={i} className={`${styles.abaCandidato} ${i === abaAtual ? styles.abaCandidatoAtiva : ""}`} onClick={() => setAbaAtual(i)}>
-                  {c.s_nome_candidato}
-                </div>
-              ))}
-            </div>
-            <div className={styles.areaFap}>
-              {fap.length > 0 && fap.map((f, i) => (
-                (i === abaAtual && <FapFap key={i} fap={f} iAba={i} setFap={setFap} abaObservacaoAberta={abaObservacaoAberta} setAbaObservacaoAberta={setAbaObservacaoAberta} abrirPopup={abrirPopup}/>)
-              ))}
-            </div>
-        </main>
+
+        <div className={styles.main}>
+          <div className={styles.areaAbasCandidatos}>
+            {listaCandidatos.length > 0 && listaCandidatos.map((c, i) => (
+              <div key={i} className={`${styles.abaCandidato} ${i === abaAtual ? styles.abaCandidatoAtiva : ""}`} onClick={() => setAbaAtual(i)}>
+                {c.s_nome_candidato}
+              </div>
+            ))}
+          </div>
+          <div className={styles.areaFap}>
+            {fap.length > 0 && fap.map((f, i) => (
+              (i === abaAtual && <FapFap key={i} fap={f} iAba={i} setFap={setFap} abaObservacaoAberta={abaObservacaoAberta} setAbaObservacaoAberta={setAbaObservacaoAberta} abrirPopup={abrirPopup}/>)
+            ))}
+          </div>
+        </div>
+
         <div className={styles.rodape}>
           <button title={'voltar'} className='btnPadrao_escuro' onClick={()=>voltar()}>
             <Image src="/assets/icons/exit_w.svg" alt="sair" width={20} height={20} style={{marginRight:"5px"}}/>
             sair
           </button>
-          <button 
-            className='btnPadrao_claro' 
-            onClick={() => finalizarAvaliacao()} 
-          >
+          <button className='btnPadrao_claro' onClick={() => finalizarAvaliacao()}>
             <Image src="/assets/icons/file_export.svg" alt="Finalizar" width={20} height={20} style={{marginLeft:"5px"}}/>
             Finalizar
           </button>          
