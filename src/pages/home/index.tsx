@@ -134,8 +134,8 @@ export default function Home() {
         <link rel="icon" href="/assets/icons/favicon.ico" />
       </Head>
       <div className={styles.page}>
-        <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores}/>
         <div className={styles.telaMain}>
+          <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores}/>
           <div className={styles.formCandidatos}>
             {candidatos.length > 0 && candidatos.map((c, i) => {
               const estaSelecionado = candidatosSelecionados.includes(c.n_id_candidato);
@@ -162,16 +162,16 @@ export default function Home() {
               );
             })}
           </div>
-        </div>
-        <div className={styles.rodape}>
-          <button title={'voltar'} className={styles.btnHome} onClick={()=>logout()}>
-            <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
-            logout
-          </button>
-          <button className='btnPadrao_claro' onClick={() => goto()}>
-            <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
-            avaliação
-          </button>
+          <div className={styles.rodape}>
+            <button title={'voltar'} className={styles.btnHome} onClick={()=>logout()}>
+              <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
+              logout
+            </button>
+            <button className='btnPadrao_claro' onClick={() => goto()}>
+              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
+              avaliação
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -15,9 +15,7 @@
     align-items: center;
     justify-content: flex-start;
     background-color: var(--azulFap);
-    padding: var(--paddingTelaMainHome);
-    flex: 1;
-    min-height: 0px;
+    height: 100vh; 
 }
 
 .formCandidatos{
@@ -27,9 +25,11 @@
     align-items: center;
     width: 100%;
     background-color: #fff;
-    border-radius: 20px;
     gap:20px;
     padding: 40px;
+    flex: 1;
+    min-height: 0px;
+    scrollbar-gutter: stable;
 }
 
 .fieldForm{
