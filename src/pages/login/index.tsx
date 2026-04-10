@@ -81,45 +81,32 @@ export default function Login() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/icons/favicon.ico?v=2" />
       </Head>
-      <div className='page'>
-        <main className='main'>
-          <div className={styles.index}>
-
+      <div className={styles.page}>
             <div className={styles.indexLogos}>
-              <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={332} height={72} />
-              <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={182} height={182} />            
+              <Image src="/assets/logo-stellantis-branco.png" alt="Logo Stellantis" className={`styles.logoStellantis_tablet:styles.logoStellantis_pc}`} width={300} height={-1} />
+              <Image src="/assets/logo-centro-branco.png" alt="Logo Stellantis" className={`styles.logoCentro40_tablet:styles.logoCentro40_pc}`} width={100} height={-1} />            
             </div>
 
             <form className={styles.formLogin} onSubmit={(e)=>{e.preventDefault();login();}}>
               <div className={styles.formLogin_title}>login</div>
               <div className={styles.fieldForm}>
                 <div>
-                  <Image src="/assets/icons/person.png" alt="Email" width={35} height={35} />
+                  <Image src="/assets/icons/person.png" alt="Email" width={20} height={-1} />
                 </div>
                 <input title={''} type="email" name="email" id="email" placeholder="E-mail" value={email} onChange={(evt)=>setEmail(evt.target.value)}/>
               </div>
               <div className={styles.fieldForm}>
                 <div>
-                  <Image src="/assets/icons/lock.png" alt="Email" width={35} height={35} />
+                  <Image src="/assets/icons/lock.png" alt="Email" width={20} height={-1} />
                 </div>
                 <input title={''} type={`${tipoCampoSenha=='password'?'password':'text'}`} name="senha" id="senha" placeholder="Senha" value={senha} onChange={(evt)=>setSenha(evt.target.value)}/>
-                {/* <div onClick={()=>mudarTipoCampoSenha()}>
-                  <Image src={`/assets/icons/${mostrarSenha?'visibility_on_b.svg':'visibility_off_b.svg'}`} alt="Email" width={35} height={35} />
-                </div> */}
               </div>    
               <div className={styles.fieldFormButton}>
-                {/* <button onClick={()=>login()} className='btnPadrao'>Entrar</button> */}
-                <button type="submit" className='btnPadrao'>Entrar</button>
+                <button type="submit" className={styles.btnPadrao}>Entrar</button>
                 <p onClick={()=>trocarSenha()}>Trocar minha senha</p>
                 <p onClick={()=>esqueciSenha()}>Esqueci minha senha</p>
               </div>            
             </form>
-
-            <div></div>
-            <div></div>
-
-          </div>
-        </main>
       </div>
     </>
   );
