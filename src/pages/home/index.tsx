@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
+import { verifyIsTablet } from "@/utils/Utils"
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import TopoSelecaoAvaliacao from "@/components/Topo/TopoSelecaoAvaliacao";
@@ -15,15 +16,11 @@ export default function Home() {
   const [candidatosSelecionados, setCandidatosSelecionados] = useState<number[]>([]);
   const [qtdAvaliadores,setQtdAvaliadores]=useState<number>(1);
   const [maxCandidatosSelecionados, setMaxCandidatosSelecionados]=useState(0);
+  const [isTablet, setIsTablet]=useState<boolean>()
   const [load,setLoad]=useState<boolean>(false)
-  const [fullscreen,setFullscreen]=useState(false)
 
   useEffect(() => {
-    if(document.fullscreen){
-      setFullscreen(true)
-    }else{
-      setFullscreen(false)
-    }
+    setIsTablet(verifyIsTablet())
     getAvaliacoes();
   }, []);
 
@@ -138,46 +135,44 @@ export default function Home() {
       </Head>
       <div className={styles.page}>
         <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores}/>
-        <main className={styles.main}>
-          <div className={styles.telaMain}>
-            <div className={styles.formCandidatos}>
-              {candidatos.length > 0 && candidatos.map((c, i) => {
-                const estaSelecionado = candidatosSelecionados.includes(c.n_id_candidato);
-                return (
-                  <div className={styles.fieldForm} key={i}>
-                    <div className={styles.fieldForm_inputTexts}>
-                      <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
-                      <input type="text" title={''} className={styles.fieldForm_input_cpf} value={c.s_cpf_candidato} readOnly />
-                    </div>
-                    <div className={styles.fieldForm_inputCheckbox}>
-                      <input 
-                        type='checkbox' 
-                        title={''} 
-                        className={styles.fieldForm_checkbox} 
-                        name='candidato' 
-                        id={`candidato${i}`} 
-                        value={c.n_id_candidato} 
-                        checked={estaSelecionado} 
-                        onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
-                        disabled={!estaSelecionado && atingiuLimite}
-                      />
-                    </div>
+        <div className={styles.telaMain}>
+          <div className={styles.formCandidatos}>
+            {candidatos.length > 0 && candidatos.map((c, i) => {
+              const estaSelecionado = candidatosSelecionados.includes(c.n_id_candidato);
+              return (
+                <div className={styles.fieldForm} key={i}>
+                  <div className={styles.fieldForm_inputTexts}>
+                    <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
+                    <input type="text" title={''} className={styles.fieldForm_input_cpf} value={c.s_cpf_candidato} readOnly />
                   </div>
-                );
-              })}
-            </div>
+                  <div className={styles.fieldForm_inputCheckbox}>
+                    <input 
+                      type='checkbox' 
+                      title={''} 
+                      className={styles.fieldForm_checkbox} 
+                      name='candidato' 
+                      id={`candidato${i}`} 
+                      value={c.n_id_candidato} 
+                      checked={estaSelecionado} 
+                      onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
+                      disabled={!estaSelecionado && atingiuLimite}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className={styles.rodape}>
-            <button title={'voltar'} className={styles.btnHome} onClick={()=>logout()}>
-              <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
-              logout
-            </button>
-            <button className='btnPadrao_claro' onClick={() => goto()}>
-              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
-              avaliação
-            </button>
-          </div>
-        </main>
+        </div>
+        <div className={styles.rodape}>
+          <button title={'voltar'} className={styles.btnHome} onClick={()=>logout()}>
+            <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
+            logout
+          </button>
+          <button className='btnPadrao_claro' onClick={() => goto()}>
+            <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
+            avaliação
+          </button>
+        </div>
       </div>
     </>
   )

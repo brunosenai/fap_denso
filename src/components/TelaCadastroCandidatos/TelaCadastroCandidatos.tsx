@@ -178,7 +178,7 @@ export default function TelaCadastroCandidatos(){
                         <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
                     </div>
                     <div className={styles.fieldForm_center}>
-                        <button className="btnPadrao" onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
+                        <button className={styles.btnPadrao} onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
                     </div>
                 </div>
             </div> 
