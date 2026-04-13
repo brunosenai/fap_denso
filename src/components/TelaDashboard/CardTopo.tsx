@@ -5,13 +5,18 @@ import { useRouter } from "next/router"
 interface CardTopoProps {
     titulo: string;
     texto: string | number;
-    color: number
+    color: number;
+    filter: string;
+    currentFilter: string;
+    setDashboardFilter: (filter: string) => void;
 }
 
-export default function CardTopo({ titulo, texto, color }: CardTopoProps){
+export default function CardTopo({ titulo, texto, color, setDashboardFilter, filter, currentFilter }: CardTopoProps){
     const router=useRouter()
     const [screenWidth, setScreenWidth]=useState<number>()
     const [estilo, setEstilo] = useState('')
+
+    const isActive = currentFilter === filter;
 
     
     useEffect(()=>{
@@ -35,9 +40,9 @@ export default function CardTopo({ titulo, texto, color }: CardTopoProps){
     },[])
 
     return(
-        <div className={styles.cardTopo}>
+        <div className={`${styles.cardTopo}`} onClick={()=>{setDashboardFilter(filter!)}}>
             <h3 className={styles.cardTopo_titulo}>{titulo}</h3>
-            <h1 className={estilo}>{texto}</h1>
+            <h1 className={`${estilo} ${isActive ? styles.cardAtivo : ''}` }>{texto}</h1>
         </div>
     )
 }

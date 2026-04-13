@@ -26,7 +26,8 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    width: 23%;
+    width: 18.2%;
+    cursor: pointer;
     background-color: #2D2D2D;
     padding: 10px 0 0px 0px;
 }
@@ -59,19 +60,13 @@
     height: 100%;
 }
 
-.cardTopo1:hover{
+.cardTopo1:hover, .cardTopo2:hover, .cardTopo3:hover {
     color: #253059 !important;
     background-color: var(--azulDestaque);
     font-size: 40px;
 }
 
-.cardTopo2:hover{
-    color: #253059 !important;
-    background-color: var(--azulDestaque);
-    font-size: 40px;
-}
-
-.cardTopo3:hover{
+.cardAtivo{
     color: #253059 !important;
     background-color: var(--azulDestaque);
     font-size: 40px;
@@ -188,4 +183,82 @@
     align-items: center;
     background-color: #fff;
     width: 65%;
+}
+
+.filterBand{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    gap: 20px;
+    display: flex;
+    width: 95%;
+    font-size: 18px;
+    justify-content: center;
+    align-items: center;
+    height: 10%;
+    background-color: #fff;
+
+
+    input, select{
+        height: 40%;
+        width: 15%;
+        border-radius: 4px;
+        background-color: white;
+        border: 2px solid #0a0a0a;
+    }
+}
+
+.candidatesTable{
+    background-color: #fff;
+    width: 95%;
+    display: block;
+    height: 65%;
+    overflow-y: auto;
+}
+
+.table{
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.table td, .table th {
+    padding: 12px 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #2D2D2D;
+    color: var(--azulDestaque);
+    z-index: 1;
+}
+
+.badge {
+    padding: 8px;
+    border-radius: 10px;
+    display: inline-block; 
+    width: 110px;       
+    font-weight: bold;     
+    font-size: 14px;
+}
+
+.aprovado{
+    background-color: #9DFF9D;
+    color: #2d2d2d !important;
+}
+
+.reprovado{
+    background-color: #FF9D9D;
+    color: #fff !important;
+}
+
+.noRegisters{
+    text-align: center;
+    padding: 10px;
+}
+
+.filterBand input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(1); 
 }
