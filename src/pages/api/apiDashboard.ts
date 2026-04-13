@@ -16,11 +16,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //    return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
     //}
 
-    const {
-        data
-    } = req.query
+    const { filter, dataInicio, dataFim, page = 1, avaliacao } = req.query;
+
 
     try{
+        let filtroSql = "";
+        
+        const params: any[] = [];
+        const limit = 20;
+        const offset = (Number(page) - 1) * limit;
+
+        if (filter === 'aprovados') {
+            filtroSql += " AND f.n_resultado_fap <> 0";
+        } else if (filter === 'reprovados') {
+            filtroSql += " AND f.n_resultado_fap = 0";
+        }
+
+        if (dataInicio && dataFim) {
+            filtroSql += " AND f.dt_date_fap BETWEEN ? AND ?";
+            params.push(`${dataInicio} 00:00:00`, `${dataFim} 23:59:59`);
+        }
+
+        if (avaliacao && avaliacao !== 'todas') {
+            filtroSql += " AND f.n_id_avaliacao = ?";
+            params.push(avaliacao);
+        }
+
         const [rows] = await pool.query<RowDataPacket[]>(`
             SELECT 
                 *,
@@ -96,6 +117,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             `,[] 
         )
 
+        const [listaCandidatos] = await pool.query<RowDataPacket[]>(`
+            SELECT 
+                c.s_nome_candidato AS nome,
+                a.s_nome_avaliacao AS avaliacao,
+                DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y') AS data,
+                f.n_resultado_fap AS resultado,
+                f.s_relatorio_fap AS relatorio
+            FROM fap f
+            INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
+            INNER JOIN avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
+            WHERE f.s_relatorio_fap IS NOT NULL ${filtroSql}
+            ORDER BY f.dt_date_fap DESC
+            LIMIT ? OFFSET ?
+        `, [...params, limit, offset]);
+
         const dadosGraficoGeral = [
             { value: rows[0].total_aprovados, name: 'Aprovados' },
             { value: rows[0].total_reprovados, name: 'Reprovados' }
@@ -128,11 +164,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 totalAvaliados: rows[0].total_avaliados || 0,
                 totalAprovados: rows[0].total_aprovados || 0,
                 totalReprovados: rows[0].total_reprovados || 0,
-                taxaAprovacao: (rows[0].taxa_aprovacao || 0) + "%"
+                taxaAprovacao: Number(rows[0].taxa_aprovacao || 0).toFixed(2) + "%",
+                taxaReprovacao: (100 - (rows[0].taxa_aprovacao || 0)).toFixed(2) + "%"
             },
             graficoPizzaGeral: dadosGraficoGeral,
             graficoDicotomico: dadosDicotomicos,
-            graficoGradual: dadosGradual
+            graficoGradual: dadosGradual,
+            tabelaCandidatos: listaCandidatos,
         });
     }catch(error){
         console.error(error);
