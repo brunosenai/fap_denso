@@ -18,16 +18,18 @@ export type tCandidatoFap={
     n_id_candidato:number
     s_nome_candidato: string
     s_email_candidato: string
+    s_cpf_candidato:string
     relatorios: []
+    n_resultado_fap:number
 }
 
-export type tCandidado={
+export type tCandidato={
     n_id_candidato:number
     s_nome_candidato:string
     s_cpf_candidato:string
     s_email_candidato:string
 }
-export interface tCandidadoAvaliacao extends tCandidado{
+export interface tCandidadoAvaliacao extends tCandidato{
     n_id_pessoa:number
 }
 
@@ -63,4 +65,22 @@ export type tFap={
     s_q15_fap:string
     s_q16_fap:string
     s_relatorio_fap:string  
+}
+
+export type tPessoa={
+    n_id_pessoa:number,
+    n_id_tipoPessoa:number,
+    s_nome_pessoa:string,
+    s_cpf_pessoa:string,
+    s_telefone_pessoa:string,
+    s_email_pessoa:string,
+    s_senha_pessoa:string,
+    s_codredef_pessoa:string
+
+}
+
+export type tInfoAva={
+    infoAvaliacao:tAvaliacao[],
+    infoCandidatos:tCandidatoFap[],
+    infoAvaliadores:tPessoa[],
 }

@@ -18,20 +18,16 @@ export default function SelecaoModulo() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/icons/favicon.ico?v=2" />
       </Head>
-      <div className='page'>
-        <main className='main'>
-          <div className={styles.selecaoModulo}>
-            <h1>Selecione o módulo desejado</h1>
-            <div className={styles.caixaSelecao} onClick={()=>goto('/home')}>
-                <Image src="/assets/icons/tablet_w.svg" alt="Avaliação" width={100} height={-1} />
-                <p>Módulo de Avaliação</p>
-            </div>
-            <div className={styles.caixaSelecao} onClick={()=>goto('/gestaoAvaliacoes')}>
-                <Image src="/assets/icons/computer_w.svg" alt="Escritório" width={100} height={-1} />
-                <p>Módulo de Gestão</p>
-            </div>
-          </div>
-        </main>
+      <div className={styles.page}>
+        <h1 className={styles.h1}>Selecione o módulo desejado</h1>
+        <div className={styles.caixaSelecao} onClick={()=>goto('/home')}>
+            <Image src="/assets/icons/tablet_w.svg" alt="Avaliação" width={100} height={-1} />
+            <p className={styles.p}>Módulo de Avaliação</p>
+        </div>
+        <div className={styles.caixaSelecao} onClick={()=>goto('/gestaoAvaliacoes')}>
+            <Image src="/assets/icons/computer_w.svg" alt="Escritório" width={100} height={-1} />
+            <p className={styles.p}>Módulo de Gestão</p>
+        </div>
       </div>
     </>
   );

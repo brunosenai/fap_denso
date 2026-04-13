@@ -2,11 +2,13 @@ import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import PopupConfirmation from "../Popup/PopupConfirmation"
 import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
+import InfoAvaliacao from "../InfoAvaliacao/InfoAvaliacao"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
-import { tAvaliacao } from "@/utils/Types"
+import { tAvaliacao, tInfoAva } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
+import Load from "../Load/Load"
 
 export default function telaCadastro(){
     const router=useRouter()
@@ -15,9 +17,13 @@ export default function telaCadastro(){
     const [avaliacoes,setAvaliacoes]=useState<tAvaliacao[]>([])
     const [avaliacoesFiltradas,setAvaliacoesFiltradas]=useState<tAvaliacao[]>([])
     const [filtroAvaliacoes,setFiltroAvaliacoes]=useState("")
+    const [filtroDataIniAvaliacoes,setFiltroDataIniAvaliacoes]=useState("")
+    const [filtroDataFimAvaliacoes,setFiltroDataFimAvaliacoes]=useState("")
     const [popupConfirmation,setPopupConfirmation]=useState<boolean>(false)
     const [popupMessage,setPopupMessage]=useState<boolean>(false)
+    const [showInfoAvaliacao,setShowInfoAvaliacao]=useState<boolean>(false)
     const [isTablet, setIsTablet]=useState<boolean>()
+    const [load,setLoad]=useState(true)
     const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
         {
             tipo:0,
@@ -27,6 +33,7 @@ export default function telaCadastro(){
         }
     )
     const [idAvaliacaoExcluir,setIdAvaliacaoExcluir]=useState<number>(0)
+    const [infoAva,setInfoAva]=useState<tInfoAva>()
 
     useEffect(()=>{
         setIsTablet(verifyIsTablet())
@@ -40,6 +47,21 @@ export default function telaCadastro(){
         .then(res=>{
             setAvaliacoes(res)
             setAvaliacoesFiltradas(res)
+        })
+    }
+
+    const getInfoAvaliacao=async(idAvaliacao:number)=>{
+        setLoad(true)
+        const endpoint=`/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}`
+        fetch(endpoint)
+        .then(res=>res.json())
+        .then(res=>{
+            setInfoAva(res)
+            setLoad(false)
+            setShowInfoAvaliacao(true)
+        })
+        .finally(()=>{
+            setLoad(false)
         })
     }
 
@@ -106,12 +128,44 @@ export default function telaCadastro(){
         })
     }
 
-    const filtrar=(filtro:string)=>{
-        setFiltroAvaliacoes(filtro)
-        const resFiltro=avaliacoes.filter((a,i)=>{
-            return a.s_nome_avaliacao.toLowerCase().includes(filtro.toLowerCase())
-        })
-        setAvaliacoesFiltradas(resFiltro)
+    const executarFiltros = (nomeBusca: string, dataIni: string, dataFim: string) => {
+        let resFiltro = avaliacoes;
+        if (nomeBusca.trim() !== "") {
+            resFiltro = resFiltro.filter(a => 
+                a.s_nome_avaliacao.toLowerCase().includes(nomeBusca.toLowerCase())
+            );
+        }
+        if (dataIni.trim() !== "") {
+            const dataInicioObjeto = new Date(dataIni);
+            resFiltro = resFiltro.filter(a => {
+                const dataAvaliacao = new Date(a.dt_data_avaliacao);
+                return dataAvaliacao >= dataInicioObjeto;
+            });
+        }
+        if (dataFim.trim() !== "") {
+            const dataFimObjeto = new Date(dataFim);
+            resFiltro = resFiltro.filter(a => {
+                const dataAvaliacao = new Date(a.dt_data_avaliacao);
+                return dataAvaliacao <= dataFimObjeto;
+            });
+        }
+        setAvaliacoesFiltradas(resFiltro);
+    }
+
+    const filtrar = (filtro: string) => {
+        setFiltroAvaliacoes(filtro);
+        executarFiltros(filtro, filtroDataIniAvaliacoes, filtroDataFimAvaliacoes);
+    }
+
+    const filtrarDatas = () => {
+        executarFiltros(filtroAvaliacoes, filtroDataIniAvaliacoes, filtroDataFimAvaliacoes);
+    }
+
+    const limparFiltros = () => {
+        setFiltroAvaliacoes("");
+        setFiltroDataIniAvaliacoes("");
+        setFiltroDataFimAvaliacoes("");
+        setAvaliacoesFiltradas(avaliacoes);
     }
 
     const comandoExcluir=(id:number)=>{
@@ -130,6 +184,7 @@ export default function telaCadastro(){
         <>
             {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
             {popupConfirmation&&<PopupConfirmation titulo="Excluir" mensagem="Esta avaliação será excluída!" pergunta="Confirma exclusão da avaliação?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
+            {showInfoAvaliacao&&<InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
@@ -154,13 +209,26 @@ export default function telaCadastro(){
                 <div className={styles.telaCadastro_sessao2}>
                     <div className={styles.telaCadastro_lista}>
                         <div className={styles.telaCadastro_lista_filtro}>
-                            <input type="text" placeholder="Pesquise pelo nome da avaliação" id={`filtro`} value={filtroAvaliacoes} onChange={(e)=>filtrar(e.target.value)} />
+                            <div className={styles.telaCadastro_area_filtro}>
+                                <input type="text" placeholder="Pesquise pelo nome da avaliação" id={`filtro`} value={filtroAvaliacoes} onChange={(e)=>filtrar(e.target.value)} />
+                            </div>
+                            <div className={styles.telaCadastro_area_filtro}>
+                                <input type="datetime-local" id={`filtroDataIni`} value={filtroDataIniAvaliacoes} onChange={(e)=>setFiltroDataIniAvaliacoes(e.target.value)} />
+                                <input type="datetime-local" id={`filtroDataFim`} value={filtroDataFimAvaliacoes} onChange={(e)=>setFiltroDataFimAvaliacoes(e.target.value)} />
+                                <div className={styles.btnPesquisa} onClick={()=>filtrarDatas()} title="Filtrar por Datas">
+                                    <Image src='/assets/icons/search_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                </div>
+                                <div className={styles.btnPesquisa} onClick={()=>limparFiltros()} title="Limpar Filtros">
+                                    <Image src='/assets/icons/search_off_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                </div>
+                            </div>
                         </div>
                         <div className={styles.telaCadastro_lista_titulos}>
                             <div className={`${styles.c_titulo} ${styles.c1}`}>Nome Avaliação</div>
                             <div className={`${styles.c_titulo} ${styles.c2}`}>Data Avaliação</div>
                             <div className={`${styles.c_titulo} ${styles.c3} ${styles.c_center}`}>
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                <Image src='/assets/icons/info_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>
@@ -169,8 +237,9 @@ export default function telaCadastro(){
                                 <div key={index} className={styles.telaCadastro_lista_dados_linha}>
                                     <div className={styles.c1}>{avaliacao.s_nome_avaliacao}</div>
                                     <div className={styles.c2}>{formatDateToText(avaliacao.dt_data_avaliacao)}</div>
-                                    <div className={`${styles.c_dado} ${styles.c3} ${styles.c_center}`}>
+                                    <div className={`${styles.c_dado} ${styles.c3} ${styles.c_center} ${styles.cursorPointer}`}>
                                         <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
+                                        <Image src='/assets/icons/info.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>getInfoAvaliacao(avaliacao.n_id_avaliacao)}/>
                                     </div>
                                 </div>
                             ))}                   
