@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import pool from "@/services/Banco"
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import InfoAvaliacao from '@/components/InfoAvaliacao/InfoAvaliacao';
 
 //export const config = {
 //    api: {
@@ -19,7 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if(req.method === 'GET'){
         const {
             action,
-            n_id_pessoa
+            n_id_pessoa,
+            n_id_avaliacao
         } = req.query
 
         if(action == "getAvaliacoesHojeEmDiante"){
@@ -36,6 +38,60 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     `,[]
                 )
                 res.status(200).json(rows)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action == "getInfoAvaliacao"){
+            try {
+                const [rows_avaliacao] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_avaliacao,s_nome_avaliacao,dt_data_avaliacao
+                    FROM
+                        avaliacao
+                    WHERE
+                        n_id_avaliacao=?;
+                    `,[n_id_avaliacao]
+                )
+                const [rows_fap] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_candidato,n_id_pessoa
+                    FROM
+                        fap
+                    WHERE
+                        n_id_avaliacao=?;
+                    `,[n_id_avaliacao]
+                )
+                const idsCandidatos = rows_fap.length > 0 ? rows_fap.map(row => row.n_id_candidato) : [0];
+                const idsAvaliadores = rows_fap.length > 0 ? rows_fap.map(row => row.n_id_pessoa) : [0];
+                const [rows_cand] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        c.n_id_candidato,
+                        c.s_nome_candidato,
+                        f.n_resultado_fap
+                    FROM
+                        candidato c
+                    INNER JOIN fap f ON f.n_id_candidato=c.n_id_candidato AND n_id_avaliacao=?
+                    WHERE
+                        c.n_id_candidato in (?);
+                    `,[n_id_avaliacao, idsCandidatos]
+                )
+                const [rows_avaliadores] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_pessoa,
+                        s_nome_pessoa
+                    FROM
+                        pessoa
+                    WHERE
+                        n_id_pessoa in (?);
+                    `,[idsAvaliadores]
+                )
+                const retorno = {
+                    infoAvaliacao:rows_avaliacao,
+                    infoCandidatos:rows_cand,
+                    infoAvaliadores:rows_avaliadores
+                }
+                res.status(200).json(retorno)
             } catch (error) {
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})

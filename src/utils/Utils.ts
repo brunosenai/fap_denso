@@ -8,7 +8,7 @@ export const verifyIsTablet=()=>{
   return isTablet
 }
 
-export const formatDateToText = (dateString: string): string => {
+export const formatDateToText = (dateString: string|undefined): string => {
     if (!dateString) return "";
     const date = new Date(dateString);
   
