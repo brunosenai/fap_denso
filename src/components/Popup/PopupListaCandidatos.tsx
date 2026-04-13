@@ -1,6 +1,6 @@
 import styles from "@/styles/PopupListaCandidatos.module.css";
 import Image from "next/image";
-import {tCandidato,tAvaliacao} from "@/components/Types/Types";
+import {tCandidato,tAvaliacao} from "@/utils/Types";
 
 interface popupProps {
     dadosAvaliacao:tAvaliacao,

@@ -2,7 +2,7 @@ import styles from "@/styles/CandicadoAvaliacao.module.css"
 import Image from "next/image"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
-import { tcandidato,tAvaliacao } from "@/utils/Types"
+import { tCandidato,tAvaliacao } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 
@@ -13,10 +13,10 @@ export default function TelaCandidatoAvaliacao(){
     const [avaliacoes,setAvaliacoes]=useState<tAvaliacao[]>([])
     const [avaliacoesFiltrados,setAvaliacoesFiltrados]=useState<tAvaliacao[]>([])
     const [filtroAvaliacoes,setFiltroAvaliacoes]=useState("")
-    const [candidatos,setCandidatos]=useState<tcandidato[]>([])
-    const [candidatosFiltrados,setCandidatosFiltrados]=useState<tcandidato[]>([])
+    const [candidatos,setCandidatos]=useState<tCandidato[]>([])
+    const [candidatosFiltrados,setCandidatosFiltrados]=useState<tCandidato[]>([])
     const [filtroCandidatos,setFiltroCandidatos]=useState("")
-    const [candidatosAva,setCandidatosAva]=useState<tcandidato[]>([])
+    const [candidatosAva,setCandidatosAva]=useState<tCandidato[]>([])
     const [isTablet, setIsTablet]=useState<boolean>()
     
     useEffect(()=>{

@@ -3,7 +3,7 @@ import Topo from "@/components/Topo/Topo";
 import Load from "@/components/Load/Load";
 import Image from "next/image";
 import PopupListaCandidatos from "@/components/Popup/PopupListaCandidatos";
-import {tAvaliacao, tCandidato} from "@/components/Types/Types";
+import {tAvaliacao, tCandidato} from "@/utils/Types";
 import { useState, useEffect } from "react";
 
 export default function GestaoAvaliacoes() {
