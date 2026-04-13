@@ -5,14 +5,14 @@ import { verifyIsTablet } from "@/utils/Utils"
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import TopoSelecaoAvaliacao from "@/components/Topo/TopoSelecaoAvaliacao";
-import { tAvaliacao, tCandidadoAvaliacao } from "@/utils/Types";
+import { tAvaliacao, tcandidatoAvaliacao } from "@/utils/Types";
 import Load from "@/components/Load/Load";
 
 export default function Home() {
   const router = useRouter();
   const [avaliacoes, setAvaliacoes] = useState<tAvaliacao[]>([]);
   const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState<number>(-1);
-  const [candidatos, setCandidatos] = useState<tCandidadoAvaliacao[]>([]);
+  const [candidatos, setCandidatos] = useState<tcandidatoAvaliacao[]>([]);
   const [candidatosSelecionados, setCandidatosSelecionados] = useState<number[]>([]);
   const [qtdAvaliadores,setQtdAvaliadores]=useState<number>(1);
   const [maxCandidatosSelecionados, setMaxCandidatosSelecionados]=useState(0);

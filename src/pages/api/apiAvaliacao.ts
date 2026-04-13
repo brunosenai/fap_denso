@@ -186,7 +186,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }else if(req.method === 'PUT'){
         const { fap } = req.body;
-        console.log(fap)
         try {
             for (const itemFap of fap) {
                 // 1. Formata a data do padrão ISO do JS para o padrão DATETIME do MySQL

@@ -5,9 +5,10 @@ import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 import InfoAvaliacao from "../InfoAvaliacao/InfoAvaliacao"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
-import { tAvaliacao, tInfoAva } from "@/utils/Types"
+import { tAvaliacao, tInfoAva, tFap } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
+import EditarFapCandidato from "../EditarFapCandidato/EditarFapCandidato"
 import Load from "../Load/Load"
 
 export default function telaCadastro(){

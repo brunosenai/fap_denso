@@ -3,7 +3,7 @@ import styles from "@/styles/Fap.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import TopoFap from "@/components/Topo/TopoFap";
-import { tCandidado, tFap, tAvaliacao } from "@/utils/Types";
+import { tCandidato, tFap, tAvaliacao } from "@/utils/Types";
 import FapFap from "@/components/Fap/Fap";
 import { pdf } from '@react-pdf/renderer';
 import { RelatorioFap } from "@/components/Pdf/RelatorioFap";
@@ -15,7 +15,7 @@ import PopupConfirmation from "@/components/Popup/PopupConfirmation";
 
 export default function Fap() {
   const router = useRouter();
-  const [listaCandidatos, setListaCandidatos] = useState<tCandidado[]>([]);
+  const [listaCandidatos, setListaCandidatos] = useState<tCandidato[]>([]);
   const [avaliacao, setAvaliacao] = useState<tAvaliacao>();
   const [fap, setFap] = useState<tFap[]>([]);
   const [abaAtual, setAbaAtual] = useState<number>(0);

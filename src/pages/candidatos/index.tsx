@@ -1,12 +1,12 @@
 import Topo from "@/components/Topo/Topo"
 import styles from "@/styles/Candidatos.module.css"
-import { tCandidadoCard } from "@/utils/Types"
+import { tcandidatoCard } from "@/utils/Types"
 import Image from "next/image"
 import CardCandidatos from "@/components/CardCandidatos/CardCandidatos"
 import { useState } from "react"
 
 export default function Candidatos(){
-    const [candidatos,setCandidatos]=useState<tCandidadoCard[]>([])
+    const [candidatos,setCandidatos]=useState<tcandidatoCard[]>([])
     const [nome,setNome]=useState<string>('')
     const [email,setEmail]=useState<string>('')
 

@@ -29,11 +29,11 @@ export type tCandidato={
     s_cpf_candidato:string
     s_email_candidato:string
 }
-export interface tCandidadoAvaliacao extends tCandidato{
+export interface tcandidatoAvaliacao extends tCandidato{
     n_id_pessoa:number
 }
 
-export type tCandidadoCard={
+export type tcandidatoCard={
     s_nome_candidato:string
     s_email_candidato:string
 }

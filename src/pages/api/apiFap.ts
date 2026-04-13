@@ -60,6 +60,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
+        }else if(action == "getInfoFapCandidato"){
+            try {
+                const [rows_fap] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        s_q13_fap,
+                        s_q14_fap,
+                        s_q15_fap,
+                        s_q16_fap
+                    FROM
+                        fap
+                    WHERE
+                        n_id_candidato = ? AND n_id_avaliacao = ?
+                    `,[n_id_candidato, n_id_avaliacao]
+                )
+                res.status(200).json(rows_fap[0])
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }else if(action == "getAllCandidatosFap_cad"){
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
@@ -105,44 +124,73 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
     } else if(req.method === 'PUT'){
-        const { fap } = req.body;
-        try {
-            for (const itemFap of fap) {
-                let dataMySQL = itemFap.dt_date_fap;
-                if (dataMySQL && typeof dataMySQL === 'string' && dataMySQL.includes('T')) {
-                    dataMySQL = dataMySQL.slice(0, 19).replace('T', ' ');
-                }   
-                await pool.query<ResultSetHeader>(`
-                    UPDATE 
-                        fap
-                    SET 
-                        n_id_pessoa=?, dt_date_fap=?, n_nota_fap=?, n_resultado_fap=?,
-                        n_posto1_fap=?, n_posto2_fap=?, n_posto3_fap=?, n_posto4_fap=?,
-                        n_posto5_fap=?, n_posto6_fap=?, n_q6_fap=?, n_q7_fap=?,
-                        n_q8_fap=?, n_q9_fap=?, n_q10_fap=?, n_q11_fap=?,
-                        n_q12_fap=?, s_q13_fap=?, s_q14_fap=?, s_q15_fap=?, s_q16_fap=?,
-                        n_status_fap=?
-                    WHERE 
-                        n_id_avaliacao = ? AND
-                        n_id_candidato = ?;
-                `, [
-                    itemFap.n_id_pessoa, dataMySQL, itemFap.n_nota_fap, itemFap.n_resultado_fap,
-                    itemFap.n_posto1_fap, itemFap.n_posto2_fap, itemFap.n_posto3_fap, itemFap.n_posto4_fap,
-                    itemFap.n_posto5_fap, itemFap.n_posto6_fap, itemFap.n_q6_fap, itemFap.n_q7_fap,
-                    itemFap.n_q8_fap, itemFap.n_q9_fap, itemFap.n_q10_fap, itemFap.n_q11_fap,
-                    itemFap.n_q12_fap, itemFap.s_q13_fap, itemFap.s_q14_fap, itemFap.s_q15_fap, itemFap.s_q16_fap,
-                    itemFap.n_status_fap, itemFap.n_id_avaliacao, itemFap.n_id_candidato 
-                ]);
-            }
+        const {
+            fap,
+            action,
+            n_id_avaliacao,
+            n_id_candidato,
+            s_q13_fap,
+            s_q14_fap,
+            s_q15_fap,
+            s_q16_fap 
+        } = req.body;
 
-            return res.status(200).json({ 
-                message: 'Avaliações salvas com sucesso!',
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({message:"Internal Server Error: erro 500"})
+        if(action == "editarFapCandidato"){
+            console.log("Editar Fap Candidato:", { n_id_avaliacao, n_id_candidato, s_q13_fap, s_q14_fap, s_q15_fap, s_q16_fap });
+            try {
+                const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
+                    UPDATE
+                        fap
+                    SET
+                        s_q13_fap = ?, s_q14_fap = ?, s_q15_fap = ?, s_q16_fap = ?
+                    WHERE
+                        n_id_avaliacao = ? AND n_id_candidato = ?;
+                    `,[s_q13_fap, s_q14_fap, s_q15_fap, s_q16_fap, n_id_avaliacao, n_id_candidato]
+                )
+
+                res.status(200).json(rows_cadidatos)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else{
+            try {
+                for (const itemFap of fap) {
+                    let dataMySQL = itemFap.dt_date_fap;
+                    if (dataMySQL && typeof dataMySQL === 'string' && dataMySQL.includes('T')) {
+                        dataMySQL = dataMySQL.slice(0, 19).replace('T', ' ');
+                    }   
+                    await pool.query<ResultSetHeader>(`
+                        UPDATE 
+                            fap
+                        SET 
+                            n_id_pessoa=?, dt_date_fap=?, n_nota_fap=?, n_resultado_fap=?,
+                            n_posto1_fap=?, n_posto2_fap=?, n_posto3_fap=?, n_posto4_fap=?,
+                            n_posto5_fap=?, n_posto6_fap=?, n_q6_fap=?, n_q7_fap=?,
+                            n_q8_fap=?, n_q9_fap=?, n_q10_fap=?, n_q11_fap=?,
+                            n_q12_fap=?, s_q13_fap=?, s_q14_fap=?, s_q15_fap=?, s_q16_fap=?,
+                            n_status_fap=?
+                        WHERE 
+                            n_id_avaliacao = ? AND
+                            n_id_candidato = ?;
+                    `, [
+                        itemFap.n_id_pessoa, dataMySQL, itemFap.n_nota_fap, itemFap.n_resultado_fap,
+                        itemFap.n_posto1_fap, itemFap.n_posto2_fap, itemFap.n_posto3_fap, itemFap.n_posto4_fap,
+                        itemFap.n_posto5_fap, itemFap.n_posto6_fap, itemFap.n_q6_fap, itemFap.n_q7_fap,
+                        itemFap.n_q8_fap, itemFap.n_q9_fap, itemFap.n_q10_fap, itemFap.n_q11_fap,
+                        itemFap.n_q12_fap, itemFap.s_q13_fap, itemFap.s_q14_fap, itemFap.s_q15_fap, itemFap.s_q16_fap,
+                        itemFap.n_status_fap, itemFap.n_id_avaliacao, itemFap.n_id_candidato 
+                    ]);
+                }
+
+                return res.status(200).json({ 
+                    message: 'Avaliações salvas com sucesso!',
+                });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }
-        
     } else if(req.method === 'POST') {
         // Nova rota em POST para cuidar apenas da gravação do PDF
         const { n_id_avaliacao, n_id_candidato, fileName, fileData } = req.body;

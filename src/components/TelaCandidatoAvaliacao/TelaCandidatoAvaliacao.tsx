@@ -2,7 +2,7 @@ import styles from "@/styles/CandicadoAvaliacao.module.css"
 import Image from "next/image"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
-import { tCandidado,tAvaliacao } from "@/utils/Types"
+import { tcandidato,tAvaliacao } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 
@@ -13,10 +13,10 @@ export default function TelaCandidatoAvaliacao(){
     const [avaliacoes,setAvaliacoes]=useState<tAvaliacao[]>([])
     const [avaliacoesFiltrados,setAvaliacoesFiltrados]=useState<tAvaliacao[]>([])
     const [filtroAvaliacoes,setFiltroAvaliacoes]=useState("")
-    const [candidatos,setCandidatos]=useState<tCandidado[]>([])
-    const [candidatosFiltrados,setCandidatosFiltrados]=useState<tCandidado[]>([])
+    const [candidatos,setCandidatos]=useState<tcandidato[]>([])
+    const [candidatosFiltrados,setCandidatosFiltrados]=useState<tcandidato[]>([])
     const [filtroCandidatos,setFiltroCandidatos]=useState("")
-    const [candidatosAva,setCandidatosAva]=useState<tCandidado[]>([])
+    const [candidatosAva,setCandidatosAva]=useState<tcandidato[]>([])
     const [isTablet, setIsTablet]=useState<boolean>()
     
     useEffect(()=>{
@@ -77,7 +77,7 @@ export default function TelaCandidatoAvaliacao(){
         })
         .then(res=>{
             if(res.status!=200){
-                alert("Erro ao associar candidado à avaliação!")
+                alert("Erro ao associar candidato à avaliação!")
             }else{
                 obterCandidatosAvaliacao(avaliacaoSel)
             }
@@ -98,7 +98,7 @@ export default function TelaCandidatoAvaliacao(){
         })
         .then(res=>{
             if(res.status!=200){
-                alert("Erro ao desassociar candidado à avaliação!")
+                alert("Erro ao desassociar candidato à avaliação!")
             }else{
                 obterCandidatosAvaliacao(avaliacaoSel)
             }
