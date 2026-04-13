@@ -136,7 +136,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } = req.body;
 
         if(action == "editarFapCandidato"){
-            console.log("Editar Fap Candidato:", { n_id_avaliacao, n_id_candidato, s_q13_fap, s_q14_fap, s_q15_fap, s_q16_fap });
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     UPDATE
