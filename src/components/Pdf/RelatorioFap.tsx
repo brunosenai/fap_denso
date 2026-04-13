@@ -1,6 +1,6 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
-import { tcandidato, tFap } from "@/utils/Types";
+import { tCandidato, tFap } from "@/utils/Types";
 
 // Estilos restaurados para as proporções reais do A4
 const styles = StyleSheet.create({
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 });
 
 interface PropsPDF {
-  candidato: tcandidato;
+  candidato: tCandidato;
   fapCandidato: tFap;
 }
 
