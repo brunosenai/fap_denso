@@ -42,6 +42,7 @@ export default function Home() {
       .then(res => res.json())
       .then(data => {
         setAvaliacoes(data);
+        setLoad(false)
       })
     }catch(e){
       console.error(`Erro:${e}`)
@@ -100,6 +101,7 @@ export default function Home() {
       alert('Número de avaliadores insuficiente, deve ser pelo menos 1')
       return
     }
+    setLoad(true)
     const path=`/fap`
     if(candidatosSelecionados.length == maxCandidatosSelecionados && candidatosSelecionados.length > 0){
       localStorage.setItem('n_id_avaliacao',avaliacaoSelecionada.toString());
@@ -107,6 +109,7 @@ export default function Home() {
       router.push(path);
     }else{
       alert(`Selecione seus ${maxCandidatosSelecionados} candidatos para prosseguir`);
+      setLoad(false)
     }
   }
 

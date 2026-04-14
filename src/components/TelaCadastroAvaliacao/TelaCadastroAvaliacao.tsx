@@ -42,12 +42,14 @@ export default function telaCadastro(){
     },[])
 
     const obterAvaliacoes=()=>{
+        setLoad(true)
         const endpoint=`/api/apiAvaliacao?action=getAvaliacoes`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
             setAvaliacoes(res)
             setAvaliacoesFiltradas(res)
+            setLoad(false)
         })
     }
 
@@ -181,8 +183,105 @@ export default function telaCadastro(){
 
     const comandoNao=()=>{setPopupConfirmation(false)}
 
+    // const obterCheckboxSelecionados=()=>{
+    //     const cb=document.querySelectorAll("input[type='checkbox']:checked")
+    //     return Array.from(cb).slice(1);
+    // }
+
+    const obterCheckboxSelecionados=()=>{
+        const cb=document.querySelectorAll<HTMLInputElement>("input[type='checkbox']:checked");
+        const tcb=Array.from(cb)
+        if(tcb.length==0)
+            return []
+        const tcbfix=tcb[0].id=='checkboxTodos'?tcb.slice(1):tcb
+        return tcbfix
+    }
+
+    const obterTodosCheckbox=()=>{
+        const cb=document.querySelectorAll<HTMLInputElement>("input[type='checkbox']");
+        const tcb=Array.from(cb)
+        const tcbfix=tcb[0].id=='checkboxTodos'?tcb.slice(1):tcb
+        return tcbfix
+    }
+
+    const selecionarTodos=(cb:HTMLInputElement)=>{
+        if(cb.checked){
+            const todosCb=obterTodosCheckbox()
+            todosCb.forEach((c)=>{
+                c.checked=true
+            })
+        }else{
+            const todosCb=obterTodosCheckbox()
+            todosCb.forEach((c)=>{
+                c.checked=false
+            })
+        }
+    }
+
+    const obterIdsAvaliacoesSelecionadas=()=>{
+        const cbSelecionados=obterCheckboxSelecionados()
+        const idsSelecionados=cbSelecionados.map((cb)=>{
+            return parseInt(cb.id)
+        })
+        return idsSelecionados
+    }
+
+    // const gerarEnviarRelatoriosEmail=()=>{
+    //     const ids=obterIdsAvaliacoesSelecionadas()
+    //     console.log(ids)
+    // }
+
+    const gerarEnviarRelatoriosEmail = async () => {
+        const ids = obterIdsAvaliacoesSelecionadas();
+        
+        if (ids.length === 0) {
+            setDadosPopupMessage({
+                tipo: 3,
+                titulo: "Aviso",
+                mensagem: "Selecione pelo menos uma avaliação na lista.",
+                comandoOK: () => setPopupMessage(false)
+            });
+            setPopupMessage(true);
+            return;
+        }
+
+        setLoad(true);
+        try {
+            const endpoint = `/api/apiGerarRelatoriosTurma`;
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids_avaliacoes: ids })
+            });
+
+            if (response.status !== 200) {
+                throw new Error("Falha ao gerar relatórios");
+            }
+
+            setDadosPopupMessage({
+                tipo: 1, // Sucesso
+                titulo: "Sucesso",
+                mensagem: "Os relatórios foram gerados, compactados e enviados por e-mail com sucesso!",
+                comandoOK: () => setPopupMessage(false)
+            });
+        } catch (error) {
+            console.error(error);
+            setDadosPopupMessage({
+                tipo: 3, // Erro
+                titulo: "Erro",
+                mensagem: "Ocorreu um erro no servidor ao gerar e enviar os relatórios.",
+                comandoOK: () => setPopupMessage(false)
+            });
+        } finally {
+            obterAvaliacoes()
+            setLoad(false); // Desliga o loading
+            setPopupMessage(true); // Mostra o popup de sucesso ou erro
+        }
+    }    
+
     return(
         <>
+            {load&&<Load/>}
             {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
             {popupConfirmation&&<PopupConfirmation titulo="Excluir" mensagem="Esta avaliação será excluída!" pergunta="Confirma exclusão da avaliação?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
             {showInfoAvaliacao&&<InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
@@ -210,10 +309,10 @@ export default function telaCadastro(){
                 <div className={styles.telaCadastro_sessao2}>
                     <div className={styles.telaCadastro_lista}>
                         <div className={styles.telaCadastro_lista_filtro}>
-                            <div className={styles.telaCadastro_area_filtro}>
+                            <div className={styles.telaCadastro_area_filtro_c1}>
                                 <input type="text" placeholder="Pesquise pelo nome da avaliação" id={`filtro`} value={filtroAvaliacoes} onChange={(e)=>filtrar(e.target.value)} />
                             </div>
-                            <div className={styles.telaCadastro_area_filtro}>
+                            <div className={styles.telaCadastro_area_filtro_c2}>
                                 <input type="datetime-local" id={`filtroDataIni`} value={filtroDataIniAvaliacoes} onChange={(e)=>setFiltroDataIniAvaliacoes(e.target.value)} />
                                 <input type="datetime-local" id={`filtroDataFim`} value={filtroDataFimAvaliacoes} onChange={(e)=>setFiltroDataFimAvaliacoes(e.target.value)} />
                                 <div className={styles.btnPesquisa} onClick={()=>filtrarDatas()} title="Filtrar por Datas">
@@ -222,23 +321,37 @@ export default function telaCadastro(){
                                 <div className={styles.btnPesquisa} onClick={()=>limparFiltros()} title="Limpar Filtros">
                                     <Image src='/assets/icons/search_off_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
                                 </div>
+                                <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Enviar relatórios por email">
+                                    <Image src='/assets/icons/mail_w.svg' alt='Enviar relatórios por email' width={20} height={-1}/>
+                                </div>                                
                             </div>
                         </div>
                         <div className={styles.telaCadastro_lista_titulos}>
-                            <div className={`${styles.c_titulo} ${styles.c1}`}>Nome Avaliação</div>
-                            <div className={`${styles.c_titulo} ${styles.c2}`}>Data Avaliação</div>
-                            <div className={`${styles.c_titulo} ${styles.c3} ${styles.c_center}`}>
+                            <div className={`${styles.c_titulo} ${styles.c1} ${styles.c_center}`}>
+                                <input type="checkbox" id={`checkboxTodos`} onChange={(e)=>{selecionarTodos(e.target)}} />
+                            </div>
+                            <div className={`${styles.c_titulo} ${styles.c2}`}>Nome Avaliação</div>
+                            <div className={`${styles.c_titulo} ${styles.c3}`}>Data Avaliação</div>
+                            <div className={`${styles.c_titulo} ${styles.c4} ${styles.c_center}`}>
+                                <div>st</div>
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
-                                <Image src='/assets/icons/info_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                <Image src='/assets/icons/info_w.svg' alt='Informações Avaliação' width={20} height={-1}/>
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>
                         <div className={styles.telaCadastro_lista_dados}>
                             {avaliacoesFiltradas.map((avaliacao,index)=>(
                                 <div key={index} className={styles.telaCadastro_lista_dados_linha}>
-                                    <div className={styles.c1}>{avaliacao.s_nome_avaliacao}</div>
-                                    <div className={styles.c2}>{formatDateToText(avaliacao.dt_data_avaliacao)}</div>
-                                    <div className={`${styles.c_dado} ${styles.c3} ${styles.c_center} ${styles.cursorPointer}`}>
+                                    <div className={`${styles.c_dado} ${styles.c1} ${styles.c_center}`}>
+                                        {avaliacao.n_status_avaliacao==1&&<input type="checkbox" id={`${avaliacao.n_id_avaliacao}`} onChange={(e)=>{}} />}
+                                    </div>
+                                    <div className={styles.c2}>{avaliacao.s_nome_avaliacao}</div>
+                                    <div className={styles.c3}>{formatDateToText(avaliacao.dt_data_avaliacao)}</div>
+                                    <div className={`${styles.c_dado} ${styles.c4} ${styles.c_center} ${styles.cursorPointer}`}>
+                                        <Image src={
+                                            avaliacao.n_status_avaliacao==0?'/assets/icons/wait.svg':
+                                            avaliacao.n_status_avaliacao==1?'/assets/icons/check.svg':'/assets/icons/done_b.svg'
+                                        } alt='Status da Avaliação' width={20} height={20} className={styles.iconEditar}/>
                                         <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
                                         <Image src='/assets/icons/info.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>getInfoAvaliacao(avaliacao.n_id_avaliacao)}/>
                                     </div>

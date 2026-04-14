@@ -2,6 +2,7 @@ export type tAvaliacao = {
     n_id_avaliacao:number
     s_nome_avaliacao:string
     dt_data_avaliacao:string
+    n_status_avaliacao:number
 }
 
 export type tAvaliador={

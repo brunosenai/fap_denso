@@ -126,15 +126,23 @@
 
 .infoAva_conteudo_corpo_area_field_spaceBetween_3_c1{
     width: 10%;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .infoAva_conteudo_corpo_area_field_spaceBetween_3_c2{
     width: 40%;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .infoAva_conteudo_corpo_area_field_spaceBetween_3_c3{
     width: 40%;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .infoAva_conteudo_corpo_area_field_spaceBetween_3_c4{
     width: 10%;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .infoAva_conteudo_corpo_area_field_spaceBetween_3_c4 img{
     cursor: pointer;
@@ -151,6 +159,11 @@
 
 .corReprovado{
     color: #f00 !important;
+    font-weight: normal !important;
+}
+
+.corNaoAvaliado{
+    color: #888 !important;
     font-weight: normal !important;
 }
 

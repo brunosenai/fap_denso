@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             try {
                 const [rows_avaliacao] = await pool.query<RowDataPacket[]>(`
                     SELECT
-                        n_id_avaliacao,s_nome_avaliacao,dt_data_avaliacao
+                        *
                     FROM
                         avaliacao
                     WHERE
@@ -110,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             FROM
                                 fap
                             WHERE
-                                n_id_pessoa=1
+                                n_id_pessoa=?
                             group by n_id_avaliacao
                         );
                     `,[n_id_pessoa]

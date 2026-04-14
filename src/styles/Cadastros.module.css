@@ -183,6 +183,30 @@
     border-radius: 5px;
 }
 
+.telaCadastro_area_filtro_c1{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 25%;
+    gap:10px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
+.telaCadastro_area_filtro_c2{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 75%;
+    gap:10px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
 .telaCadastro_lista_titulos{
     display: flex;
     flex-direction: row;
@@ -213,19 +237,34 @@
 .c_comandos{
     justify-content: space-around !important;
 }
+
 .c1{
-    width: 45%;
+    width: 10%;
 }
 .c2{
-    width: 45%;
+    width: 40%;
 }
 .c3{
-    width: 10%;
+    width: 35%;
+}
+.c4{
+    width: 15%;
     gap:10px;
 }
+.c4 div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 20px;
+    min-width: 20px;
+    gap:10px;
+    color: #fff;
+}
+
 .cursorPointer img{
     cursor: pointer;
 }
+
 .c1_avalidador{
     width: 30%;
 }
@@ -238,6 +277,7 @@
 .c4_avalidador{
     width: 10%;
 }
+
 .c1_candidato{
     width: 40%;
 }
@@ -247,6 +287,7 @@
 .c3_candidato{
     width: 20%;
 }
+
 .espacoBarraRolagem{
     width: 15px;
     max-width: 15px;
