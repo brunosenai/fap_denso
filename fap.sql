@@ -1,3 +1,12 @@
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `fap`;
+DROP TABLE IF EXISTS `avaliacao`;
+DROP TABLE IF EXISTS `candidato`;
+DROP TABLE IF EXISTS `pessoa`;
+DROP TABLE IF EXISTS `tipoPessoa`;
+DROP TABLE IF EXISTS `config`;
+SET FOREIGN_KEY_CHECKS = 1;
+
 CREATE TABLE `avaliacao` (
   `n_id_avaliacao` int PRIMARY KEY AUTO_INCREMENT,
   `s_nome_avaliacao` varchar(255),
@@ -57,6 +66,10 @@ CREATE TABLE `pessoa` (
   `s_codredef_pessoa` varchar(255)
 );
 
+CREATE TABLE `config` (
+  `n_emailDestino_config` varchar(255)
+);
+
 ALTER TABLE `fap` ADD FOREIGN KEY (`n_id_avaliacao`) REFERENCES `avaliacao` (`n_id_avaliacao`);
 
 ALTER TABLE `fap` ADD FOREIGN KEY (`n_id_candidato`) REFERENCES `candidato` (`n_id_candidato`);
@@ -106,6 +119,9 @@ VALUES
   (3, 1, 'Paulo', '33333333333', '31', 'paulo@email', '123'),
   (4, 1, 'Rodrigo', '44444444444', '31', 'rodrigo@email', '123'),
   (5, 1, 'Sérgio', '55555555555', '31', 'sergio@email', '123');
+INSERT INTO `config` (`n_emailDestino_config`)
+VALUES
+  ('bpinho@fiemg.com.br');
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;

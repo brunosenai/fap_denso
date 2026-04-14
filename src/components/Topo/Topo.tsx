@@ -19,6 +19,10 @@ export default function Topo({ titulo = "" }: TopoProps){
         router.replace('/');
     }
 
+    const config=async()=>{
+        router.push('/configuracao');
+    }
+
     return(
         <div className={styles.topo}>
             <div className={styles.topoImages}>
@@ -26,7 +30,11 @@ export default function Topo({ titulo = "" }: TopoProps){
                 <div className={styles.areaDireira}>
                     <Image className={styles.topoCentro40} src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={80} height={-1} />
                     <div className={styles.logoutIcon}>
-                        <Image  src={'/assets/icons/logout_w.svg'} alt={'Logo Stellantis'} onClick={()=>sair()} width={35} height={35} />
+                        <Image  src={'/assets/icons/settings_w.svg'} alt={'Logo Stellantis'} onClick={()=>config()} width={30} height={-1} />
+                        Config
+                    </div>
+                    <div className={styles.logoutIcon}>
+                        <Image  src={'/assets/icons/logout_w.svg'} alt={'Logo Stellantis'} onClick={()=>sair()} width={30} height={-1} />
                         SAIR
                     </div>
                 </div>

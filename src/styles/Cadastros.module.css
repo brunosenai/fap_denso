@@ -149,6 +149,26 @@
     min-height: 0px;
 }
 
+.telaCadastro_lista_comandos{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 5px;
+    gap:10px;
+}
+
+.telaCadastro_lista_comandos_field{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 5px;
+    gap:10px;
+}
+
 .telaCadastro_lista_filtro{
     display: flex;
     flex-direction: row;

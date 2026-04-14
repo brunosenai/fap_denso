@@ -85,3 +85,14 @@ export type tInfoAva={
     infoCandidatos:tCandidatoFap[],
     infoAvaliadores:tPessoa[],
 }
+
+export type tConfig={
+    n_emailDestino_config:string
+}
+
+export type tConfigPopupMessage={
+    tipo:number, // 1:mensagem, 2:informação, 3:erro
+    titulo:string,
+    mensagem:string,
+    comandoOK:()=>void
+}

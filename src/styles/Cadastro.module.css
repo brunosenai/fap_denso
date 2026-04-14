@@ -19,7 +19,7 @@
     background-color: var(--azulFap);
 }
 
-@media(orientation: landscape) {
+/* @media(orientation: landscape) {
     .selecaoModulo{
         gap:50px;
     }
@@ -32,4 +32,4 @@
         width: 100px;
         height: auto;
     }
-}
+} */

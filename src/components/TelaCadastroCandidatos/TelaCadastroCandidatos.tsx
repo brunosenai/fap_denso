@@ -28,7 +28,6 @@ export default function TelaCadastroCandidatos(){
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
-            console.log(res)
             setCandidatos(res)
             setCandidatosFiltrados(res)
         })

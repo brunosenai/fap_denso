@@ -10,6 +10,7 @@ import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 import EditarFapCandidato from "../EditarFapCandidato/EditarFapCandidato"
 import Load from "../Load/Load"
+import { get } from "http"
 
 export default function telaCadastro(){
     const router=useRouter()
@@ -25,6 +26,7 @@ export default function telaCadastro(){
     const [showInfoAvaliacao,setShowInfoAvaliacao]=useState<boolean>(false)
     const [isTablet, setIsTablet]=useState<boolean>()
     const [load,setLoad]=useState(true)
+    const [mostrarHistorico,setMostrarHistorico]=useState(false)
     const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
         {
             tipo:0,
@@ -38,12 +40,12 @@ export default function telaCadastro(){
 
     useEffect(()=>{
         setIsTablet(verifyIsTablet())
-        obterAvaliacoes()
+        obterAvaliacoes(mostrarHistorico)
     },[])
 
-    const obterAvaliacoes=()=>{
+    const obterAvaliacoes=(historico:boolean)=>{
         setLoad(true)
-        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes`
+        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
@@ -89,7 +91,7 @@ export default function telaCadastro(){
                 })
                 setPopupMessage(true)
             }else{
-                obterAvaliacoes()
+                obterAvaliacoes(mostrarHistorico)
             }
         })
     }
@@ -126,7 +128,7 @@ export default function telaCadastro(){
                 })
                 setPopupMessage(true)
             }else{
-                obterAvaliacoes()
+                obterAvaliacoes(mostrarHistorico)
             }
         })
     }
@@ -273,11 +275,16 @@ export default function telaCadastro(){
                 comandoOK: () => setPopupMessage(false)
             });
         } finally {
-            obterAvaliacoes()
+            obterAvaliacoes(mostrarHistorico)
             setLoad(false); // Desliga o loading
             setPopupMessage(true); // Mostra o popup de sucesso ou erro
         }
-    }    
+    }
+
+    const controleMostrarHistorico=(evt:boolean)=>{
+        setMostrarHistorico(evt)
+        obterAvaliacoes(evt)
+    }
 
     return(
         <>
@@ -308,6 +315,12 @@ export default function telaCadastro(){
 
                 <div className={styles.telaCadastro_sessao2}>
                     <div className={styles.telaCadastro_lista}>
+                        <div className={styles.telaCadastro_lista_comandos}>
+                            <div className={styles.telaCadastro_lista_comandos_field}>
+                                Mostrar Avaliações já realizadas
+                                <input type="checkbox" id={`checkboxTodos`} onChange={(e)=>{controleMostrarHistorico(e.target.checked)}} />
+                            </div>
+                        </div>
                         <div className={styles.telaCadastro_lista_filtro}>
                             <div className={styles.telaCadastro_area_filtro_c1}>
                                 <input type="text" placeholder="Pesquise pelo nome da avaliação" id={`filtro`} value={filtroAvaliacoes} onChange={(e)=>filtrar(e.target.value)} />
@@ -321,9 +334,10 @@ export default function telaCadastro(){
                                 <div className={styles.btnPesquisa} onClick={()=>limparFiltros()} title="Limpar Filtros">
                                     <Image src='/assets/icons/search_off_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
                                 </div>
-                                <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Enviar relatórios por email">
+                                <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Gerar relatórios e enviar por email">
+                                    <Image src='/assets/icons/report_w.svg' alt='Gerar relatórios' width={20} height={-1}/>
                                     <Image src='/assets/icons/mail_w.svg' alt='Enviar relatórios por email' width={20} height={-1}/>
-                                </div>                                
+                                </div>                                                               
                             </div>
                         </div>
                         <div className={styles.telaCadastro_lista_titulos}>
@@ -351,7 +365,10 @@ export default function telaCadastro(){
                                         <Image src={
                                             avaliacao.n_status_avaliacao==0?'/assets/icons/wait.svg':
                                             avaliacao.n_status_avaliacao==1?'/assets/icons/check.svg':'/assets/icons/done_b.svg'
-                                        } alt='Status da Avaliação' width={20} height={20} className={styles.iconEditar}/>
+                                        } alt='Status da Avaliação' title={
+                                            avaliacao.n_status_avaliacao==0?'Avaliação ainda não foi realizada':
+                                            avaliacao.n_status_avaliacao==1?'Avaliação realizada, porém relatórios ainda não foram gerados e enviados':'Relatórios gerados e enviados'
+                                        } width={20} height={20} className={styles.iconEditar}/>
                                         <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
                                         <Image src='/assets/icons/info.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>getInfoAvaliacao(avaliacao.n_id_avaliacao)}/>
                                     </div>
