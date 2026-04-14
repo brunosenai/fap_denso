@@ -12,6 +12,7 @@ export default function GestaoAvaliacoes() {
         n_id_avaliacao:0,
         s_nome_avaliacao:"",
         dt_data_avaliacao:"",
+        n_status_avaliacao:0
     });
     const [avaliacoesFiltradas,setAvaliacoesFiltradas] = useState<tAvaliacao[]>([]);
     const [candidatos,setCandidatos] = useState<tCandidato[]>([]);
