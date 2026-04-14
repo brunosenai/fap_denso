@@ -67,7 +67,7 @@ CREATE TABLE `pessoa` (
 );
 
 CREATE TABLE `config` (
-  `n_emailDestino_config` varchar(255)
+  `s_emailDestino_config` varchar(255)
 );
 
 ALTER TABLE `fap` ADD FOREIGN KEY (`n_id_avaliacao`) REFERENCES `avaliacao` (`n_id_avaliacao`);
@@ -119,7 +119,7 @@ VALUES
   (3, 1, 'Paulo', '33333333333', '31', 'paulo@email', '123'),
   (4, 1, 'Rodrigo', '44444444444', '31', 'rodrigo@email', '123'),
   (5, 1, 'Sérgio', '55555555555', '31', 'sergio@email', '123');
-INSERT INTO `config` (`n_emailDestino_config`)
+INSERT INTO `config` (`s_emailDestino_config`)
 VALUES
   ('bpinho@fiemg.com.br');
 

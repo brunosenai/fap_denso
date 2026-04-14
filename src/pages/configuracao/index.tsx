@@ -44,7 +44,7 @@ export default function Configuracao() {
                 },
                 body:JSON.stringify({
                     action:'updateConfig',
-                    n_emailDestino_config:config?.n_emailDestino_config
+                    s_emailDestino_config:config?.s_emailDestino_config
                 })
             })
             .then(res=>{
@@ -77,7 +77,7 @@ export default function Configuracao() {
                     <div className={styles.confiArea_corpo}>
                         <div className={styles.confiArea_field}>
                             <label htmlFor="email">E-Mail</label>
-                            <input type="email" id="email" placeholder="Digite o e-mail de destino" value={config?.n_emailDestino_config} onChange={(evt) => setConfig(prev => prev ? { ...prev, n_emailDestino_config: evt.target.value } : { n_emailDestino_config: evt.target.value } as tConfig)}/>
+                            <input type="email" id="email" placeholder="Digite o e-mail de destino" value={config?.s_emailDestino_config} onChange={(evt) => setConfig(prev => prev ? { ...prev, s_emailDestino_config: evt.target.value } : { s_emailDestino_config: evt.target.value } as tConfig)}/>
                         </div>
                     </div>
                 </div>

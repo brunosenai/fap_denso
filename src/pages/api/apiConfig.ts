@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }else if(req.method === 'PUT'){
         const {
             action,
-            n_emailDestino_config
+            s_emailDestino_config
         } = req.body;
         if(action == "updateConfig"){
             try {
@@ -61,8 +61,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     UPDATE
                         config
                     SET
-                        n_emailDestino_config=?;
-                    `,[n_emailDestino_config]
+                        s_emailDestino_config=?;
+                    `,[s_emailDestino_config]
                 )
                 res.status(200).json(rows)
             } catch (error) {

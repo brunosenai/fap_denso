@@ -87,7 +87,7 @@ export type tInfoAva={
 }
 
 export type tConfig={
-    n_emailDestino_config:string
+    s_emailDestino_config:string
 }
 
 export type tConfigPopupMessage={
