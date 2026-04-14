@@ -28,6 +28,7 @@ export default function TelaCadastroCandidatos(){
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
+            console.log(res)
             setCandidatos(res)
             setCandidatosFiltrados(res)
         })
@@ -203,7 +204,7 @@ export default function TelaCadastroCandidatos(){
                                 <div className={`${styles.c_dado} ${styles.c1_candidato}`}>{av.s_nome_candidato}</div>
                                 <div className={`${styles.c_dado} ${styles.c2_candidato}`}>{av.s_email_candidato}</div>
                                 <div className={`${styles.c_dado} ${styles.c3_candidato} ${styles.c_comandos}`}>
-                                    <Image src='/assets/icons/file_export.svg' alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
+                                    <Image src={`${Array.isArray(av.relatorios) && av.relatorios.length > 0 && av.relatorios[0] !== 'null' && av.relatorios[0] !== null?'/assets/icons/file_export.svg':'/assets/icons/nofile_r.svg'}`} alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
                                     <Image src='/assets/icons/send_email.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
                                 </div>
                             </div>

@@ -20,7 +20,7 @@ export type tCandidatoFap={
     s_nome_candidato: string
     s_email_candidato: string
     s_cpf_candidato:string
-    relatorios: []
+    relatorios: string[]
     n_resultado_fap:number
 }
 
