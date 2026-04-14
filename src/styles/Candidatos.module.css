@@ -22,7 +22,7 @@
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    height: calc(100vh - var(--alturaTopo));
+    height: calc(100dvh - var(--alturaTopo));
 }
 
 .fieldFormColunas{
@@ -96,7 +96,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 50%;
-    height: calc(100vh - var(--alturaTopo) - var(--alturaFieldFormCand) - 40px);
+    height: calc(100dvh - var(--alturaTopo) - var(--alturaFieldFormCand) - 40px);
     padding: 20px;
 }
 
@@ -106,7 +106,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    height: calc(100vh - var(--alturaTopo) - var(--alturaFieldFormCand) - var(--alturaFieldFormCandButton) - var(--alturaTituloCand) - var(--alturaFieldFormCandBotton) - 45px);
+    height: calc(100dvh - var(--alturaTopo) - var(--alturaFieldFormCand) - var(--alturaFieldFormCandButton) - var(--alturaTituloCand) - var(--alturaFieldFormCandBotton) - 45px);
     overflow-y: auto;
     gap: 10px;
     background-color: #fff;
