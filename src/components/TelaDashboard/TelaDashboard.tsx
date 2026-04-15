@@ -89,6 +89,43 @@ export default function TelaDashboard(){
         }
     };
 
+    const exportarPlanilha = async () => {
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&isExport=true`;
+        
+        try {
+            const res = await fetch(endpoint);
+            const data = await res.json();
+            const candidatos = data.tabelaCandidatos;
+
+            let csvContent = "Nome;Avaliacao;Data;Resultado\n";
+            console.log(data)
+            candidatos.forEach((c: any) => {
+                csvContent += `${c.nome};${c.avaliacao};${c.data};${c.resultado !== 0 ? "APROVADO" : "REPROVADO"}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `exportacao_candidatos_${new Date().toLocaleDateString()}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Erro ao exportar:", error);
+            alert("Erro ao gerar planilha");
+        }
+    };
+
+    const limparFiltros = () => {
+        setDashboardFilter('todos');
+        setAvaliacao('todas');      
+        setDataInicio('');          
+        setDataFim('');         
+        setPage(1);               
+    };
+
     if (!dadosDashboard) {
         return <div className={styles.loading}>Carregando Dashboard...</div>
     }
@@ -158,7 +195,13 @@ export default function TelaDashboard(){
                         do dia  
                         <input type="date" name="" id="" value={dataInicio} onChange={(e)=>{setDataInicio(e.target.value)}} /> 
                         até 
-                        <input type="date" name="" id="" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/>    
+                        <input type="date" name="" id="" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
+                        <button className={styles.exportButton} onClick={()=>{limparFiltros()}}>
+                            Limpar filtros
+                        </button>   
+                        <button className={styles.exportButton} onClick={()=>{exportarPlanilha()}}>
+                            Exportar planilha
+                        </button> 
                     </div>
 
                     <div className={styles.candidatesTable} onScroll={handleScroll}>
@@ -169,7 +212,6 @@ export default function TelaDashboard(){
                                     <th>AVALIAÇÃO</th>
                                     <th>DATA</th>
                                     <th>STATUS</th>
-                                    <th>AÇÕES</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -187,24 +229,6 @@ export default function TelaDashboard(){
                                                 >
                                                     {candidato.resultado !== 0 ? "APROVADO" : "REPROVADO"}
                                                 </span>
-                                            </td>
-                                            <td>
-                                                <Image
-                                                    src="/assets/icons/file_export.svg"
-                                                    alt="Ver Relatório"
-                                                    width={25}
-                                                    height={25}
-                                                    style={{ cursor: "pointer" }}
-                                                    onClick={() => candidato.relatorio && window.open(candidato.relatorio, "_blank")}
-                                                />
-                                                <Image
-                                                    src="/assets/icons/send_email.svg"
-                                                    alt="Enviar Email"
-                                                    width={25}
-                                                    height={25}
-                                                    style={{ cursor: "pointer", marginLeft: "10px" }}
-                                                    onClick={() => console.log("Enviar email para:", candidato.nome)}
-                                                />
                                             </td>
                                         </tr>
                                     ))

@@ -262,3 +262,18 @@
     cursor: pointer;
     filter: invert(1); 
 }
+
+.exportButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 40%;
+    width: 10%;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: var(--azulStellantis);
+    color: white;
+    font-size: 16px;
+    border: 2px solid var(--azulStellantis);
+}
