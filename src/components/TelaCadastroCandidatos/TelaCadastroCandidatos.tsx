@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { tCandidatoFap } from "@/utils/Types"
 import { verifyIsTablet } from "@/utils/Utils"
 import Load from "../Load/Load"
+import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 
 export default function TelaCadastroCandidatos(){
     const router=useRouter()
@@ -17,6 +18,15 @@ export default function TelaCadastroCandidatos(){
     const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
     const [isTablet, setIsTablet]=useState<boolean>()
     const [load, setLoad]=useState<boolean>(false)
+    const [popupMessage,setPopupMessage]=useState<boolean>(false)
+    const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
+        {
+            tipo:0,
+            titulo:"",
+            mensagem:"",
+            comandoOK:() => setPopupMessage(false)
+        }
+    )
     
     useEffect(()=>{
         setIsTablet(verifyIsTablet())
@@ -28,7 +38,6 @@ export default function TelaCadastroCandidatos(){
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
-            console.log(res)
             setCandidatos(res)
             setCandidatosFiltrados(res)
         })
@@ -36,7 +45,13 @@ export default function TelaCadastroCandidatos(){
 
     const cadastrarCandidato=async()=>{
         if(nome.trim()=="" || cpf.trim()=="" || email.trim()==""){
-            alert("Preencha todos os campos obrigatórios!")
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Preencha todos os campos obrigatórios!",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)
             return
         }
         const endpoint=`/api/apiCandidato`
@@ -53,9 +68,21 @@ export default function TelaCadastroCandidatos(){
         })
         .then(res=>{
             if(res.status!=200){
-                alert("Erro ao gravar avaliação!")
+                setDadosPopupMessage({
+                    tipo:3,
+                    titulo:"Erro",
+                    mensagem:"Erro ao gravar avaliação!",
+                    comandoOK:() => setPopupMessage(false)
+                })
+                setPopupMessage(true)
             }else{
-                alert("Candidato Cadastrado com sucesso")
+                setDadosPopupMessage({
+                    tipo:1,
+                    titulo:"Sucesso",
+                    mensagem:"Candidato Cadastrado com sucesso",
+                    comandoOK:() => setPopupMessage(false)
+                })
+                setPopupMessage(true)
                 setNome("")
                 setCpf("")
                 setEmail("")
@@ -64,37 +91,18 @@ export default function TelaCadastroCandidatos(){
         })
     }
 
-    // const baixaRelatorios=async(relatorios: any)=>{
-    //     const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
-    //     console.log(listaArquivos)
-
-    //     listaArquivos.forEach((nomeArquivo) => {
-    //         if(nomeArquivo!=null){
-    //             const url = `${nomeArquivo}`;
-    //             console.log(url)
-
-    //             const link = document.createElement('a');
-    //             link.href = url;
-    //             link.setAttribute('download', nomeArquivo);
-                
-    //             document.body.appendChild(link);
-    //             link.click();
-
-    //             document.body.removeChild(link);
-    //         }
-    //     });
-    // }
-
     const baixaRelatorios = async (relatorios: any) => {
         const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
-        console.log("Arquivos originais do banco:", listaArquivos);
-    
-        // 1. Tira todo o "lixo" da lista (null, undefined, string vazia)
+
         const relatoriosValidos = listaArquivos.filter(arquivo => arquivo !== null && arquivo !== undefined && arquivo !== "");
-    
-        // 2. Se depois de limpar a lista não sobrar nada, avisa o usuário e para a função
         if (relatoriosValidos.length === 0) {
-          alert("Ainda não há relatórios em PDF gerados para este candidato.");
+          setDadosPopupMessage({
+            tipo:2,
+            titulo:"Alerta",
+            mensagem:"Ainda não há relatórios em PDF gerados para este candidato.",
+            comandoOK:() => setPopupMessage(false)
+        })
+        setPopupMessage(true)
           return;
         }
     
@@ -107,9 +115,7 @@ export default function TelaCadastroCandidatos(){
             } else if (!urlCorreta.includes('/api/downloadPdf')) {
                 urlCorreta = `/api/downloadPdf?file=${urlCorreta}`;
             }
-    
-            console.log("Baixando pela API:", urlCorreta);
-    
+       
             const nomePuroParaDownload = urlCorreta.split('file=')[1] || 'relatorio_fap.pdf';
     
             const link = document.createElement('a');
@@ -132,6 +138,19 @@ export default function TelaCadastroCandidatos(){
     }
 
     const enviarEmail=async (relatorios: any)=>{
+        const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
+        const relatoriosValidos = listaArquivos.filter(arquivo => arquivo !== null && arquivo !== undefined && arquivo !== "");
+        if (relatoriosValidos.length === 0) {
+          setDadosPopupMessage({
+            tipo:2,
+            titulo:"Alerta",
+            mensagem:"Ainda não há relatórios em PDF gerados para este candidato.",
+            comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+            return;
+        }
+
         try{
             setLoad(true)
             const emailEndpoint = `/api/apiEnviarEmail`;
@@ -146,11 +165,23 @@ export default function TelaCadastroCandidatos(){
             if (!responseEmail.ok) {
                 throw new Error("Falha na resposta da API de e-mail");
             }else{
-                alert("E-mail enviado com sucesso!")
+                setDadosPopupMessage({
+                    tipo:1,
+                    titulo:"Sucesso",
+                    mensagem:"E-mail enviado com sucesso!",
+                    comandoOK:() => setPopupMessage(false)
+                })
+                setPopupMessage(true)
             }
         }catch(error){
             console.error("Erro ao enviar o e-mail:", error);
-            alert("Ocorreu um erro ao tentar enviar o e-mail para a empresa.");
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Ocorreu um erro ao tentar enviar o e-mail para a empresa.",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)            
             return; 
         }finally{
             setLoad(false)
@@ -158,60 +189,65 @@ export default function TelaCadastroCandidatos(){
     }
 
     return(
-        <div className={styles.telaCadastro}>
-            <div className={styles.telaCadastro_sessao1}>
-                <div className={styles.telaCadastro_topo}>
-                    <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
-                    <h1>NOVO CANDIDATO</h1><br />
-                </div>
-                <div className={styles.telaCadastro_form}>
-                    <div className={styles.fieldForm}>
-                        <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
-                        <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+        <>
+            {load&&<Load/>}
+            {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
+            <div className={styles.telaCadastro}>
+                <div className={styles.telaCadastro_sessao1}>
+                    <div className={styles.telaCadastro_topo}>
+                        <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
+                        <h1>NOVO CANDIDATO</h1><br />
                     </div>
-                    <div className={styles.fieldForm}>
-                        <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                        <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
-                    </div>
-                    <div className={styles.fieldForm}>
-                        <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                        <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
-                    </div>
-                    <div className={styles.fieldForm_center}>
-                        <button className={styles.btnPadrao} onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
-                    </div>
-                </div>
-            </div> 
-            <div className={styles.telaCadastro_sessao2}>
-                <div className={styles.telaCadastro_lista}>
-                    <div className={styles.telaCadastro_lista_filtro}>
+                    <div className={styles.telaCadastro_form}>
                         <div className={styles.fieldForm}>
-                            <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
+                            <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
+                            <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                         </div>
-                    </div>                
-                    <div className={styles.telaCadastro_lista_titulos}>
-                        <div className={`${styles.c_titulo} ${styles.c1_candidato}`}>Nome</div>
-                        <div className={`${styles.c_titulo} ${styles.c2_candidato}`}>E-Mail</div>
-                        <div className={`${styles.c_titulo} ${styles.c3_candidato} ${styles.c_comandos}`}>
-                            <Image src='/assets/icons/file_export_w.svg' alt={""} width={25} height={25}></Image>
-                            <Image src='/assets/icons/send_email_w.svg' alt={""} width={25} height={25}></Image>
+                        <div className={styles.fieldForm}>
+                            <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
+                            <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
                         </div>
-                        {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
-                    </div>
-                    <div className={styles.telaCadastro_lista_dados}>
-                        {candidatosFiltrados.map((av,index)=>(
-                            <div key={index} className={styles.telaCadastro_lista_dados_linha}>
-                                <div className={`${styles.c_dado} ${styles.c1_candidato}`}>{av.s_nome_candidato}</div>
-                                <div className={`${styles.c_dado} ${styles.c2_candidato}`}>{av.s_email_candidato}</div>
-                                <div className={`${styles.c_dado} ${styles.c3_candidato} ${styles.c_comandos}`}>
-                                    <Image src={`${Array.isArray(av.relatorios) && av.relatorios.length > 0 && av.relatorios[0] !== 'null' && av.relatorios[0] !== null?'/assets/icons/file_export.svg':'/assets/icons/nofile_r.svg'}`} alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
-                                    <Image src='/assets/icons/send_email.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
-                                </div>
-                            </div>
-                        ))}
+                        <div className={styles.fieldForm}>
+                            <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
+                            <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
+                        </div>
+                        <div className={styles.fieldForm_center}>
+                            <button className={styles.btnPadrao} onClick={()=>cadastrarCandidato()}>cadastrar novo</button>
+                        </div>
                     </div>
                 </div> 
+                <div className={styles.telaCadastro_sessao2}>
+                    <div className={styles.telaCadastro_lista}>
+                        <div className={styles.telaCadastro_lista_filtro}>
+                            <div className={styles.fieldForm}>
+                                <input type="text" placeholder="Pesquise pelo nome do candidato" id={`filtro`}  value={filtroAvaliadores} onChange={(e)=>filtrar(e.target.value)} />
+                            </div>
+                        </div>                
+                        <div className={styles.telaCadastro_lista_titulos}>
+                            <div className={`${styles.c_titulo} ${styles.c1_candidato}`}>Nome</div>
+                            <div className={`${styles.c_titulo} ${styles.c2_candidato}`}>E-Mail</div>
+                            <div className={`${styles.c_titulo} ${styles.c3_candidato} ${styles.c_comandos}`}>
+                                <Image src='/assets/icons/file_export_w.svg' alt={""} width={25} height={25}></Image>
+                                <Image src='/assets/icons/mail_w.svg' alt={""} width={25} height={25}></Image>
+                            </div>
+                            {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
+                        </div>
+                        <div className={styles.telaCadastro_lista_dados}>
+                            {candidatosFiltrados.map((av,index)=>(
+                                <div key={index} className={styles.telaCadastro_lista_dados_linha}>
+                                    <div className={`${styles.c_dado} ${styles.c1_candidato}`}>{av.s_nome_candidato}</div>
+                                    <div className={`${styles.c_dado} ${styles.c2_candidato}`}>{av.s_email_candidato}</div>
+                                    <div className={`${styles.c_dado} ${styles.c3_candidato} ${styles.c_comandos}`}>
+                                        <Image src={`${Array.isArray(av.relatorios) && av.relatorios.length > 0 && av.relatorios[0] !== 'null' && av.relatorios[0] !== null?'/assets/icons/file_export.svg':'/assets/icons/nofile_r.svg'}`} alt={""} width={25} height={25} onClick={()=>{baixaRelatorios(av.relatorios)}}></Image>
+                                        <Image src={`${Array.isArray(av.relatorios) && av.relatorios.length > 0 && av.relatorios[0] !== 'null' && av.relatorios[0] !== null?'/assets/icons/mail.svg':'/assets/icons/nomail_r.svg'}`} alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image>
+                                        {/* <Image src='/assets/icons/mail.svg' alt={""} width={25} height={25} onClick={()=>{enviarEmail(av.relatorios)}}></Image> */}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div> 
+                </div>
             </div>
-        </div>
+        </>
     )
 }

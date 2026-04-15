@@ -185,11 +185,6 @@ export default function telaCadastro(){
 
     const comandoNao=()=>{setPopupConfirmation(false)}
 
-    // const obterCheckboxSelecionados=()=>{
-    //     const cb=document.querySelectorAll("input[type='checkbox']:checked")
-    //     return Array.from(cb).slice(1);
-    // }
-
     const obterCheckboxSelecionados=()=>{
         const cb=document.querySelectorAll<HTMLInputElement>("input[type='checkbox']:checked");
         const tcb=Array.from(cb)
@@ -227,11 +222,6 @@ export default function telaCadastro(){
         })
         return idsSelecionados
     }
-
-    // const gerarEnviarRelatoriosEmail=()=>{
-    //     const ids=obterIdsAvaliacoesSelecionadas()
-    //     console.log(ids)
-    // }
 
     const gerarEnviarRelatoriosEmail = async () => {
         const ids = obterIdsAvaliacoesSelecionadas();
