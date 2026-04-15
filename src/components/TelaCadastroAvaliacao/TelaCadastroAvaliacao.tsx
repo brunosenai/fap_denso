@@ -45,55 +45,95 @@ export default function telaCadastro(){
 
     const obterAvaliacoes=(historico:boolean)=>{
         setLoad(true)
-        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}`
-        fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setAvaliacoes(res)
-            setAvaliacoesFiltradas(res)
+        try{
+            const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}`
+            fetch(endpoint)
+            .then(res=>res.json())
+            .then(res=>{
+                setAvaliacoes(res)
+                setAvaliacoesFiltradas(res)
+                setLoad(false)
+            })
+        }catch(err){
+            console.log(err)
             setLoad(false)
-        })
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Erro ao obter avaliações!",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+        }
     }
 
     const getInfoAvaliacao=async(idAvaliacao:number)=>{
         setLoad(true)
-        const endpoint=`/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}`
-        fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setInfoAva(res)
+        try{
+            const endpoint=`/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}`
+            fetch(endpoint)
+            .then(res=>res.json())
+            .then(res=>{
+                setInfoAva(res)
+                setLoad(false)
+                setShowInfoAvaliacao(true)
+            })
+            .finally(()=>{
+                setLoad(false)
+            })
+        }catch(err){
+            console.log(err)
             setLoad(false)
-            setShowInfoAvaliacao(true)
-        })
-        .finally(()=>{
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Erro ao obter informações da avaliação!",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+        }finally{
             setLoad(false)
-        })
+        }
     }
 
     const excluirAvaliacao=(id:number)=>{
-        const endpoint=`/api/apiAvaliacao`
-        fetch(endpoint,{
-            method:"DELETE",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                id_avaliacao:id
-            })
-        })
-        .then(res=>{
-            if(res.status!=200){
-                setDadosPopupMessage({
-                    tipo:3,
-                    titulo:"Erro",
-                    mensagem:"Erro ao excluir avaliação!",
-                    comandoOK:() => setPopupMessage(false)
+        try{
+            const endpoint=`/api/apiAvaliacao`
+            fetch(endpoint,{
+                method:"DELETE",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    id_avaliacao:id
                 })
-                setPopupMessage(true)
-            }else{
-                obterAvaliacoes(mostrarHistorico)
-            }
-        })
+            })
+            .then(res=>{
+                if(res.status!=200){
+                    setDadosPopupMessage({
+                        tipo:3,
+                        titulo:"Erro",
+                        mensagem:"Erro ao excluir avaliação!",
+                        comandoOK:() => setPopupMessage(false)
+                    })
+                    setPopupMessage(true)
+                }else{
+                    obterAvaliacoes(mostrarHistorico)
+                }
+            })
+        }catch(err){
+            console.log(err)
+            setLoad(false)
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Erro ao excluir avaliação!",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+        }finally{
+            setLoad(false)
+        }
     }
 
     const cadastrarAvaliacao=()=>{
@@ -107,30 +147,46 @@ export default function telaCadastro(){
             setPopupMessage(true)
             return
         }
-        const endpoint=`/api/apiAvaliacao`
-        fetch(endpoint,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                s_nome_avaliacao:nome,
-                dt_data_avaliacao:data
-            })
-        })
-        .then(res=>{
-            if(res.status!=200){
-                setDadosPopupMessage({
-                    tipo:3,
-                    titulo:"Erro",
-                    mensagem:"Erro ao gravar avaliação!",
-                    comandoOK:() => setPopupMessage(false)
+        try{
+            const endpoint=`/api/apiAvaliacao`
+            fetch(endpoint,{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    s_nome_avaliacao:nome,
+                    dt_data_avaliacao:data
                 })
-                setPopupMessage(true)
-            }else{
-                obterAvaliacoes(mostrarHistorico)
-            }
-        })
+            })
+            .then(res=>{
+                if(res.status!=200){
+                    setDadosPopupMessage({
+                        tipo:3,
+                        titulo:"Erro",
+                        mensagem:"Erro ao gravar avaliação!",
+                        comandoOK:() => setPopupMessage(false)
+                    })
+                    setPopupMessage(true)
+                }else{
+                    obterAvaliacoes(mostrarHistorico)
+                }
+            })
+        }catch(err){
+            console.log(err)
+            setLoad(false)
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Erro ao gravar avaliação!",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+        }finally{
+            setLoad(false)
+            setNome("")
+            setData("")
+        }
     }
 
     const executarFiltros = (nomeBusca: string, dataIni: string, dataFim: string) => {
@@ -258,6 +314,7 @@ export default function telaCadastro(){
             });
             setPopupMessage(true);
         } catch (error) {
+            setLoad(false)
             console.error(error);
             setDadosPopupMessage({
                 tipo: 3, // Erro

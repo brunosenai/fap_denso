@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             
             if (resTurma.length === 0) continue;
 
-            const turmaNome = resTurma[0].s_nome_avaliacao.replace(/\s+/g, '_');
+            const turmaNome = resTurma[0].s_nome_avaliacao.replace(/[\s:]/g, '_');
             const nomeArquivoZip = `Relatorios_${turmaNome}_ID${id_avaliacao}.zip`;
             const caminhoZip = path.join(pastaRelatorios, nomeArquivoZip);
 

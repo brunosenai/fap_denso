@@ -93,11 +93,11 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
         {/* HEADER */}
         <View style={styles.headerTop}>
           <Image 
-            src={typeof window !== 'undefined' ? `${window.location.origin}/assets/logo-centro-branco.png` : 'public/assets/logo-centro-branco.png'} 
+            src={typeof window !== 'undefined' ? `${window.location.origin}/assets/logo-centro-branco.png` : `${process.cwd()}/public/assets/logo-centro-branco.png`} 
             style={styles.logo} 
           /> 
           <Image 
-            src={typeof window !== 'undefined' ? `${window.location.origin}/assets/logo-stellantis-branco.png` : 'public/assets/logo-stellantis-branco.png'} 
+            src={typeof window !== 'undefined' ? `${window.location.origin}/assets/logo-stellantis-branco.png` : `${process.cwd()}/public/assets/logo-stellantis-branco.png`} 
             style={styles.logo} 
           />
         </View>

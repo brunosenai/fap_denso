@@ -3,13 +3,11 @@ import styles from "@/styles/Fap.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import TopoFap from "@/components/Topo/TopoFap";
+import PopupMessage, { PopupMessageProps } from "@/components/Popup/PopupMessage";
 import { tCandidato, tFap, tAvaliacao } from "@/utils/Types";
 import FapFap from "@/components/Fap/Fap";
-// import { pdf } from '@react-pdf/renderer';
-// import { RelatorioFap } from "@/components/Pdf/RelatorioFap";
 import Image from "next/image";
 import Load from "@/components/Load/Load";
-// import ConclusaoSeguraDoCiclo from "@/components/Popup/PopupFap";
 import PopupFap from "@/components/Popup/PopupFap";
 import PopupConfirmation from "@/components/Popup/PopupConfirmation";
 
@@ -20,21 +18,30 @@ export default function Fap() {
   const [fap, setFap] = useState<tFap[]>([]);
   const [abaAtual, setAbaAtual] = useState<number>(0);
   const [abaObservacaoAberta, setAbaObservacaoAberta] = useState<boolean>(false);
-  const [load,setLoad]=useState(false)
-  const [popup,setPopup]=useState([false,false,false,false,false,false,false])
-  const [popupConfirm,setPopupConfirm]=useState(false)
+  const [load,setLoad]=useState(false);
+  const [popup,setPopup]=useState([false,false,false,false,false,false,false]);
+  const [popupConfirm,setPopupConfirm]=useState(false);
+  const [popupMessage,setPopupMessage]=useState<boolean>(false)
+  const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
+    {
+        tipo:0,
+        titulo:"",
+        mensagem:"",
+        comandoOK:() => setPopupMessage(false)
+    }
+)
 
   useEffect(() => { 
     buscarDados();
   }, []);
 
   const buscarDados = async () => {
-    setLoad(true)
+    setLoad(true);
     const candidatosSelecionados = localStorage.getItem("candidatos")?.split(",").map(id => parseInt(id)) || [];
     const idavaliacao = localStorage.getItem("n_id_avaliacao") ? parseInt(localStorage.getItem("n_id_avaliacao")!) : -1;
     const endpoint = `/api/apiCandidato?action=getDadosByFap&listaIds=${candidatosSelecionados}&n_id_avaliacao=${idavaliacao}`;
     
-    try{
+    try {
       fetch(endpoint, {
           method: "GET"
       })
@@ -42,33 +49,37 @@ export default function Fap() {
       .then(data => {
           setListaCandidatos(data.candidatos);
           setAvaliacao(data.avaliacao);        
+          
           if (data.fap && data.fap.length > 0) {
-            data.fap.forEach((f: tFap) => {
-              f.dt_date_fap=data.avaliacao.dt_data_avaliacao
-              f.n_id_avaliacao=idavaliacao
-              f.n_id_pessoa = localStorage.getItem("n_id_pessoa") ? parseInt(localStorage.getItem("n_id_pessoa")!) : -1
-            })
-            setFap(data.fap);
+            const fapAlinhado = data.candidatos.map((candidato: tCandidato) => {
+              let fichaDoCandidato = data.fap.find((f: tFap) => f.n_id_candidato === candidato.n_id_candidato);
+              
+              if (fichaDoCandidato) {
+                fichaDoCandidato.dt_date_fap = data.avaliacao.dt_data_avaliacao;
+                fichaDoCandidato.n_id_avaliacao = idavaliacao;
+                fichaDoCandidato.n_id_pessoa = localStorage.getItem("n_id_pessoa") ? parseInt(localStorage.getItem("n_id_pessoa")!) : -1;
+              }
+              
+              return fichaDoCandidato;
+            }).filter((f: tFap | undefined) => f !== undefined);
+            
+            setFap(fapAlinhado);
           }
       });
-    }catch(erro){
-      console.error(`Erro:${erro}`)
-    }
-    finally{
-      setLoad(false)
+    } catch(erro) {
+      console.error(`Erro:${erro}`);
+    } finally {
+      setLoad(false);
     }
   }
 
   const validarFap = (): boolean => {
     let res = true;
     fap.forEach((f, index) => {
-      // Validação dos Postos
       if(f.n_posto1_fap == 0 && f.n_posto2_fap == 0 && f.n_posto3_fap == 0 && f.n_posto4_fap == 0 && f.n_posto5_fap == 0 && f.n_posto6_fap == 0){
         console.log(`Candidato da aba ${index} está sem POSTO marcado.`);
         res = false;
       }
-      
-      // Validação Eliminatórias (Q6 e Q7) - Esperam 0 ou 1
       if(f.n_q6_fap < 0 || f.n_q6_fap > 1){
         console.log(`Candidato da aba ${index} está com a Q6 pendente.`);
         res = false;
@@ -77,8 +88,6 @@ export default function Fap() {
         console.log(`Candidato da aba ${index} está com a Q7 pendente.`);
         res = false;
       }
-      
-      // Validação de Escala (Q8 a Q12) - Esperam de 1 a 4
       if(f.n_q8_fap < 1 || f.n_q8_fap > 4){
         console.log(`Candidato da aba ${index} está com a Q8 pendente.`);
         res = false;
@@ -105,14 +114,8 @@ export default function Fap() {
 
   const calcularNota = (itemFap: tFap): number[] => {
     let nota = 0;
+    const mediaAprovacao = 13; 
     
-    // ATENÇÃO: Q8 agora vale 4. O máximo passou de 19 para 22 (1+1+4+4+4+4+4)
-    const notaMax = 22; 
-    
-    // ATENÇÃO: Verifique com a equipe de negócio se a média de aprovação sobe
-    const mediaAprovacao = 13; // Ajuste conforme a nova regra da Stellantis
-    
-    // Somatório das notas (a lógica de soma não muda, pois n_q8_fap agora virá com valor de 1 a 4)
     if(itemFap.n_q6_fap == 1) nota += 1;
     if(itemFap.n_q7_fap == 1) nota += 1;
     if(itemFap.n_q8_fap > 0) nota += itemFap.n_q8_fap; 
@@ -123,7 +126,6 @@ export default function Fap() {
 
     let aprovado = 0;
     if(nota >= mediaAprovacao){
-      // A regra eliminatória já estava certa focando só na Q6 e Q7
       if(itemFap.n_q6_fap == 0 || itemFap.n_q7_fap == 0)
         aprovado = 0;
       else
@@ -137,194 +139,116 @@ export default function Fap() {
 
   const salvar = async (): Promise<boolean> => {
     if (!validarFap()) {
-      alert("Por favor, preencha todos os campos obrigatórios de todos os candidatos antes de salvar.");
+      setDadosPopupMessage({
+        tipo: 2, // Erro
+        titulo: "Alerta",
+        mensagem: "Por favor, preencha todos os campos obrigatórios de todos os candidatos antes de salvar.",
+        comandoOK: () => setPopupMessage(false)
+      });
+      setPopupMessage(true);
       return false; 
     }
   
-    // 2. Calcula as notas e atualiza o objeto fap que irá para o PDF
-    fap.forEach((f) => {
+    // CORREÇÃO: Cria um novo array mapeado antes de enviar para não mutar o estado diretamente
+    const fapFinalizado = fap.map((f) => {
       const [nota, aprovado] = calcularNota(f);
-      f.n_nota_fap = nota;
-      f.n_resultado_fap = aprovado;
-      f.n_status_fap=1;
+      return {
+        ...f,
+        n_nota_fap: nota,
+        n_resultado_fap: aprovado,
+        n_status_fap: 1
+      };
     });
-    // 3. Envia para o banco de dados
+
     const endpoint = `/api/apiFap`;
     try {
       const response = await fetch(endpoint, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fap: fap })
+        body: JSON.stringify({ fap: fapFinalizado }) 
       });
   
       if (response.ok) {
-        return true; // Sucesso! Pode gerar os PDFs.
+        return true; 
       } else {
-        alert("Erro ao salvar avaliações no banco de dados.");
-        return false; // Erro no servidor, não gera os PDFs.
+        setDadosPopupMessage({
+          tipo: 3, // Erro
+          titulo: "Erro",
+          mensagem: "Erro ao salvar avaliações no banco de dados.",
+          comandoOK: () => setPopupMessage(false)
+        });
+        setPopupMessage(true);
+        return false; 
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
-      alert("Erro de conexão ao tentar salvar.");
-      return false; // Erro de rede, não gera os PDFs.
+      setDadosPopupMessage({
+        tipo: 3, // Erro
+        titulo: "Erro",
+        mensagem: "Erro de conexão ao tentar salvar.",
+        comandoOK: () => setPopupMessage(false)
+      });
+      setPopupMessage(true);
+      return false; 
     }
   };
 
-  // const finalizarAvaliacao = async () => {
-  //   // Evita rodar se não houver dados
-  //   if (listaCandidatos.length === 0 || fap.length === 0) return;
-  
-  //   // 1. AGUARDA O SALVAMENTO NO BANCO ANTES DE CONTINUAR
-  //   // A função salvar() já faz a validação e calcula as notas
-  //   setLoad(true)
-  //   const salvouComSucesso = await salvar();
-  
-  //   // Se falhou na validação ou no banco, interrompe o processo aqui
-  //   if (!salvouComSucesso) {
-  //     setLoad(false)
-  //     return; 
-  //   }
-  
-  //   // Array para guardar os nomes dos PDFs gerados que serão anexados no e-mail
-  //   const arquivosGerados: string[] = [];
-  
-  //   // 2. GERAÇÃO E ARMAZENAMENTO DOS PDFs
-  //   for (let i = 0; i < listaCandidatos.length; i++) {
-  //     const candidato = listaCandidatos[i];
-  //     const fapCandidato = fap[i];
-  
-  //     // Gera o PDF em Blob usando o react-pdf
-  //     const blob = await pdf(
-  //       <RelatorioFap candidato={candidato} fapCandidato={fapCandidato} />
-  //     ).toBlob();
-
-  //     // Converte o Blob para Base64 para poder enviar via JSON no corpo da requisição
-  //     const base64 = await new Promise<string>((resolve) => {
-  //       const reader = new FileReader();
-  //       reader.readAsDataURL(blob);
-  //       reader.onloadend = () => {
-  //         const base64String = (reader.result as string).split(',')[1];
-  //         resolve(base64String);
-  //       };
-  //     });
-  
-  //     // Define um nome único para o arquivo PDF
-  //     const fileName = `FAP_${candidato.s_nome_candidato.replace(/\s+/g, '_')}_${candidato.n_id_candidato}_${fapCandidato.n_id_avaliacao}.pdf`;
-      
-  //     // Guarda o nome do arquivo na nossa lista para o e-mail
-  //     arquivosGerados.push(fileName);
-  
-  //     // Dispara a requisição POST para a apiFap (que configuramos para salvar o arquivo físico e fazer o UPDATE do path no banco)
-  //     const endpoint = `/api/apiFap`; 
-  //     await fetch(endpoint, {
-  //       method: "POST", 
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({
-  //         n_id_avaliacao: fapCandidato.n_id_avaliacao,
-  //         n_id_candidato: fapCandidato.n_id_candidato,
-  //         fileName: fileName,
-  //         fileData: base64
-  //       })
-  //     });
-  
-  //     // Pequena pausa para o navegador não travar e dar tempo de processamento
-  //     await new Promise(resolve => setTimeout(resolve, 300));
-  //   }
-    
-  //   // 3. ENVIO DO E-MAIL PARA A EMPRESA
-  //   try {
-  //     const emailEndpoint = `/api/apiEnviarEmail`;
-  //     const responseEmail = await fetch(emailEndpoint, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         assunto: `Relatórios FAP - Avaliação Concluída (${new Date().toLocaleDateString()})`,
-  //         arquivos: arquivosGerados // Manda apenas a lista com os nomes dos PDFs
-  //       })
-  //     });
-
-  //     if (!responseEmail.ok) {
-  //       throw new Error("Falha na resposta da API de e-mail");
-  //       setLoad(false)
-  //     }
-  //   } catch (error) {
-  //     setLoad(false)
-  //     console.error("Erro ao enviar o e-mail:", error);
-  //     alert("A avaliação foi salva e os PDFs gerados, mas ocorreu um erro ao tentar enviar o e-mail para a empresa.");
-  //     // Redireciona mesmo com erro no e-mail, pois o trabalho principal foi concluído
-  //     router.push('/home');
-  //     return; 
-  //   }
-
-  //   // 4. FINALIZAÇÃO COM SUCESSO
-  //   setLoad(false)
-  //   alert("Avaliação finalizada, relatórios gerados e enviados para a empresa com sucesso!");
-  //   router.push('/home');
-  // };
-
   const finalizarAvaliacao = async () => {
-    // Evita rodar se não houver dados
     if (listaCandidatos.length === 0 || fap.length === 0) return;
   
     setLoad(true);
     
-    // 1. Salva as notas e status nas tabelas fap e avaliacao via API
     const salvouComSucesso = await salvar();
   
-    // Se falhou na validação ou erro de conexão, interrompe o processo aqui
     if (!salvouComSucesso) {
       setLoad(false);
       return; 
     }
   
-    // 2. Limpa o cache da sessão atual (Fundamental para a próxima avaliação)
     localStorage.removeItem("candidatos");
     localStorage.removeItem("n_id_avaliacao");
-    // Obs: Não limpe o n_id_pessoa para o avaliador não precisar logar de novo!
 
-    // 3. Finaliza com sucesso
     setLoad(false);
-    alert("Avaliação finalizada e salva com sucesso! Os relatórios poderão ser gerados e enviados pela tela de Cadastros.");
+    setDadosPopupMessage({
+      tipo: 1,
+      titulo: "Sucesso",
+      mensagem: "Avaliação finalizada e salva com sucesso! Os relatórios poderão ser gerados e enviados pela tela de Cadastros.",
+      comandoOK: () => setPopupMessage(false)
+    });
+    setPopupMessage(true);
+
     router.push('/home');
   };
-
-
   
   const voltar=()=>{
-    setPopupConfirm(true)
-    // const res=confirm('Se você sair perderá todas as marcações!\nConfirma que deseja sair?')
-    // if(res)
-    //   router.back();
+    setPopupConfirm(true);
   }
 
   const fecharPopup=(i:number)=>{
-    let novaLista=[...popup]
-    novaLista[i]=false
-    setPopup(novaLista)
+    let novaLista=[...popup];
+    novaLista[i]=false;
+    setPopup(novaLista);
   }
 
   const abrirPopup=(i:number)=>{
-    let novaLista=[...popup]
-    novaLista[i-1]=true
-    setPopup(novaLista)
+    let novaLista=[...popup];
+    novaLista[i-1]=true;
+    setPopup(novaLista);
   }
 
   const comandoSim=()=>{
-    setPopupConfirm(false)
+    setPopupConfirm(false);
     router.back();
   }
 
   const comandoNao=()=>{
-    setPopupConfirm(false)
-    console.log("não")
+    setPopupConfirm(false);
   }
-
 
   return (
     <>
       {load&&<Load/>}
+      {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
       {popupConfirm&&<PopupConfirmation titulo="Sair" mensagem={'Se você sair perderá todas as marcações!'} pergunta="Confirma que deseja sair?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
       {popup[0]&&<PopupFap
         titulo="Condução segura do ciclo (C2, C3, C4, C5, C8)"
