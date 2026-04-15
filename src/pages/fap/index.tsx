@@ -213,11 +213,9 @@ export default function Fap() {
       tipo: 1,
       titulo: "Sucesso",
       mensagem: "Avaliação finalizada e salva com sucesso! Os relatórios poderão ser gerados e enviados pela tela de Cadastros.",
-      comandoOK: () => setPopupMessage(false)
+      comandoOK: () => {setPopupMessage(false);    router.push('/home');}
     });
     setPopupMessage(true);
-
-    router.push('/home');
   };
   
   const voltar=()=>{

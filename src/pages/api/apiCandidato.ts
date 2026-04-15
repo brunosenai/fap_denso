@@ -21,10 +21,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             action,
             n_id_avaliacao,
             n_id_candidato,
-            listaIds
+            listaIds,
+            nomeAvaliacao
         } = req.query
 
-        if(action == "getListaCandidatos"){
+        if(action == "getCandidatosByAvaliacaoFiltro"){
+            console.log(nomeAvaliacao)
+            try {
+                const [rows_av] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_avaliacao
+                    FROM
+                        avaliacao
+                    WHERE
+                        s_nome_avaliacao = ?
+                    `,[nomeAvaliacao]
+                )
+                const n_id_avaliacao = rows_av.length>0?rows_av[0].n_id_avaliacao:-1;
+                console.log(n_id_avaliacao)
+                const [rows_cell] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        f.n_id_candidato,
+                        c.s_nome_candidato,
+                        c.s_cpf_candidato
+                    FROM
+                        fap f
+                    LEFT JOIN candidato c ON c.n_id_candidato=f.n_id_candidato
+                    WHERE
+                        f.n_id_avaliacao=?
+                    ORDER BY
+                        c.s_nome_candidato ASC
+                    `,[n_id_avaliacao]
+                )
+                res.status(200).json(rows_cell)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action == "getListaCandidatos"){
             try {
                 const [rows_cell] = await pool.query<RowDataPacket[]>(`
                     SELECT

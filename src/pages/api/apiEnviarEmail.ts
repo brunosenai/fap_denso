@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import fs from 'fs';
+import pool from "@/services/Banco";
+import { RowDataPacket } from 'mysql2';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -53,11 +55,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             };
         });
 
-        const emailEmpresa = process.env.EMAIL_DESTINO_EMPRESA;
+        // =========================================================
+        // Busca a lista de e-mails configurados no banco
+        // =========================================================
+        const [configRes] = await pool.query<RowDataPacket[]>(`SELECT s_emailDestino_config FROM config LIMIT 1`);
+        
+        let emailsDestino = process.env.EMAIL_DESTINO_EMPRESA; // E-mail padrão de fallback
+        
+        if (configRes.length > 0 && configRes[0].s_emailDestino_config) {
+            // Converte a string separada por ';' para uma lista separada por vírgula para o nodemailer
+            emailsDestino = configRes[0].s_emailDestino_config
+                .split(';')
+                .map((e: string) => e.trim())
+                .filter((e: string) => e !== '')
+                .join(', ');
+        }
+        // =========================================================
 
         const info = await transporter.sendMail({
             from: `"Sistema FAP" <${process.env.SMTP_USER}>`, 
-            to: emailEmpresa, 
+            to: emailsDestino, 
             subject: assunto, 
             text: "Olá! Seguem em anexo os relatórios FAP da última avaliação.", 
             html: "<p>Olá!</p><p>Seguem em anexo os relatórios FAP da última avaliação gerada pelo sistema.</p>", 

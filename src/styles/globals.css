@@ -77,6 +77,13 @@
   }
 }
 
+input{
+  background-color: #fff !important;
+}
+select{
+  background-color: #fff !important;
+}
+
 html,
 body {
   max-width: 100vw;

@@ -41,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             
             if (resTurma.length === 0) continue;
 
+            // Limpa o nome substituindo espaços e dois-pontos por underline
             const turmaNome = resTurma[0].s_nome_avaliacao.replace(/[\s:]/g, '_');
             const nomeArquivoZip = `Relatorios_${turmaNome}_ID${id_avaliacao}.zip`;
             const caminhoZip = path.join(pastaRelatorios, nomeArquivoZip);
@@ -78,11 +79,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     RelatorioFap({ candidato, fapCandidato: fap })
                 );
 
-                // PASSO A: Salva o PDF individualmente no disco (HD da VPS)
+                // PASSO A: Salva o PDF individualmente no disco
                 const writeStream = fs.createWriteStream(caminhoFisicoPdf);
                 pdfStream.pipe(writeStream);
 
-                // Adicione o <void> logo após o Promise:
                 await new Promise<void>((resolve, reject) => {
                     writeStream.on('finish', resolve);
                     writeStream.on('error', reject);
@@ -121,9 +121,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             path: path.join(pastaRelatorios, nome)
         }));
 
+        // =========================================================
+        // Busca a lista de e-mails configurados no banco
+        // =========================================================
+        const [configRes] = await pool.query<RowDataPacket[]>(`SELECT s_emailDestino_config FROM config LIMIT 1`);
+        
+        let emailsDestino = process.env.EMAIL_DESTINO_EMPRESA; // E-mail padrão de fallback do .env
+        
+        if (configRes.length > 0 && configRes[0].s_emailDestino_config) {
+            // Converte a string "email1; email2; email3" para "email1, email2, email3"
+            emailsDestino = configRes[0].s_emailDestino_config
+                .split(';')
+                .map((e: string) => e.trim())
+                .filter((e: string) => e !== '')
+                .join(', ');
+        }
+        // =========================================================
+
         await transporter.sendMail({
             from: `"Sistema FAP Centro 4.0" <${process.env.SMTP_USER}>`,
-            to: process.env.EMAIL_DESTINO_EMPRESA,
+            to: emailsDestino, 
             subject: "Relatórios FAP - Envio em Lote",
             html: `
                 <p>Olá,</p>

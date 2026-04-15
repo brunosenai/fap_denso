@@ -84,6 +84,23 @@
     gap:1px;
 }
 
+.fieldForm_icon{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+}
+
+.fieldForm_col{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    gap:10px;
+}
+
 .fieldForm_center{
     display: flex;
     flex-direction: column;
@@ -104,6 +121,32 @@
     font-size: x-small;
     outline: none;
     box-shadow: 0 0 5px rgba(0,0,0,0.1); 
+}
+
+.fieldForm_icon input{
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px 0px 0px 5px !important;
+    background-color: #fff;
+    font-size: x-small;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1); 
+}
+
+.fieldForm_icon button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;  
+    background-color: var(--azulStellantis);
+    color: #fff;
+    border: none;
+    border-radius: 0px 5px 5px 0px !important;
+    min-width: 50px;
+    max-height: 23px;
+    min-height: 23px;
+    cursor: pointer;
+    overflow: hidden;
 }
 
 .btnPadrao{
