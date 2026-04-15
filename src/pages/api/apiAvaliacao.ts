@@ -21,7 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const {
             action,
             n_id_pessoa,
-            n_id_avaliacao
+            n_id_avaliacao,
+            historico
         } = req.query
 
         if(action == "getAvaliacoesHojeEmDiante"){
@@ -46,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             try {
                 const [rows_avaliacao] = await pool.query<RowDataPacket[]>(`
                     SELECT
-                        n_id_avaliacao,s_nome_avaliacao,dt_data_avaliacao
+                        *
                     FROM
                         avaliacao
                     WHERE
@@ -110,7 +111,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             FROM
                                 fap
                             WHERE
-                                n_id_pessoa=1
+                                n_id_pessoa=?
                             group by n_id_avaliacao
                         );
                     `,[n_id_pessoa]
@@ -122,16 +123,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }else if(action == "getAvaliacoes"){
             try {
-                const [rows] = await pool.query<RowDataPacket[]>(`
-                    SELECT
-                        *
-                    FROM
-                        avaliacao
-                    ORDER BY
-                        dt_data_avaliacao ASC
-                    `,[]
-                )
-                res.status(200).json(rows)
+                if(historico=='true'){
+                    const [rows] = await pool.query<RowDataPacket[]>(`
+                        SELECT
+                            *
+                        FROM
+                            avaliacao
+                        ORDER BY
+                            dt_data_avaliacao DESC
+                        `,[]
+                    )
+                    res.status(200).json(rows)
+                }else{
+                    const [rows] = await pool.query<RowDataPacket[]>(`
+                        SELECT
+                            *
+                        FROM
+                            avaliacao
+                        WHERE
+                            dt_data_avaliacao >= CURDATE()
+                        ORDER BY
+                            dt_data_avaliacao ASC
+                        `,[]
+                    )
+                    res.status(200).json(rows)
+                }
             } catch (error) {
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})

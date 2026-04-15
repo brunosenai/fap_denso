@@ -4,7 +4,6 @@ import styles from "@/styles/Cadastro.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Topo from "@/components/Topo/Topo";
-import { tAvaliacao } from "@/utils/Types";
 import MenuCadastro from "@/components/MenuCadastro.tsx/MenuCadastro";
 import TelaCadastroCandidatos from "@/components/TelaCadastroCandidatos/TelaCadastroCandidatos";
 import TelaCadastroAvaliador from "@/components/TelaCadastroAvaliador/TelaCadastroAvaliador";

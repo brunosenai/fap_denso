@@ -2,6 +2,7 @@ export type tAvaliacao = {
     n_id_avaliacao:number
     s_nome_avaliacao:string
     dt_data_avaliacao:string
+    n_status_avaliacao:number
 }
 
 export type tAvaliador={
@@ -19,7 +20,7 @@ export type tCandidatoFap={
     s_nome_candidato: string
     s_email_candidato: string
     s_cpf_candidato:string
-    relatorios: []
+    relatorios: string[]
     n_resultado_fap:number
 }
 
@@ -83,4 +84,15 @@ export type tInfoAva={
     infoAvaliacao:tAvaliacao[],
     infoCandidatos:tCandidatoFap[],
     infoAvaliadores:tPessoa[],
+}
+
+export type tConfig={
+    s_emailDestino_config:string
+}
+
+export type tConfigPopupMessage={
+    tipo:number, // 1:mensagem, 2:informação, 3:erro
+    titulo:string,
+    mensagem:string,
+    comandoOK:()=>void
 }

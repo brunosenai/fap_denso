@@ -4,10 +4,10 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    /* max-height: calc(100vh - var(--alturaTopoPC));
-    min-height: calc(100vh - var(--alturaTopoPC)); */
-    max-height: 100vh;
-    min-height: 100vh;
+    /* max-height: calc(100dvh - var(--alturaTopoPC));
+    min-height: calc(100dvh - var(--alturaTopoPC)); */
+    max-height: 100dvh;
+    min-height: 100dvh;
     border: 3px solid #000;
 }
 

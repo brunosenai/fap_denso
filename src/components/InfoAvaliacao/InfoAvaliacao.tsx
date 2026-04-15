@@ -19,6 +19,8 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
     const [load,setLoad]=useState(true)
 
     const getFapCandidato=async(idAvaliacao:number,idCandidato:number)=>{
+        if(props.infoAva?.infoAvaliacao[0].n_status_avaliacao!=1)
+            return
         setIdAvaliacao(idAvaliacao)
         setIdCandidato(idCandidato)
         setLoad(true)
@@ -95,9 +97,9 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
                                     <div key={i} className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3}>
                                         <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c1}><span>Id: </span>&nbsp;{c.n_id_candidato}</div>
                                         <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c2}><span>Nome: </span>&nbsp;{c.s_nome_candidato}</div>
-                                        <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c3}><span>Status: </span>&nbsp;<span className={`${c.n_resultado_fap == 0?styles.corReprovado:styles.corAprovado}`}>{c.n_resultado_fap == 0?'Reprovado':'Aprovado'}</span></div>
+                                        <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c3}><span>Status: </span>&nbsp;<span className={`${props.infoAva?.infoAvaliacao[0].n_status_avaliacao==0?styles.corNaoAvaliado:c.n_resultado_fap == 0?styles.corReprovado:styles.corAprovado}`}>{props.infoAva?.infoAvaliacao[0].n_status_avaliacao==0?'Não Avaliado':c.n_resultado_fap == 1?'Aprovado':'Reprovado'}</span></div>
                                         <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c4}>
-                                            <Image src='/assets/icons/edit_document.svg' alt='Editar Avaliação' width={20} height={-1} onClick={()=>getFapCandidato(props.infoAva?props.infoAva.infoAvaliacao[0].n_id_avaliacao:-1,c.n_id_candidato)}/>
+                                            <Image src={`${props.infoAva?.infoAvaliacao[0].n_status_avaliacao&&props.infoAva?.infoAvaliacao[0].n_status_avaliacao===1?'/assets/icons/edit_document.svg':'/assets/icons/edit_off.svg'}`} alt='Editar Avaliação' width={20} height={-1} onClick={()=>getFapCandidato(props.infoAva?props.infoAva.infoAvaliacao[0].n_id_avaliacao:-1,c.n_id_candidato)}/>
                                         </div>
                                     </div>                                
                                 ))}

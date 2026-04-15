@@ -1,4 +1,5 @@
 import styles from "@/styles/PopupMessage.module.css";
+import { tConfigPopupMessage } from "@/utils/Types";
 
 export interface PopupMessageProps {
     tipo:number, // 1:mensagem, 2:informação, 3:erro
