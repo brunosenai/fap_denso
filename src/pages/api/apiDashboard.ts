@@ -16,15 +16,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     //    return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
     //}
 
-    const { filter, dataInicio, dataFim, page = 1, avaliacao } = req.query;
-
+    const { filter, dataInicio, dataFim, page = 1, avaliacao, isExport = false} = req.query;
 
     try{
         let filtroSql = "";
         
         const params: any[] = [];
-        const limit = 20;
-        const offset = (Number(page) - 1) * limit;
+        const limitSql = isExport === 'true' ? 10000 : 20; 
+        const offsetSql = isExport === 'true' ? 0 : (Number(page) - 1) * 20;
 
         if (filter === 'aprovados') {
             filtroSql += " AND f.n_resultado_fap <> 0";
@@ -50,17 +49,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 (total_avaliados - acertos_q7) AS erros_q7
             FROM (
                 SELECT 
-                    -- 1. TOTAIS GERAIS E TAXAS
+                  
                     total_avaliados,
                     total_aprovados,
                     total_reprovados,
                     ROUND((total_aprovados * 100.0 / total_avaliados), 2) AS taxa_aprovacao,
 
-                    -- 2. ACERTOS EM QUESTÕES BINÁRIAS
+                  
                     acertos_q6,
                     acertos_q7,
 
-                    -- 3. DISTRIBUIÇÃO DE PONTOS (Q8 A Q12)
+              
                     q8_p1, q8_p2, q8_p3, q8_p4,
                     q9_p1, q9_p2, q9_p3, q9_p4,
                     q10_p1, q10_p2, q10_p3, q10_p4,
@@ -76,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         SUM(CASE WHEN n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
                         SUM(CASE WHEN n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
 
-                        -- Distribuição Q8 a Q12
+                      
                         SUM(CASE WHEN n_q8_fap = 1 THEN 1 ELSE 0 END) AS q8_p1,
                         SUM(CASE WHEN n_q8_fap = 2 THEN 1 ELSE 0 END) AS q8_p2,
                         SUM(CASE WHEN n_q8_fap = 3 THEN 1 ELSE 0 END) AS q8_p3,
@@ -121,7 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             SELECT 
                 c.s_nome_candidato AS nome,
                 a.s_nome_avaliacao AS avaliacao,
-                DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y') AS data,
+                DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y %H:%i') AS data,
                 f.n_resultado_fap AS resultado,
                 f.s_relatorio_fap AS relatorio
             FROM fap f
@@ -130,7 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             WHERE f.s_relatorio_fap IS NOT NULL ${filtroSql}
             ORDER BY f.dt_date_fap DESC
             LIMIT ? OFFSET ?
-        `, [...params, limit, offset]);
+        `, [...params, limitSql, offsetSql]);
 
         const dadosGraficoGeral = [
             { value: rows[0].total_aprovados, name: 'Aprovados' },
