@@ -18,12 +18,11 @@ export default function PopupImportarDados(props: popupProps) {
             comandoOK:() => setPopupMessage(false)
         }
     )
-    // Novo estado para guardar os dados do CSV antes de enviar
     const [dadosCSV, setDadosCSV] = useState<any[]>([]);
 
     const enviarParaApi = async (candidatos: any[]) => {
         try {
-            setLoad(true); // Liga a tela de carregamento só na hora de enviar
+            setLoad(true);
             const response = await fetch('/api/apiImportarCsv', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -38,7 +37,7 @@ export default function PopupImportarDados(props: popupProps) {
                     comandoOK: () => setPopupMessage(false)
                 });
                 setPopupMessage(true);
-                props.comandoFechar(); // Fecha o popup após sucesso
+                props.comandoFechar();
             } else {
                 setDadosPopupMessage({
                     tipo: 3, 
@@ -65,7 +64,7 @@ export default function PopupImportarDados(props: popupProps) {
     const handleFileUpload = (evento: React.ChangeEvent<HTMLInputElement>) => {
         const file = evento.target.files?.[0];
         if (!file) {
-            setDadosCSV([]); // Limpa se o usuário cancelar a seleção
+            setDadosCSV([]);
             return;
         }
 
@@ -88,14 +87,11 @@ export default function PopupImportarDados(props: popupProps) {
                     });
                 }
             }
-            
-            // Apenas guarda na memória, não envia ainda
             setDadosCSV(dadosLimpos); 
         };
         reader.readAsText(file);
     };
 
-    // Nova função chamada pelo botão
     const iniciarImportacao = () => {
         if (dadosCSV.length === 0) {
             setDadosPopupMessage({
@@ -124,7 +120,6 @@ export default function PopupImportarDados(props: popupProps) {
                             <label htmlFor="csvUpload">Selecionar CSV</label>
                             <input type="file" id="csvUpload" accept=".csv" onChange={handleFileUpload}/>
                             
-                            {/* Feedback visual para o usuário saber que a planilha foi lida */}
                             {dadosCSV.length > 0 && (
                                 <span style={{ display: 'block', marginTop: '10px', color: '#243783', fontWeight: 'bold' }}>
                                     {dadosCSV.length} registro(s) pronto(s) para importação.
@@ -132,7 +127,6 @@ export default function PopupImportarDados(props: popupProps) {
                             )}
                         </div>
                         
-                        {/* Botão agora chama a função iniciarImportacao */}
                         <button title="importar" className={styles.popup_btn} onClick={iniciarImportacao}>
                             Iniciar Importação
                         </button>
