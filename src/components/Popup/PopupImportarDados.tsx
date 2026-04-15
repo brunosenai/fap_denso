@@ -1,7 +1,6 @@
 import styles from "@/styles/PopupImportarDados.module.css";
-import Image from "next/image";
+import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 import Load from "../Load/Load";
-import { tCandidato } from "@/utils/Types";
 import { useState } from "react";
 
 interface popupProps {
@@ -10,7 +9,15 @@ interface popupProps {
 
 export default function PopupImportarDados(props: popupProps) {
     const [load, setLoad] = useState(false);
-    
+    const [popupMessage,setPopupMessage]=useState<boolean>(false)
+    const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
+        {
+            tipo:0,
+            titulo:"",
+            mensagem:"",
+            comandoOK:() => setPopupMessage(false)
+        }
+    )
     // Novo estado para guardar os dados do CSV antes de enviar
     const [dadosCSV, setDadosCSV] = useState<any[]>([]);
 
@@ -24,14 +31,32 @@ export default function PopupImportarDados(props: popupProps) {
             });
 
             if (response.ok) {
-                alert("Importação realizada com sucesso!");
+                setDadosPopupMessage({
+                    tipo: 1, 
+                    titulo: "Sucesso",
+                    mensagem: "Importação realizada com sucesso!",
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
                 props.comandoFechar(); // Fecha o popup após sucesso
             } else {
-                alert("Erro ao processar a importação no servidor.");
+                setDadosPopupMessage({
+                    tipo: 3, 
+                    titulo: "Erro",
+                    mensagem: "Erro ao processar a importação no servidor.",
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
             }
         } catch (error) {
             console.error(error);
-            alert("Erro de conexão.");
+            setDadosPopupMessage({
+                tipo: 3, 
+                titulo: "Erro",
+                mensagem: "Erro de conexão.",
+                comandoOK: () => setPopupMessage(false)
+            });
+            setPopupMessage(true);            
         } finally {
             setLoad(false);
         }
@@ -73,7 +98,13 @@ export default function PopupImportarDados(props: popupProps) {
     // Nova função chamada pelo botão
     const iniciarImportacao = () => {
         if (dadosCSV.length === 0) {
-            alert("Por favor, selecione uma planilha com dados válidos primeiro.");
+            setDadosPopupMessage({
+                tipo: 2, 
+                titulo: "Alerta",
+                mensagem: "Por favor, selecione uma planilha com dados válidos primeiro.",
+                comandoOK: () => setPopupMessage(false)
+            });
+            setPopupMessage(true);
             return;
         }
         enviarParaApi(dadosCSV);
@@ -82,6 +113,7 @@ export default function PopupImportarDados(props: popupProps) {
     return (
         <>
             {load && <Load/>}
+            {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
             <div className={styles.popup}>
                 <div className={styles.popup_conteudo}>
                     <div className={styles.popup_conteudo_titulo}>

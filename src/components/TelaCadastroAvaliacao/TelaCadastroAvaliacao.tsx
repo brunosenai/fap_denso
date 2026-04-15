@@ -256,6 +256,7 @@ export default function telaCadastro(){
                 mensagem: "Os relatórios foram gerados, compactados e enviados por e-mail com sucesso!",
                 comandoOK: () => setPopupMessage(false)
             });
+            setPopupMessage(true);
         } catch (error) {
             console.error(error);
             setDadosPopupMessage({
@@ -264,6 +265,7 @@ export default function telaCadastro(){
                 mensagem: "Ocorreu um erro no servidor ao gerar e enviar os relatórios.",
                 comandoOK: () => setPopupMessage(false)
             });
+            setPopupMessage(true);
         } finally {
             obterAvaliacoes(mostrarHistorico)
             setLoad(false); // Desliga o loading
