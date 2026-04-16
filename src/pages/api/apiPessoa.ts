@@ -20,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if(req.method === 'GET'){
         const {
             action,
+            n_id_pessoa
         } = req.query
 
         if(action == "getPessoas"){
@@ -36,6 +37,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ORDER BY
                         s_nome_pessoa DESC;
                     `,[]
+                )
+                res.status(200).json(rows_cell)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action == "getAtualUserType"){
+            try {
+                const [rows_cell] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_tipoPessoa
+                    FROM
+                        pessoa
+                    WHERE
+                        n_id_pessoa=?;
+                    `,[n_id_pessoa]
                 )
                 res.status(200).json(rows_cell)
             } catch (error) {
