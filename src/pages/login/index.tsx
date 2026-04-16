@@ -14,6 +14,7 @@ export default function Login() {
     
   useEffect(()=>{
     verifyIsTablet()
+    logout()
   },[])
 
   const login=async()=>{
@@ -71,6 +72,16 @@ export default function Login() {
       setTipoCampoSenha('password')
       setMostrarSenha(false)
     }
+  }
+
+  const logout=async()=>{
+    await fetch('/api/apiLogout');
+    localStorage.removeItem('n_id_pessoa');
+    localStorage.removeItem('menuCadastroSelected');
+    localStorage.removeItem('modo');
+    localStorage.removeItem('n_id_avaliacao');
+    localStorage.removeItem('candidatos');
+    localStorage.clear
   }
 
   return (
