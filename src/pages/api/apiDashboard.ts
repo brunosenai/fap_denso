@@ -108,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         FROM 
                             fap f
                         WHERE 
-                            f.s_relatorio_fap IS NOT NULL
+                            f.n_status_fap = 1
                     ) AS sub
                     WHERE sub.ordem = 1
                 ) AS resumo_interno
@@ -128,7 +128,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             FROM fap f
             INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
             INNER JOIN avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
-            WHERE f.s_relatorio_fap IS NOT NULL ${filtroSql}
+            WHERE f.n_status_fap = 1 ${filtroSql}
             ORDER BY f.dt_date_fap DESC
             LIMIT ? OFFSET ?
         `, [...params, limitSql, offsetSql]);
