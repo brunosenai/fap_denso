@@ -165,12 +165,16 @@ export default function Home() {
             })}
           </div>
           <div className={styles.rodape}>
-            <button title={'voltar'} className={styles.btnHome} onClick={()=>logout()}>
-              <Image src="/assets/icons/logout_w.svg" alt="voltar" width={40} height={40} style={{marginRight:"5px"}}/>
-              logout
-            </button>
+            <div className={styles.rodape_area}>
+              <button title={'voltar'} className={styles.btnPadrao_claro} onClick={()=>router.back()}>
+                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={-1} style={{marginRight:"5px"}}/>
+              </button>
+              <button title={'logout'} className={styles.btnPadrao_escuro} onClick={()=>logout()}>
+                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={-1} style={{marginRight:"5px"}}/>
+              </button>
+            </div>
             <button className='btnPadrao_claro' onClick={() => goto()}>
-              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{marginRight:"5px"}}/>
+              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={-1} style={{marginRight:"5px"}}/>
               avaliação
             </button>
           </div>

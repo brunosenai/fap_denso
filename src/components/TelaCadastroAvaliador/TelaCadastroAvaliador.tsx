@@ -312,8 +312,11 @@ export default function TelaCadastroAvaliador(){
                                     <div className={`${styles.c_dado} ${styles.c2_avalidador}`}>{av.s_email_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{av.s_telefone_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c4_avalidador}`}>{av.n_id_tipoPessoa==1?'Avaliador':av.n_id_tipoPessoa==1?'Gestor':'Root'}</div>
-                                    <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`} onClick={()=>excluirPessoa(av.n_id_pessoa)}>
-                                        <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                    <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`} onClick={()=>av.n_id_tipoPessoa!=3&&excluirPessoa(av.n_id_pessoa)}>
+                                        {av.n_id_tipoPessoa!=3?
+                                            <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={-1}/>:
+                                            <Image src='/assets/icons/nodelete.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                        }
                                     </div>                                
                                 </div>
                             ))}

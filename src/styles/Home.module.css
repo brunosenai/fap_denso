@@ -120,6 +120,14 @@
     flex-shrink: 0;
 }
 
+.rodape_area{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap:20px;
+}
+
 .btnHome{
     display: flex;
     flex-direction: row;
@@ -132,4 +140,38 @@
     text-transform: uppercase;
     color: #fff !important;
     width: 200px;
+}
+
+.btnPadrao_claro{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;  
+    background-color: #7CF2FF;
+    color: var(--azulStellantis);
+    border: none;
+    border-radius: 4px;
+    height: 40px;
+    width: 40px;
+    font-size: large;
+    cursor: pointer;
+    text-transform: uppercase;
+    gap:10px;
+}
+
+.btnPadrao_escuro{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;  
+    background-color: #7CF2FF;
+    color: var(--azulStellantis);
+    border: none;
+    border-radius: 4px;
+    height: 40px;
+    width: 40px;
+    font-size: large;
+    cursor: pointer;
+    text-transform: uppercase;
+    gap:10px;
 }
