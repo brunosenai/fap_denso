@@ -1,14 +1,14 @@
 .loadApp {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
+    top: 0px;
+    left: 0px;
+    width: 100%;
     height: 100dvh;
     background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro transparente */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999999999999999999; /* Garante que fique por cima de TUDO */
+    z-index: 999999999999999999999999999999999999999999999999999999999; /* Garante que fique por cima de TUDO */
 }
 
 .girar {

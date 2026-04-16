@@ -1,7 +1,7 @@
 // import styles from "@/styles/CadastroAvaliador.module.css"
 import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
-import PopupConfirmation from "../Popup/PopupConfirmation"
+import PopupConfirmation, {PopupConfirmationProps} from "../Popup/PopupConfirmation"
 import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
@@ -11,22 +11,34 @@ import Load from "../Load/Load"
 
 export default function TelaCadastroAvaliador(){
     const router=useRouter()
+    const [id,setId]=useState<string>("")
     const [nome,setNome]=useState<string>("")
     const [cpf,setCpf]=useState<string>("")
     const [telefone,setTelefone]=useState<string>("")
     const [email,setEmail]=useState<string>("")
+    const [tipo,setTipo]=useState<string>("")
     const [avaliadores,setAvaliadores]=useState<tAvaliador[]>([])
     const [avaliadoresFiltrados,setAvaliadoresFiltrados]=useState<tAvaliador[]>([])
     const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
     const [isTablet, setIsTablet]=useState<boolean>()
-    const [loading, setLoading]=useState<boolean>(false)
     const [popupMessage,setPopupMessage]=useState<boolean>(false)
+    const [popupConfirmation,setPopupConfirmation]=useState<boolean>(false)
+    const [load, setLoad]=useState<boolean>(false)
     const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
         {
             tipo:0,
             titulo:"",
             mensagem:"",
             comandoOK:() => setPopupMessage(false)
+        }
+    )
+    const [dadosPopupConfirmation,setDadosPopupConfirmation]=useState<PopupConfirmationProps>(
+        {
+            titulo:"",
+            mensagem:"",
+            pergunta:"",
+            comandoSim:() => setPopupMessage(false),
+            comandoNao:() => setPopupMessage(false)
         }
     )
 
@@ -36,13 +48,98 @@ export default function TelaCadastroAvaliador(){
     },[])
 
     const obterAvaliadores=async()=>{
-        const endpoint=`/api/apiPessoa?action=getPessoas`
-        fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setAvaliadores(res)
-            setAvaliadoresFiltrados(res)
+        try{
+            setLoad(true)
+            const endpoint=`/api/apiPessoa?action=getPessoas`
+            fetch(endpoint)
+            .then(res=>res.json())
+            .then(res=>{
+                setAvaliadores(res)
+                setAvaliadoresFiltrados(res)
+            })
+            .finally(()=>{
+                setLoad(false)
+            })
+        }catch(error){
+            setLoad(false)
+            console.error(error)
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Ocorreu um erro ao obter os avaliadores",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)                        
+        }finally{
+            setLoad(false)
+        }
+    }
+
+    const excluirPessoa=async(idPessoa:number)=>{
+        setDadosPopupConfirmation({
+            titulo:"Confirmação de Exclusão",
+            mensagem:"Esta ação não poderá ser desfeita.",
+            pergunta:"Tem certeza que deseja remover este colaborador?",
+            comandoSim:()=>rotinaExcluirPessoa(idPessoa.toString()),
+            comandoNao:()=>setPopupConfirmation(false)
         })
+        setPopupConfirmation(true)
+    }
+
+    const rotinaExcluirPessoa=(idPessoa:string)=>{
+        try{
+            setLoad(true)
+            const endpoint=`/api/apiPessoa`
+            fetch(endpoint,{
+                method:"DELETE",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    n_id_pessoa:idPessoa,
+                })
+            })
+            .then(res=>{
+                if(res.status==200){
+                    setLoad(false)
+                    setDadosPopupMessage({
+                        tipo:1,
+                        titulo:"Sucesso",
+                        mensagem:"Colaborador removido com sucesso!",
+                        comandoOK:() => setPopupMessage(false)
+                    })
+                    setPopupConfirmation(false)
+                    setPopupMessage(true)                        
+                    obterAvaliadores()
+                }else{
+                    setLoad(false)
+                    setPopupConfirmation(false)
+                    setDadosPopupMessage({
+                        tipo:3,
+                        titulo:"Erro",
+                        mensagem:"Erro ao remover colaborador",
+                        comandoOK:() => setPopupMessage(false)
+                    })
+                    setPopupMessage(true)                        
+                }
+            })
+        }catch(error){
+            setLoad(false)
+            setPopupConfirmation(false)
+            console.error(error)
+            setDadosPopupMessage({
+                tipo:3,
+                titulo:"Erro",
+                mensagem:"Ocorreu um erro ao remover o colaborador",
+                comandoOK:() => setPopupMessage(false)
+            })
+            setPopupMessage(true)                        
+        }
+        finally{
+            setLoad(false)
+            setPopupConfirmation(false)
+            obterAvaliadores()
+        }        
     }
 
     const filtrar=(filtro:string)=>{
@@ -69,8 +166,7 @@ export default function TelaCadastroAvaliador(){
     }
 
     const validarCampos=()=>{
-        console.log(nome,cpf,telefone,email)
-        if(nome=="" || cpf=="" || telefone=="" || !validarEmail(email)){
+        if(nome=="" || cpf=="" || telefone=="" || tipo=="" || !validarEmail(email)){
             setDadosPopupMessage({
                 tipo:2,
                 titulo:"Alerta",
@@ -83,9 +179,17 @@ export default function TelaCadastroAvaliador(){
         return true
     }
 
+    const limparCampos=()=>{
+        setNome("")
+        setCpf("")
+        setTelefone("")
+        setEmail("")
+        setTipo("")
+    }
+
     const cadastrarAvaliador=async()=>{
+        setLoad(true)
         try{
-            setLoading(true)
             if(validarCampos()){
                 const endpoint=`/api/apiPessoa`
                 fetch(endpoint,{
@@ -94,7 +198,7 @@ export default function TelaCadastroAvaliador(){
                         "Content-Type":"application/json"
                     },
                     body:JSON.stringify({
-                        n_id_tipoPessoa:1,
+                        n_id_tipoPessoa:tipo,
                         s_nome_pessoa:nome,
                         s_cpf_pessoa:cpf,
                         s_email_pessoa:email,
@@ -103,17 +207,18 @@ export default function TelaCadastroAvaliador(){
                 })
                 .then(res=>{
                     if(res.status==200){
-                        setLoading(false)
+                        limparCampos()
+                        setLoad(false)
                         setDadosPopupMessage({
                             tipo:1,
                             titulo:"Sucesso",
-                            mensagem:"Avaliador cadastrado com sucesso!",
+                            mensagem:"Colaborador cadastrado com sucesso!",
                             comandoOK:() => setPopupMessage(false)
                         })
                         setPopupMessage(true)                        
                         obterAvaliadores()
                     }else if(res.status==400){
-                        setLoading(false)
+                        setLoad(false)
                         setDadosPopupMessage({
                             tipo:3,
                             titulo:"Erro",
@@ -125,32 +230,32 @@ export default function TelaCadastroAvaliador(){
                 })
             }
         }catch(error){
-            setLoading(false)
+            setLoad(false)
             console.error(error)
             setDadosPopupMessage({
                 tipo:3,
                 titulo:"Erro",
-                mensagem:"Ocorreu um erro ao cadastrar o avaliador",
+                mensagem:"Ocorreu um erro ao cadastrar o colaborador",
                 comandoOK:() => setPopupMessage(false)
             })
             setPopupMessage(true)                        
-
         }
         finally{
-            setLoading(false)
+            setLoad(false)
             obterAvaliadores()
         }
     }
 
     return(            
-        <>       
+        <>
+            {load&&<Load/>}
+            {popupConfirmation&&<PopupConfirmation titulo={dadosPopupConfirmation.titulo} mensagem={dadosPopupConfirmation.mensagem} pergunta={dadosPopupConfirmation.pergunta} comandoSim={dadosPopupConfirmation.comandoSim} comandoNao={dadosPopupConfirmation.comandoNao}/>}
             {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}      
             <div className={styles.telaCadastro}>
-                {loading && <Load/>}
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
                         <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
-                        <h1>NOVO AVALIADOR</h1>
+                        <h1>NOVO COLABORADOR</h1>
                     </div>
                     <div className={styles.telaCadastro_form}>
                         <div className={styles.fieldForm}>
@@ -169,6 +274,15 @@ export default function TelaCadastroAvaliador(){
                             <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
                             <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
                         </div>
+                        <div className={styles.fieldForm}>
+                            <label htmlFor={`tipo`}>Tipo Colaborador<span className={styles.obrigatorio}>*</span></label>
+                            <select id={`tipo`} value={tipo} onChange={(e)=>setTipo(e.target.value)}>
+                                <option value="">Selecione o tipo</option>
+                                <option value="1">Avaliador</option>
+                                <option value="2">Gestor</option>
+                            </select>
+                            {/* <input type="text" id={`tipo`} value={tipo} onChange={(e)=>setTipo(e.target.value)} /> */}
+                        </div>                        
                         <div className={styles.fieldForm_center}>
                             <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
                         </div>
@@ -185,7 +299,8 @@ export default function TelaCadastroAvaliador(){
                             <div className={`${styles.c_titulo} ${styles.c1_avalidador}`}>Nome</div>
                             <div className={`${styles.c_titulo} ${styles.c2_avalidador}`}>E-Mail</div>
                             <div className={`${styles.c_titulo} ${styles.c3_avalidador}`}>Telefone</div>
-                            <div className={`${styles.c_titulo} ${styles.c4_avalidador} ${styles.c_comandos}`}>
+                            <div className={`${styles.c_titulo} ${styles.c4_avalidador}`}>Tipo</div>
+                            <div className={`${styles.c_titulo} ${styles.c5_avalidador} ${styles.c_comandos}`}>
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
@@ -196,7 +311,8 @@ export default function TelaCadastroAvaliador(){
                                     <div className={`${styles.c_dado} ${styles.c1_avalidador}`}>{av.s_nome_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c2_avalidador}`}>{av.s_email_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{av.s_telefone_pessoa}</div>
-                                    <div className={`${styles.c_dado} ${styles.c4_avalidador} ${styles.c_comandos}`}>
+                                    <div className={`${styles.c_dado} ${styles.c4_avalidador}`}>{av.n_id_tipoPessoa==1?'Avaliador':av.n_id_tipoPessoa==1?'Gestor':'Root'}</div>
+                                    <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`} onClick={()=>excluirPessoa(av.n_id_pessoa)}>
                                         <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={-1}/>
                                     </div>                                
                                 </div>

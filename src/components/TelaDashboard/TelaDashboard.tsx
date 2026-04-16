@@ -97,10 +97,10 @@ export default function TelaDashboard(){
             const data = await res.json();
             const candidatos = data.tabelaCandidatos;
 
-            let csvContent = "Nome;Avaliacao;Data;Resultado\n";
+            let csvContent = "Nome;Avaliacao;CPF;email;Data;Resultado\n";
             console.log(data)
             candidatos.forEach((c: any) => {
-                csvContent += `${c.nome};${c.avaliacao};${c.data};${c.resultado !== 0 ? "APROVADO" : "REPROVADO"}\n`;
+                csvContent += `${c.nome};${c.avaliacao};${c.cpf};${c.email};${c.data};${c.resultado !== 0 ? "APROVADO" : "REPROVADO"}\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -184,7 +184,7 @@ export default function TelaDashboard(){
                 <>
                     <div className={styles.filterBand}>
                         Ver candidatos da avaliação 
-                        <select name="avaliacao" id="avaliacao" value={avaliacao} onChange={(e) => setAvaliacao(e.target.value)}>
+                        <select title="avaliacao" name="avaliacao" id="avaliacao" value={avaliacao} onChange={(e) => setAvaliacao(e.target.value)}>
                             <option value="todas">Todas</option>
                             {avaliacoes && avaliacoes.map((item: any) => (
                                 <option key={item.n_id_avaliacao} value={item.n_id_avaliacao}>
@@ -193,9 +193,9 @@ export default function TelaDashboard(){
                             ))}
                         </select>
                         do dia  
-                        <input type="date" name="" id="" value={dataInicio} onChange={(e)=>{setDataInicio(e.target.value)}} /> 
+                        <input type="date" name="" title="dtini" id="dtini" value={dataInicio} onChange={(e)=>{setDataInicio(e.target.value)}} /> 
                         até 
-                        <input type="date" name="" id="" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
+                        <input type="date" name="" title="dtfim" id="dtfim" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
                         <button className={styles.exportButton} onClick={()=>{limparFiltros()}}>
                             Limpar filtros
                         </button>   

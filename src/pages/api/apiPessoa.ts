@@ -29,7 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         n_id_pessoa,
                         s_nome_pessoa,
                         s_email_pessoa,
-                        s_telefone_pessoa
+                        s_telefone_pessoa,
+                        n_id_tipoPessoa
                     FROM
                         pessoa
                     ORDER BY
@@ -69,7 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return senha.join('');
         }
 
-        const senha=gerarNovaSenhaAleatoria()
+        // const senha=gerarNovaSenhaAleatoria()
+        const senha='123'
 
         const transporter = nodemailer.createTransport({
             host: process.env.SMTP_HOST,
@@ -125,6 +127,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             return res.status(200).json({ 
             message: 'Candidatos vinculados à pessoa com sucesso!',
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({message:"Internal Server Error: erro 500"})
+        }
+    }else if(req.method === 'DELETE'){
+        const { n_id_pessoa } = req.body;
+
+        try {
+            await pool.query<ResultSetHeader>(`
+                DELETE FROM
+                    pessoa
+                WHERE 
+                    n_id_pessoa = ?;
+            `,[n_id_pessoa]
+            )
+            return res.status(200).json({ 
+            message: 'Pessoa removida com sucesso!',
             });
         } catch (error) {
             console.error(error);

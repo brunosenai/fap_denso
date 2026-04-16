@@ -34,7 +34,7 @@ export default function Login() {
       const data = await response.json();
       localStorage.setItem('n_id_pessoa', data.data.n_id_pessoa)
       if(data.data.n_id_tipoPessoa==1){
-        router.replace('/selecaomodulo/avaliador');
+        router.replace('/selecaomodulo/adm');
       }else if(data.data.n_id_tipoPessoa==2){
         router.replace('/cadastro');
       }else if(data.data.n_id_tipoPessoa==3){

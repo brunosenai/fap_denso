@@ -1,6 +1,6 @@
 import styles from "@/styles/PopupConfirmation.module.css";
 
-interface PopupFapProps {
+export interface PopupConfirmationProps {
     titulo:string,
     mensagem:string,
     pergunta:string,
@@ -8,7 +8,7 @@ interface PopupFapProps {
     comandoNao:()=>void
 }
 
-export default function PopupConfirmation(props:PopupFapProps) {
+export default function PopupConfirmation(props:PopupConfirmationProps) {
 
     const criarLista=(texto:string)=>{
         const itens = texto.split(';').filter(item => item.trim() !== '');

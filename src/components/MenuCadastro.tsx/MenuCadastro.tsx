@@ -24,7 +24,7 @@ export default function MenuCadastro(props:MenuCadastroProps){
     return(
         <div className={styles.menuCadastro}>
             <div className={`${styles.menuCadastroAba} ${menuSelected==1&&styles.menuCadastroAba_selecionada}`} onClick={()=>clickMenu(1)}>Avaliação</div>
-            <div className={`${styles.menuCadastroAba} ${menuSelected==2&&styles.menuCadastroAba_selecionada}`} onClick={()=>clickMenu(2)}>Avaliador</div>
+            <div className={`${styles.menuCadastroAba} ${menuSelected==2&&styles.menuCadastroAba_selecionada}`} onClick={()=>clickMenu(2)}>Colaborador</div>
             <div className={`${styles.menuCadastroAba} ${menuSelected==3&&styles.menuCadastroAba_selecionada}`} onClick={()=>clickMenu(3)}>Candidato</div>
             <div className={`${styles.menuCadastroAba} ${menuSelected==4&&styles.menuCadastroAba_selecionada}`} onClick={()=>clickMenu(4)}>Candidato/Avaliação</div>
             <div className={`${styles.menuCadastroAba} ${styles.esconderMenu} ${menuSelected==5&&styles.menuCadastroAba_selecionada}`} onClick={()=>clickMenu(5)}>Dashboard</div>

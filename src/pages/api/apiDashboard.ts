@@ -119,6 +119,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const [listaCandidatos] = await pool.query<RowDataPacket[]>(`
             SELECT 
                 c.s_nome_candidato AS nome,
+                c.s_cpf_candidato AS cpf,
+                c.s_email_candidato AS email,
                 a.s_nome_avaliacao AS avaliacao,
                 DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y %H:%i') AS data,
                 f.n_resultado_fap AS resultado,

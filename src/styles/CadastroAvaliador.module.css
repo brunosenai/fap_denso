@@ -99,7 +99,7 @@
     font-size: x-large;
 }
 
-.fieldForm input{
+.fieldForm input, .fieldForm select{
     width: 100%;
     height: 40px;
     padding: 10px;
