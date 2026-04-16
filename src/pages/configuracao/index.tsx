@@ -2,12 +2,14 @@ import Head from "next/head";
 import Topo from "@/components/Topo/TopoConfig";
 import styles from "@/styles/Config.module.css";
 import PopupMessage from "@/components/Popup/PopupMessage";
+import Image from "next/image";
 import { tConfigPopupMessage } from "@/utils/Types";
 import { tConfig } from "@/utils/Types";
 import { useState,useEffect } from "react";
 
 export default function Configuracao() {
     const [config,setConfig]=useState<tConfig>()
+    const [emails,setEmails]=useState<string[]>([])
     const [popupMessage,setPopupMessage]=useState(false)
     const [popupMessageData,setPopupMessageData]=useState<tConfigPopupMessage>({tipo:1,titulo:'',mensagem:'',comandoOK:()=>{}})
 
@@ -26,6 +28,8 @@ export default function Configuracao() {
                 }
             })
             const data=await response.json()
+            console.log((data[0].s_emailDestino_config).split(';'))
+            setEmails((data[0].s_emailDestino_config).split(';'))
             setConfig(data[0])
         } catch (error) {
             console.error(error)
@@ -33,6 +37,8 @@ export default function Configuracao() {
     }
 
     const salvarConfig=async()=>{
+        removerEmailsVazios()
+        const emailsfix=emails.filter(e=>e.trim()!=='').join(';')
         const endpoing=`/api/apiConfig`
         try {
             const response=await fetch(endpoing,{
@@ -43,7 +49,7 @@ export default function Configuracao() {
                 },
                 body:JSON.stringify({
                     action:'updateConfig',
-                    s_emailDestino_config:config?.s_emailDestino_config
+                    s_emailDestino_config:emailsfix
                 })
             })
             .then(res=>{
@@ -59,6 +65,26 @@ export default function Configuracao() {
         }
     }
 
+    const handleEmailChange = (index: number, valor: string) => {
+        const novaLista = [...emails];
+        novaLista[index] = valor;
+        setEmails(novaLista);
+    }
+
+    const removerEmail = (index: number) => {
+        const novaLista = [...emails];
+        novaLista.splice(index, 1);
+        setEmails(novaLista);
+    }
+
+    const addEmail = () => {
+        setEmails(prev => [...prev, '']);
+    }
+
+    const removerEmailsVazios = () => {
+        setEmails(prev => prev.filter(e => e.trim() !== ''));
+    }
+
     return (
         <>
         {popupMessage&&<PopupMessage tipo={popupMessageData.tipo} titulo={popupMessageData.titulo} mensagem={popupMessageData.mensagem} comandoOK={()=>popupMessageData.comandoOK()}/>}
@@ -72,12 +98,26 @@ export default function Configuracao() {
           <Topo />
           <div className={styles.config}>
                 <div className={styles.confiArea}>
-                    <div className={styles.confiArea_titulo}>E-Mail destino</div>
+                    <div className={styles.confiArea_titulo_comando}>
+                        E-Mails destino
+                        <button title="adicionar email" className={styles.btnAdd} onClick={()=>{}}>
+                            <Image src="/assets/icons/add_w.svg" alt="remover" width={25} height={-1} onClick={()=>{addEmail()}}/>
+                        </button>
+                    </div>
                     <div className={styles.confiArea_corpo}>
-                        <div className={styles.confiArea_field}>
+                        {emails.length>0&&emails.map((e,i)=>(
+                            <div className={styles.confiArea_field}>
+                                <label htmlFor={`email${i}`}>E-Mail</label>
+                                <div className={styles.confiArea_inputImage}>
+                                    <input type="email" id={`email${i}`} placeholder="Digite o e-mail de destino" value={e} onChange={(evt)=>handleEmailChange(i,evt.target.value)}/>
+                                    <Image src="/assets/icons/delete_w.svg" alt="remover" width={28} height={-1} style={{marginRight:"5px"}} onClick={()=>removerEmail(i)}/>
+                                </div>
+                            </div>
+                        ))}
+                        {/* <div className={styles.confiArea_field}>
                             <label htmlFor="email">E-Mail</label>
                             <input type="email" id="email" placeholder="Digite o e-mail de destino" value={config?.s_emailDestino_config} onChange={(evt) => setConfig(prev => prev ? { ...prev, s_emailDestino_config: evt.target.value } : { s_emailDestino_config: evt.target.value } as tConfig)}/>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

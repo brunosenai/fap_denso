@@ -42,6 +42,17 @@
     font-weight: bold;
 }
 
+.confiArea_titulo_comando {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: larger;
+    font-weight: bold;
+    gap:10px;
+}
+
 .confiArea_corpo {
     display: flex;
     flex-direction: column;
@@ -49,6 +60,7 @@
     justify-content: flex-start;
     width: 100%;
     font-size: larger;
+    gap:10px;
 }
 
 .confiArea_field {
@@ -69,6 +81,29 @@
     border-radius: 5px;
     background-color: #fff;
     border: 1px solid #ccc;
+}
+
+.confiArea_inputImage{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.confiArea_inputImage input{
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px 0px 0px 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+.confiArea_inputImage img{
+    padding: 5px;
+    border-radius: 0px 5px 5px 0px;
+    background-color: var(--azulStellantis);
+    cursor: pointer;
 }
 
 .confiArea_rodape {
@@ -95,6 +130,19 @@
     font-size: medium;
     cursor: pointer;
     text-transform: uppercase;
+}
+
+.btnAdd{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;  
+    background-color: var(--azulStellantis);
+    border: none;
+    border-radius: 4px;
+    max-width: 30px;
+    max-height: 30px;
+    cursor: pointer;
 }
 
 /* @media(orientation: landscape) {
