@@ -79,7 +79,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }else if(req.method === 'POST'){
         const { n_id_candidato, n_id_avaliacao} = req.body;
-        console.log(req.body)
         try {
             const [rows_candidatos] = await pool.query<RowDataPacket[]>(`
                 SELECT
@@ -110,7 +109,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }else if(req.method === 'DELETE'){
         const { n_id_candidato, n_id_avaliacao} = req.body;
         try {
-            console.log(req.body)
             await pool.query<ResultSetHeader>(`
                 DELETE FROM  
                     fap

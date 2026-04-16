@@ -209,7 +209,6 @@ export default function TelaCadastroCandidatos(){
             return;
         }
 
-        console.log('Pesquisar candidatos pela avaliação:', filtroAvaliacoes);
         try{
             setLoad(true)
             const endpoint=`/api/apiCandidato?action=getCandidatosByAvaliacaoFiltro&nomeAvaliacao=${encodeURIComponent(filtroAvaliacoes)}`;

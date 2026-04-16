@@ -53,7 +53,6 @@ export default function TelaDashboard(){
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
-            console.log(res)
             setAvaliacoes(res)
         })
     }
@@ -98,7 +97,6 @@ export default function TelaDashboard(){
             const candidatos = data.tabelaCandidatos;
 
             let csvContent = "Nome;Avaliacao;CPF;email;Data;Resultado\n";
-            console.log(data)
             candidatos.forEach((c: any) => {
                 csvContent += `${c.nome};${c.avaliacao};${c.cpf};${c.email};${c.data};${c.resultado !== 0 ? "APROVADO" : "REPROVADO"}\n`;
             });

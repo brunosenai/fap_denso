@@ -77,35 +77,27 @@ export default function Fap() {
     let res = true;
     fap.forEach((f, index) => {
       if(f.n_posto1_fap == 0 && f.n_posto2_fap == 0 && f.n_posto3_fap == 0 && f.n_posto4_fap == 0 && f.n_posto5_fap == 0 && f.n_posto6_fap == 0){
-        console.log(`Candidato da aba ${index} está sem POSTO marcado.`);
         res = false;
       }
       if(f.n_q6_fap < 0 || f.n_q6_fap > 1){
-        console.log(`Candidato da aba ${index} está com a Q6 pendente.`);
         res = false;
       }
       if(f.n_q7_fap < 0 || f.n_q7_fap > 1){
-        console.log(`Candidato da aba ${index} está com a Q7 pendente.`);
         res = false;
       }
       if(f.n_q8_fap < 1 || f.n_q8_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q8 pendente.`);
         res = false;
       }
       if(f.n_q9_fap < 1 || f.n_q9_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q9 pendente.`);
         res = false;
       }
       if(f.n_q10_fap < 1 || f.n_q10_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q10 pendente.`);
         res = false;
       }
       if(f.n_q11_fap < 1 || f.n_q11_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q11 pendente.`);
         res = false;
       }
       if(f.n_q12_fap < 1 || f.n_q12_fap > 4){
-        console.log(`Candidato da aba ${index} está com a Q12 pendente.`);
         res = false;
       }
     });  

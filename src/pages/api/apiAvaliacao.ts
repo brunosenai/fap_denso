@@ -164,7 +164,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 WHERE
                     n_id_avaliacao = ?;
             `, [id_avaliacao]);
-            console.log(rows)
             if(rows.length > 0){
                 return res.status(400).json({ 
                     message: 'Não é possível excluir a avaliação, pois existem FAPs vinculados a ela.',

@@ -27,7 +27,6 @@ export default function Configuracao() {
             })
             const data=await response.json()
             setConfig(data[0])
-            console.log(data)
         } catch (error) {
             console.error(error)
         }

@@ -26,7 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } = req.query
 
         if(action == "getCandidatosByAvaliacaoFiltro"){
-            console.log(nomeAvaliacao)
             try {
                 const [rows_av] = await pool.query<RowDataPacket[]>(`
                     SELECT
@@ -38,7 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     `,[nomeAvaliacao]
                 )
                 const n_id_avaliacao = rows_av.length>0?rows_av[0].n_id_avaliacao:-1;
-                console.log(n_id_avaliacao)
                 const [rows_cell] = await pool.query<RowDataPacket[]>(`
                     SELECT
                         f.n_id_candidato,
@@ -216,7 +214,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }else if(req.method === 'POST'){
         const { s_nome_candidato, s_cpf_candidato, s_email_candidato } = req.body;
-        console.log(req.body)
         try {
             await pool.query<ResultSetHeader>(`
                 INSERT INTO

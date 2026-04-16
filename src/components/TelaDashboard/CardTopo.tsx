@@ -22,7 +22,6 @@ export default function CardTopo({ titulo, texto, color, setDashboardFilter, fil
     useEffect(()=>{
         const viewportWidth: number = window.innerWidth;
         setScreenWidth(viewportWidth)
-        console.log(styles.cardTopo1)
         switch(color){
             case 1:
                 setEstilo(styles.cardTopo1)

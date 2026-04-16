@@ -77,7 +77,6 @@ export default function GestaoAvaliacoes() {
     }
 
     const comandoAbrirAvaliacao=async(n_id_candidato:number) => {
-        console.log(`Abrir avaliação do candidato ${n_id_candidato}`);
         // setShowCandidatos(false)
     }
 
