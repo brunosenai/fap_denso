@@ -6,9 +6,9 @@ interface FapProps {
   iAba: number;
   fap: tFap;
   setFap: React.Dispatch<React.SetStateAction<tFap[]>>;
-  abaObservacaoAberta: boolean; // Adicionado para controlar a visibilidade das observações
-  setAbaObservacaoAberta: React.Dispatch<React.SetStateAction<boolean>>; // Função para atualizar o estado de observação aberta
-  abrirPopup:(i:number)=>void;
+  abaObservacaoAberta: boolean; 
+  setAbaObservacaoAberta: React.Dispatch<React.SetStateAction<boolean>>; 
+  abrirPopup: (i: number) => void;
 }
 
 export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObservacaoAberta, abrirPopup}: FapProps) {
@@ -267,7 +267,6 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
       {/* OBSERVAÇÕES */}
       <div className={`${styles.camposPreenchimento} ${abaObservacaoAberta && styles.camposPreenchimento_show}`}>
         <div className={styles.btn_mostrarCamposPreenchimento} onClick={() => setAbaObservacaoAberta(!abaObservacaoAberta)}>
-          {/* 3. Removido o onClick={()=>{}} vazio daqui */}
           <Image src={abaObservacaoAberta ? "/assets/icons/arrow_down_w.svg" : "/assets/icons/arrow_up_w.svg"} alt="Mostrar/Ocultar" width={40} height={40} className={styles.btn_camposPreenchimento_img} />
         </div>
         <div className={styles.area_camposPreenchimento}>
@@ -282,7 +281,6 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
                   name={`q13_${iAba}`} 
                   id={`q13_1_${iAba}`} 
                   className={styles.fieldForm_input_fap} 
-                  /* 1 e 2. Adicionado o value e capturando o e.target.value */
                   value={fap.s_q13_fap} 
                   onChange={(e) => handleChange("s_q13_fap", e.target.value)} 
                 />

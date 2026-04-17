@@ -18,18 +18,20 @@ export default function Fap() {
   const [fap, setFap] = useState<tFap[]>([]);
   const [abaAtual, setAbaAtual] = useState<number>(0);
   const [abaObservacaoAberta, setAbaObservacaoAberta] = useState<boolean>(false);
-  const [load,setLoad]=useState(false);
-  const [popup,setPopup]=useState([false,false,false,false,false,false,false]);
-  const [popupConfirm,setPopupConfirm]=useState(false);
-  const [popupMessage,setPopupMessage]=useState<boolean>(false)
-  const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
-    {
-        tipo:0,
-        titulo:"",
-        mensagem:"",
-        comandoOK:() => setPopupMessage(false)
-    }
-)
+  const [load, setLoad] = useState(false);
+  const [popup, setPopup] = useState([false, false, false, false, false, false, false]);
+  const [popupConfirm, setPopupConfirm] = useState(false);
+  
+  // 🛡️ BLINDAGEM: Garante que o AutoSave não sobrepõe o cache vazio na primeira renderização
+  const [dadosCarregados, setDadosCarregados] = useState<boolean>(false);
+
+  const [popupMessage, setPopupMessage] = useState<boolean>(false)
+  const [dadosPopupMessage, setDadosPopupMessage] = useState<PopupMessageProps>({
+    tipo: 0,
+    titulo: "",
+    mensagem: "",
+    comandoOK: () => setPopupMessage(false)
+  })
 
   useEffect(() => { 
     buscarDados();
@@ -42,36 +44,76 @@ export default function Fap() {
     const endpoint = `/api/apiCandidato?action=getDadosByFap&listaIds=${candidatosSelecionados}&n_id_avaliacao=${idavaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
     
     try {
-      fetch(endpoint, {
-          method: "GET"
-      })
-      .then(res => res.json())
-      .then(data => {
-          setListaCandidatos(data.candidatos);
-          setAvaliacao(data.avaliacao);        
+      const res = await fetch(endpoint, { method: "GET" });
+      const data = await res.json();
+      
+      setListaCandidatos(data.candidatos);
+      setAvaliacao(data.avaliacao);        
+      
+      let fapInicial: tFap[] = [];
+
+      // 1. Prepara os dados base que vêm do banco de dados
+      if (data.fap && data.fap.length > 0) {
+        fapInicial = data.candidatos.map((candidato: tCandidato) => {
+          let fichaDoCandidato = data.fap.find((f: tFap) => f.n_id_candidato === candidato.n_id_candidato);
           
-          if (data.fap && data.fap.length > 0) {
-            const fapAlinhado = data.candidatos.map((candidato: tCandidato) => {
-              let fichaDoCandidato = data.fap.find((f: tFap) => f.n_id_candidato === candidato.n_id_candidato);
-              
-              if (fichaDoCandidato) {
-                fichaDoCandidato.dt_date_fap = data.avaliacao.dt_data_avaliacao;
-                fichaDoCandidato.n_id_avaliacao = idavaliacao;
-                fichaDoCandidato.n_id_pessoa = localStorage.getItem("n_id_pessoa") ? parseInt(localStorage.getItem("n_id_pessoa")!) : -1;
-              }
-              
-              return fichaDoCandidato;
-            }).filter((f: tFap | undefined) => f !== undefined);
-            
-            setFap(fapAlinhado);
+          if (fichaDoCandidato) {
+            fichaDoCandidato.dt_date_fap = data.avaliacao.dt_data_avaliacao;
+            fichaDoCandidato.n_id_avaliacao = idavaliacao;
+            fichaDoCandidato.n_id_pessoa = localStorage.getItem("n_id_pessoa") ? parseInt(localStorage.getItem("n_id_pessoa")!) : -1;
           }
-      });
+          return fichaDoCandidato;
+        }).filter((f: tFap | undefined) => f !== undefined);
+      }
+
+      // =========================================================================
+      // 2. RECUPERAÇÃO DE CACHE (AutoSave)
+      // =========================================================================
+      const nomeDoCache = `fap_cache_aval_${idavaliacao}`;
+      const cacheSalvo = localStorage.getItem(nomeDoCache);
+
+      if (cacheSalvo) {
+        try {
+          const fapRecuperado = JSON.parse(cacheSalvo);
+          
+          // Verifica se o cache guardado é realmente dos candidatos que estão na tela agora
+          const cacheValido = fapRecuperado.length === candidatosSelecionados.length && fapRecuperado.every((item: tFap) => 
+            candidatosSelecionados.includes(item.n_id_candidato)
+          );
+
+          if (cacheValido) {
+            fapInicial = fapRecuperado; // Substitui pelo cache do dispositivo
+            console.log("📦 Progresso recuperado do cache!");
+          } else {
+            localStorage.removeItem(nomeDoCache); // Limpa cache obsoleto
+          }
+        } catch (e) {
+          console.error("Erro ao ler cache:", e);
+        }
+      }
+
+      setFap(fapInicial);
+      setDadosCarregados(true); // Libera a gravação do AutoSave a partir de agora
+
     } catch(erro) {
       console.error(`Erro:${erro}`);
     } finally {
       setLoad(false);
     }
   }
+
+  // =========================================================================
+  // 3. GRAVAÇÃO AUTOMÁTICA (AutoSave) A CADA CLIQUE
+  // =========================================================================
+  useEffect(() => {
+    if (dadosCarregados && fap.length > 0) {
+      const idavaliacao = localStorage.getItem("n_id_avaliacao");
+      if (idavaliacao) {
+        localStorage.setItem(`fap_cache_aval_${idavaliacao}`, JSON.stringify(fap));
+      }
+    }
+  }, [fap, dadosCarregados]);
+
 
   const validarFap = (): boolean => {
     let res = true;
@@ -132,7 +174,7 @@ export default function Fap() {
   const salvar = async (): Promise<boolean> => {
     if (!validarFap()) {
       setDadosPopupMessage({
-        tipo: 2, // Erro
+        tipo: 2, 
         titulo: "Alerta",
         mensagem: "Por favor, preencha todos os campos obrigatórios de todos os candidatos antes de salvar.",
         comandoOK: () => setPopupMessage(false)
@@ -140,8 +182,7 @@ export default function Fap() {
       setPopupMessage(true);
       return false; 
     }
-  
-    // CORREÇÃO: Cria um novo array mapeado antes de enviar para não mutar o estado diretamente
+ 
     const fapFinalizado = fap.map((f) => {
       const [nota, aprovado] = calcularNota(f);
       return {
@@ -162,12 +203,12 @@ export default function Fap() {
           fap: fapFinalizado
         }) 
       });
-  
+ 
       if (response.ok) {
         return true; 
       } else {
         setDadosPopupMessage({
-          tipo: 3, // Erro
+          tipo: 3, 
           titulo: "Erro",
           mensagem: "Erro ao salvar avaliações no banco de dados.",
           comandoOK: () => setPopupMessage(false)
@@ -178,7 +219,7 @@ export default function Fap() {
     } catch (error) {
       console.error("Erro na requisição:", error);
       setDadosPopupMessage({
-        tipo: 3, // Erro
+        tipo: 3, 
         titulo: "Erro",
         mensagem: "Erro de conexão ao tentar salvar.",
         comandoOK: () => setPopupMessage(false)
@@ -190,16 +231,21 @@ export default function Fap() {
 
   const finalizarAvaliacao = async () => {
     if (listaCandidatos.length === 0 || fap.length === 0) return;
-  
+ 
     setLoad(true);
     
     const salvouComSucesso = await salvar();
-  
+ 
     if (!salvouComSucesso) {
       setLoad(false);
       return; 
     }
-  
+ 
+    // =========================================================================
+    // 4. LIMPEZA DE CACHE APÓS SUCESSO
+    // =========================================================================
+    const idavaliacao = localStorage.getItem("n_id_avaliacao");
+    localStorage.removeItem(`fap_cache_aval_${idavaliacao}`);
     localStorage.removeItem("candidatos");
     localStorage.removeItem("n_id_avaliacao");
 
@@ -213,73 +259,73 @@ export default function Fap() {
     setPopupMessage(true);
   };
   
-  const voltar=()=>{
+  const voltar = () => {
     setPopupConfirm(true);
   }
 
-  const fecharPopup=(i:number)=>{
-    let novaLista=[...popup];
-    novaLista[i]=false;
+  const fecharPopup = (i: number) => {
+    let novaLista = [...popup];
+    novaLista[i] = false;
     setPopup(novaLista);
   }
 
-  const abrirPopup=(i:number)=>{
-    let novaLista=[...popup];
-    novaLista[i-1]=true;
+  const abrirPopup = (i: number) => {
+    let novaLista = [...popup];
+    novaLista[i-1] = true;
     setPopup(novaLista);
   }
 
-  const comandoSim=()=>{
+  const comandoSim = () => {
     setPopupConfirm(false);
     router.back();
   }
 
-  const comandoNao=()=>{
+  const comandoNao = () => {
     setPopupConfirm(false);
   }
 
   return (
     <>
-      {load&&<Load/>}
-      {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
-      {popupConfirm&&<PopupConfirmation titulo="Sair" mensagem={'Se você sair perderá todas as marcações!'} pergunta="Confirma que deseja sair?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
-      {popup[0]&&<PopupFap
+      {load && <Load/>}
+      {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
+      {popupConfirm && <PopupConfirmation titulo="Sair" mensagem={'O seu progresso está salvo automaticamente no dispositivo. Confirma que deseja voltar?'} pergunta="Confirma que deseja sair?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
+      {popup[0] && <PopupFap
         titulo="Condução segura do ciclo (C2, C3, C4, C5, C8)"
         mediacao="O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a situações de risco ambiental e de segurança ao longo de toda a avaliação."
         evidencias="EPIs colocados antes dodo início do teste e mantidos durante todo o ciclo;Ferramentas utilizadas sem improvisações ou uso indevido;Posto mantido em condição segura, organizado e sem riscos evidentes;Demonstra percepção riscos e ajusta conduta espontaneamente."
         i={1} fecharPopup={fecharPopup}/>
       }
-      {popup[1]&&<PopupFap
+      {popup[1] && <PopupFap
         titulo="Tratamento adequado de Não Conformidade – Stop & Call (C7, C8, C10)"
         mediacao="O candidato identifica anomalia no processo, na peça ou na ferramenta e aciona corretamente o protocolo: Parar e sinalizar."
         evidencias="Identifica e interrompe o ciclo ao identificar desvios;Sinaliza ao avaliador imediatamente;Não prossegue com a peça defeituosa."
         i={2} fecharPopup={fecharPopup}/>
       }
-      {popup[2]&&<PopupFap
+      {popup[2] && <PopupFap
         titulo="DISCIPLINA OPERACIONAL (C1, C9, C10)"
         mediacao="O candidato segue os padrões de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada."
         evidencias="Segue a sequência passo a passo;Não improvisa métodos;Não utiliza o celular ou realiza atos incompatíveis com o posto."
         i={3} fecharPopup={fecharPopup}/>
       }
-      {popup[3]&&<PopupFap
+      {popup[3] && <PopupFap
         titulo="MONTAGEM CORRETA (C4, C5, C10)"
         mediacao="O candidato realiza a montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem."
         evidencias="Encaixes perfeitos e montagens sem folgas;Aperto de adequado de todos os elementos de fixação;Zero danos à peça;Montagem conforme peça-padrão."
         i={4} fecharPopup={fecharPopup}/>
       }
-      {popup[4]&&<PopupFap
+      {popup[4] && <PopupFap
         titulo="MANUTENÇÃO DO POSTO DE TRABALHO – 5S (C1, C3, C4) "
         mediacao="O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada de ferramentas e peças de maneira racional."
         evidencias="Ferramentas mantidas no local designado;Peças e contenedores mantidas organizadas na quantidade certa e no local designado;Posto livre de resíduos ou objetos alhieos à atividade."
         i={5} fecharPopup={fecharPopup}/>
       }
-      {popup[5]&&<PopupFap
+      {popup[5] && <PopupFap
         titulo="ACOMPANHAMENTO DO TAKT TIME (C6, C8, C9)"
         mediacao="O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos."
         evidencias="Deslocamentos laterais junto ao motor para montagem;Montagens dentro do takt time."
         i={6} fecharPopup={fecharPopup}/>
       }
-      {popup[6]&&<PopupFap
+      {popup[6] && <PopupFap
         titulo="RESILIÊNCIA FÍSICA E MENTAL (C9, C11)"
         mediacao="O candidato mantém foco, postura, constância e estabilidade emocional durante toda a atividade, mesmo sob repetitividade, desconforto controlado e micropressões."
         evidencias="Constância de ritmo;Zero reclamações improdutivas;Zero quedas de desempenho;Reações equilibradas diante de eventuais frustrações."
