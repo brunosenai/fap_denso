@@ -27,7 +27,7 @@ export default function TelaCandidatoAvaliacao(){
     },[])
 
     const obterDadosIniciais=()=>{
-        const endpoint=`/api/apiCandidatoAvaliacao?action=getIniData`
+        const endpoint=`/api/apiCandidatoAvaliacao?action=getIniData&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
@@ -39,7 +39,7 @@ export default function TelaCandidatoAvaliacao(){
     }
 
     const obterCandidatosAvaliacao=(id:number)=>{
-        const endpoint=`/api/apiCandidatoAvaliacao?action=CandidatosPorAvaliacao&idAvaliacao=${id}`
+        const endpoint=`/api/apiCandidatoAvaliacao?action=CandidatosPorAvaliacao&idAvaliacao=${id}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
@@ -74,7 +74,8 @@ export default function TelaCandidatoAvaliacao(){
             },
             body:JSON.stringify({
                 n_id_candidato:candidatoSel,
-                n_id_avaliacao:avaliacaoSel
+                n_id_avaliacao:avaliacaoSel,
+                apiKey:process.env.NEXT_PUBLIC_API_KEY
             })
         })
         .then(res=>{
@@ -95,7 +96,8 @@ export default function TelaCandidatoAvaliacao(){
             },
             body:JSON.stringify({
                 n_id_candidato:idCandidato,
-                n_id_avaliacao:idAvaliacao
+                n_id_avaliacao:idAvaliacao,
+                apiKey:process.env.NEXT_PUBLIC_API_KEY
             })
         })
         .then(res=>{

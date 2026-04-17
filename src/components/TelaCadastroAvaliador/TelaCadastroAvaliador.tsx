@@ -50,7 +50,7 @@ export default function TelaCadastroAvaliador(){
     const obterAvaliadores=async()=>{
         try{
             setLoad(true)
-            const endpoint=`/api/apiPessoa?action=getPessoas`
+            const endpoint=`/api/apiPessoa?action=getPessoas&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
             fetch(endpoint)
             .then(res=>res.json())
             .then(res=>{
@@ -97,6 +97,7 @@ export default function TelaCadastroAvaliador(){
                 },
                 body:JSON.stringify({
                     n_id_pessoa:idPessoa,
+                    apiKey:process.env.NEXT_PUBLIC_API_KEY
                 })
             })
             .then(res=>{
@@ -202,7 +203,8 @@ export default function TelaCadastroAvaliador(){
                         s_nome_pessoa:nome,
                         s_cpf_pessoa:cpf,
                         s_email_pessoa:email,
-                        s_telefone_pessoa:telefone
+                        s_telefone_pessoa:telefone,
+                        apiKey:process.env.NEXT_PUBLIC_API_KEY
                     })
                 })
                 .then(res=>{

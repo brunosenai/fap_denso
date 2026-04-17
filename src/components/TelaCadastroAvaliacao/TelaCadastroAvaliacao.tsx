@@ -8,9 +8,7 @@ import { useState, useEffect } from "react"
 import { tAvaliacao, tInfoAva, tFap } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
-import EditarFapCandidato from "../EditarFapCandidato/EditarFapCandidato"
 import Load from "../Load/Load"
-import { get } from "http"
 
 export default function telaCadastro(){
     const router=useRouter()
@@ -46,7 +44,7 @@ export default function telaCadastro(){
     const obterAvaliacoes=(historico:boolean)=>{
         setLoad(true)
         try{
-            const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}`
+            const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
             fetch(endpoint)
             .then(res=>res.json())
             .then(res=>{
@@ -70,7 +68,7 @@ export default function telaCadastro(){
     const getInfoAvaliacao=async(idAvaliacao:number)=>{
         setLoad(true)
         try{
-            const endpoint=`/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}`
+            const endpoint=`/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
             fetch(endpoint)
             .then(res=>res.json())
             .then(res=>{
@@ -105,7 +103,8 @@ export default function telaCadastro(){
                     "Content-Type":"application/json"
                 },
                 body:JSON.stringify({
-                    id_avaliacao:id
+                    id_avaliacao:id,
+                    apiKey:process.env.NEXT_PUBLIC_API_KEY
                 })
             })
             .then(res=>{
@@ -156,7 +155,8 @@ export default function telaCadastro(){
                 },
                 body:JSON.stringify({
                     s_nome_avaliacao:nome,
-                    dt_data_avaliacao:data
+                    dt_data_avaliacao:data,
+                    apiKey:process.env.NEXT_PUBLIC_API_KEY
                 })
             })
             .then(res=>{
@@ -299,7 +299,10 @@ export default function telaCadastro(){
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ids_avaliacoes: ids })
+                body: JSON.stringify({
+                    ids_avaliacoes: ids,
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY
+                })
             });
 
             if (response.status !== 200) {

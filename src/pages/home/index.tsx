@@ -14,18 +14,18 @@ export default function Home() {
   const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState<number>(-1);
   const [candidatos, setCandidatos] = useState<tcandidatoAvaliacao[]>([]);
   const [candidatosSelecionados, setCandidatosSelecionados] = useState<number[]>([]);
-  const [qtdAvaliadores,setQtdAvaliadores]=useState<number>(1);
-  const [maxCandidatosSelecionados, setMaxCandidatosSelecionados]=useState(0);
-  const [isTablet, setIsTablet]=useState<boolean>()
-  const [load,setLoad]=useState<boolean>(false)
+  const [qtdAvaliadores, setQtdAvaliadores] = useState<number>(1);
+  const [maxCandidatosSelecionados, setMaxCandidatosSelecionados] = useState(0);
+  const [isTablet, setIsTablet] = useState<boolean>()
+  const [load, setLoad] = useState<boolean>(false)
 
   useEffect(() => {
     setIsTablet(verifyIsTablet())
     getAvaliacoes();
   }, []);
 
-  const changeQtdAvaliadores=(qtd:number)=>{
-    const maxCandidatosSelecionados=Math.ceil(candidatos.length / qtd)
+  const changeQtdAvaliadores = (qtd: number) => {
+    const maxCandidatosSelecionados = Math.ceil(candidatos.length / qtd)
     setMaxCandidatosSelecionados(maxCandidatosSelecionados)
     setQtdAvaliadores(qtd)
     setCandidatosSelecionados([])
@@ -33,8 +33,8 @@ export default function Home() {
 
   const getAvaliacoes = async () => {
     setLoad(true)
-    try{
-      const endpoint = `/api/apiAvaliacao?action=getAvaliacoesHojeEmDiante`;
+    try {
+      const endpoint = `/api/apiAvaliacao?action=getAvaliacoesHojeEmDiante&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
       fetch(endpoint, {
         method: "GET"
       })
@@ -43,9 +43,9 @@ export default function Home() {
         setAvaliacoes(data);
         setLoad(false)
       })
-    }catch(e){
+    } catch (e) {
       console.error(`Erro:${e}`)
-    }finally{
+    } finally {
       setLoad(false)
     }
   }
@@ -58,55 +58,56 @@ export default function Home() {
 
   const getCandidatosByAvaliacao = async (idAvaliacao: number) => {
     setLoad(true)
-    try{
-      const endpoint = `/api/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}`;
+    try {
+      const endpoint = `/api/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
       fetch(endpoint, {
         method: "GET"
       })
       .then(res => res.json())
       .then(data => {
         setCandidatos(data);
-        const maxCandidatosSelecionados=Math.ceil(data.length / qtdAvaliadores)
+        const maxCandidatosSelecionados = Math.ceil(data.length / qtdAvaliadores)
         setMaxCandidatosSelecionados(maxCandidatosSelecionados)
         setLoad(false)
       });
-    }catch(erro){
+    } catch (erro) {
       setLoad(false)
       console.error(`Erro:${erro}`)
     }
-    finally{
+    finally {
       setLoad(false)
     }
   }
 
+  // Correção na forma como o estado é atualizado para evitar bugs de re-renderização
   const selecionaCandidato = (idCandidato: number, selecionado: boolean) => {
     if (selecionado) {
       if (candidatosSelecionados.length >= maxCandidatosSelecionados) {
         alert(`Apenas ${maxCandidatosSelecionados} candidatos podem ser selecionados por avaliador`);
         return;
       }
-      setCandidatosSelecionados([...candidatosSelecionados, idCandidato]);
+      setCandidatosSelecionados(prev => [...prev, idCandidato]);
     } else {
-      setCandidatosSelecionados(candidatosSelecionados.filter(id => id !== idCandidato));
+      setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
     }
   }
 
   const goto = () => {
-    if(candidatos.length < qtdAvaliadores){
+    if (candidatos.length < qtdAvaliadores) {
       alert('Número de avaliadores acima da quantidade de candidatos')
       return
     }
-    if(qtdAvaliadores<1){
+    if (qtdAvaliadores < 1) {
       alert('Número de avaliadores insuficiente, deve ser pelo menos 1')
       return
     }
     setLoad(true)
-    const path=`/fap`
-    if(candidatosSelecionados.length == maxCandidatosSelecionados && candidatosSelecionados.length > 0){
-      localStorage.setItem('n_id_avaliacao',avaliacaoSelecionada.toString());
-      localStorage.setItem('candidatos',candidatosSelecionados.join(','));
+    const path = `/fap`
+    if (candidatosSelecionados.length == maxCandidatosSelecionados && candidatosSelecionados.length > 0) {
+      localStorage.setItem('n_id_avaliacao', avaliacaoSelecionada.toString());
+      localStorage.setItem('candidatos', candidatosSelecionados.join(','));
       router.push(path);
-    }else{
+    } else {
       alert(`Selecione seus ${maxCandidatosSelecionados} candidatos para prosseguir`);
       setLoad(false)
     }
@@ -114,7 +115,7 @@ export default function Home() {
 
   const atingiuLimite = candidatosSelecionados.length >= maxCandidatosSelecionados;
 
-  const logout=async()=>{
+  const logout = async () => {
     await fetch('/api/apiLogout');
     localStorage.removeItem('n_id_pessoa');
     localStorage.removeItem('menuCadastroSelected');
@@ -128,7 +129,7 @@ export default function Home() {
 
   return (
     <>
-      {load&&<Load/>}
+      {load && <Load />}
       <Head>
         <title>Stellantis - Teste de Aptidão Prática</title>
         <meta name="description" content="Generated by create next app" />
@@ -137,25 +138,29 @@ export default function Home() {
       </Head>
       <div className={styles.page}>
         <div className={styles.telaMain}>
-          <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores}/>
+          <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores} />
           <div className={styles.formCandidatos}>
-            {candidatos.length > 0 && candidatos.map((c, i) => {
-              const estaSelecionado = candidatosSelecionados.includes(c.n_id_candidato);
+            {candidatos.length > 0 && candidatos.map((c) => {
+              
+              // BLINDAGEM: Converte ambos para String. Isso garante que a caixa fique visualmente 
+              // marcada mesmo se houver divergência entre texto e número no array!
+              const estaSelecionado = candidatosSelecionados.some(id => String(id) === String(c.n_id_candidato));
+
               return (
-                <div className={styles.fieldForm} key={i}>
+                // BLINDAGEM: Nunca use index (i) como Key em listas onde o estado interativo muda!
+                <div className={styles.fieldForm} key={c.n_id_candidato}>
                   <div className={styles.fieldForm_inputTexts}>
                     <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
                     <input type="text" title={''} className={styles.fieldForm_input_cpf} value={c.s_cpf_candidato} readOnly />
                   </div>
                   <div className={styles.fieldForm_inputCheckbox}>
-                    <input 
-                      type='checkbox' 
-                      title={''} 
-                      className={styles.fieldForm_checkbox} 
-                      name='candidato' 
-                      id={`candidato${i}`} 
-                      value={c.n_id_candidato} 
-                      checked={estaSelecionado} 
+                    <input
+                      type='checkbox'
+                      title={''}
+                      className={styles.fieldForm_checkbox}
+                      name={`candidato_${c.n_id_candidato}`}
+                      id={`candidato_${c.n_id_candidato}`}
+                      checked={estaSelecionado}
                       onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
                       disabled={!estaSelecionado && atingiuLimite}
                     />
@@ -166,15 +171,15 @@ export default function Home() {
           </div>
           <div className={styles.rodape}>
             <div className={styles.rodape_area}>
-              <button title={'voltar'} className={styles.btnPadrao_claro} onClick={()=>router.back()}>
-                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={-1} style={{marginRight:"5px"}}/>
+              <button title={'voltar'} className={styles.btnPadrao_claro} onClick={() => router.back()}>
+                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={40} style={{ marginRight: "5px" }} />
               </button>
-              <button title={'logout'} className={styles.btnPadrao_escuro} onClick={()=>logout()}>
-                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={-1} style={{marginRight:"5px"}}/>
+              <button title={'logout'} className={styles.btnPadrao_escuro} onClick={() => logout()}>
+                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={40} style={{ marginRight: "5px" }} />
               </button>
             </div>
-            <button className='btnPadrao_claro' onClick={() => goto()}>
-              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={-1} style={{marginRight:"5px"}}/>
+            <button className={styles.btnPadrao_claro_g} onClick={() => goto()}>
+              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{ marginRight: "5px" }} />
               avaliação
             </button>
           </div>

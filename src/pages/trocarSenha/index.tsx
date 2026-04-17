@@ -27,7 +27,7 @@ export default function TrocarSenha() {
 
   const validarEmailAtual=async()=>{
     setLoad(true)
-    const endpoint=`api/apiLogin?email=${email}&action=validarEmailAtual`
+    const endpoint=`api/apiLogin?email=${email}&action=validarEmailAtual&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
     const response=await fetch(endpoint)
     if(response.status!=200){
       setLoad(false)
@@ -48,7 +48,8 @@ export default function TrocarSenha() {
       body: JSON.stringify({
         action:'validarSenha',
         email: `${email}`,
-        password: `${senhaAtual}`
+        password: `${senhaAtual}`,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY
       }),
     })
     if(response.status!=200){
@@ -102,7 +103,8 @@ export default function TrocarSenha() {
       body: JSON.stringify({
         action:'trocarSenha',
         email: `${email}`,
-        password: `${novaSenha1}`
+        password: `${novaSenha1}`,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY
       }),
     }).then((response)=>{
       setLoad(false)

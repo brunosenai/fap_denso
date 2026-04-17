@@ -31,7 +31,8 @@ const enviarCodigoRederinicao=()=>{
     },
     body: JSON.stringify({
         action:'enviarCodigoRedefinicao',
-        email: `${email}`
+        email: `${email}`,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY
     }),
     }).then((response)=>{
         setLoad(false)
@@ -60,7 +61,8 @@ const validarCodigoRederinicao=()=>{
     body: JSON.stringify({
         action:'validarCodigo',
         email: `${email}`,
-        codigo:`${codigoRedefinicao}`
+        codigo:`${codigoRedefinicao}`,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY
     }),
     }).then((response)=>{
         setLoad(false)
@@ -89,7 +91,8 @@ const redefinirSenha=()=>{
     body: JSON.stringify({
         action:'redefinirSenha',
         email: email,
-        password:novaSenha1
+        password:novaSenha1,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY
     }),
     }).then((response)=>{
         setLoad(false)

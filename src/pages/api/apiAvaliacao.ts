@@ -1,28 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import pool from "@/services/Banco"
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
-import InfoAvaliacao from '@/components/InfoAvaliacao/InfoAvaliacao';
-
-//export const config = {
-//    api: {
-//        bodyParser: false,
-//    },
-//};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-    const apiKey = req.headers['x-api-key'];
-
-    //if (!apiKey || apiKey !== process.env.API_KEY) {
-    //    return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
-    //}
+    let apiKey=''
+    if(req.method === 'GET'){
+        apiKey = req.query.apiKey as string
+    }else{
+        apiKey = req.body.apiKey as string
+    }
+    if(apiKey !== process.env.API_KEY){
+        return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
+    }
 
     if(req.method === 'GET'){
         const {
             action,
             n_id_pessoa,
             n_id_avaliacao,
-            historico
+            historico,
         } = req.query
 
         if(action == "getAvaliacoesHojeEmDiante"){
@@ -155,6 +152,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }else if(req.method === 'DELETE'){
         const { id_avaliacao } = req.body;
+
         try {
             const [rows] = await pool.query<RowDataPacket[]>(`
                 SELECT
@@ -184,6 +182,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }else if(req.method === 'POST'){
         const { s_nome_avaliacao,dt_data_avaliacao } = req.body;
+
         try {
             await pool.query(`
                 INSERT INTO
@@ -201,6 +200,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }else if(req.method === 'PUT'){
         const { fap } = req.body;
+
         try {
             for (const itemFap of fap) {
                 // 1. Formata a data do padrão ISO do JS para o padrão DATETIME do MySQL
@@ -273,6 +273,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(500).json({message:"Internal Server Error: erro 500"})
         }
     }
-    
-
 }

@@ -27,5 +27,14 @@ export async function proxy(request: NextRequest) {
 // 3. Configura quais rotas devem ser protegidas
 export const config = {
     // Protege /home e qualquer sub-rota dela, e outras rotas que desejar
-    matcher: ['/home/:path*', '/fap/:path*', '/selecaomodulo/:path*', '/cadastro/:path*','/cadastro/','/cadastro/:slug*','/cadastro/:slug*/:path*','/cadastro/:subpath*','/cadastro/:slug*/:subpath*','/selecaomodulo/','/selecaomodulo/:path*'],
+    matcher: [
+        // Protege as páginas visuais
+        '/home/:path*', 
+        '/fap/:path*', 
+        '/selecaomodulo/:path*', 
+        '/cadastro/:path*',
+        
+        // Protege TODAS as APIs, EXCETO o login, logout e rotas públicas necessárias
+        '/api/((?!apiLogin|apiLogout|downloadPdf).*)'
+    ],
 };

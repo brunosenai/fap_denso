@@ -25,7 +25,7 @@ export default function GestaoAvaliacoes() {
     useEffect(() => {
         setLoad(true);
         const idAvaliador=localStorage.getItem("n_id_pessoa")
-        const endpoint=`/api/apiAvaliacao?action=getAvaliacoesPorAvaliador&n_id_pessoa=${idAvaliador}`
+        const endpoint=`/api/apiAvaliacao?action=getAvaliacoesPorAvaliador&n_id_pessoa=${idAvaliador}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res => res.json())
         .then(data => {
@@ -39,7 +39,7 @@ export default function GestaoAvaliacoes() {
     const getCandidatos=async (n_id_avaliacao:number) => {
         setLoad(true);
         setAvaliacao(avaliacoes.find(a => a.n_id_avaliacao===n_id_avaliacao) as tAvaliacao);
-        const endpoint=`/api/apiCandidato?action=getCandidatosPorAvaliacao&n_id_avaliacao=${n_id_avaliacao}`
+        const endpoint=`/api/apiCandidato?action=getCandidatosPorAvaliacao&n_id_avaliacao=${n_id_avaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res => res.json())
         .then(data => {

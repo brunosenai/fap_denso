@@ -24,7 +24,7 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
         setIdAvaliacao(idAvaliacao)
         setIdCandidato(idCandidato)
         setLoad(true)
-        const endpoint=`/api/apiFap?action=getInfoFapCandidato&n_id_avaliacao=${idAvaliacao}&n_id_candidato=${idCandidato}`
+        const endpoint=`/api/apiFap?action=getInfoFapCandidato&n_id_avaliacao=${idAvaliacao}&n_id_candidato=${idCandidato}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
@@ -46,6 +46,7 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
             },
             body:JSON.stringify({
                 action:"editarFapCandidato",
+                apiKey:process.env.NEXT_PUBLIC_API_KEY,
                 n_id_avaliacao:idAvaliacao,
                 n_id_candidato:idCandidato,
                 s_q13_fap:q13,

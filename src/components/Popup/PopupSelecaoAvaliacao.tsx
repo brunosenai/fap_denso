@@ -61,7 +61,7 @@ export default function PopupSelecaoAvaliacao(props: popupProps) {
     const obterAvaliacoes = async () => {
         setLoad(true);
         try {
-            const endpoint = `/api/apiAvaliacao?action=getAvaliacoes`;
+            const endpoint = `/api/apiAvaliacao?action=getAvaliacoes&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
             const response = await fetch(endpoint);
             const data = await response.json();
             

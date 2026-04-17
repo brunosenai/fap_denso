@@ -39,7 +39,7 @@ export default function Fap() {
     setLoad(true);
     const candidatosSelecionados = localStorage.getItem("candidatos")?.split(",").map(id => parseInt(id)) || [];
     const idavaliacao = localStorage.getItem("n_id_avaliacao") ? parseInt(localStorage.getItem("n_id_avaliacao")!) : -1;
-    const endpoint = `/api/apiCandidato?action=getDadosByFap&listaIds=${candidatosSelecionados}&n_id_avaliacao=${idavaliacao}`;
+    const endpoint = `/api/apiCandidato?action=getDadosByFap&listaIds=${candidatosSelecionados}&n_id_avaliacao=${idavaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
     
     try {
       fetch(endpoint, {
@@ -157,7 +157,10 @@ export default function Fap() {
       const response = await fetch(endpoint, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fap: fapFinalizado }) 
+        body: JSON.stringify({
+          apiKey: process.env.NEXT_PUBLIC_API_KEY,
+          fap: fapFinalizado
+        }) 
       });
   
       if (response.ok) {

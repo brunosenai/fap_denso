@@ -4,7 +4,15 @@ import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-    const apiKey = req.headers['x-api-key'];
+    let apiKey=''
+    if(req.method === 'GET'){
+        apiKey = req.query.apiKey as string
+    }else{
+        apiKey = req.body.apiKey as string
+    }
+    if(apiKey !== process.env.API_KEY){
+        return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
+    }
 
     if(req.method === 'GET'){
         const {

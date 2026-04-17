@@ -16,7 +16,7 @@ export default function Topo({ titulo = "" }: TopoProps){
 
     const getAtualUserType=()=>{
         try{
-            const endpoint=`/api/apiPessoa?action=getAtualUserType&n_id_pessoa=${localStorage.getItem('n_id_pessoa')}`;
+            const endpoint=`/api/apiPessoa?action=getAtualUserType&n_id_pessoa=${localStorage.getItem('n_id_pessoa')}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
             fetch(endpoint,{
                 method:'GET'
             })

@@ -39,6 +39,7 @@ services:
       - API_KEY=re_9DKiyDmV_DYNWWFM7xaurNsXFwG2vEaTu
       - JWT_SECRET=re_9DKiyDmV_DYNWWFM7xaurNsXFwG2vEaTu
       - NEXT_PUBLIC_API_URL=http://localhost:3000/api
+      - NEXT_PUBLIC_API_KEY=re_9DKiyDmV_DYNWWFM7xaurNsXFwG2vEaTu
       - MODO=2 #1=PC, 2=Tablet, 3=Mobile, -1=Indefinido
       - SMTP_HOST=smtp.gmail.com
       - SMTP_PORT=587

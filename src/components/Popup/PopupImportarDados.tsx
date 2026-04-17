@@ -26,7 +26,10 @@ export default function PopupImportarDados(props: popupProps) {
             const response = await fetch('/api/apiImportarCsv', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ candidatos })
+                body: JSON.stringify({
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY,
+                    candidatos
+                })
             });
 
             if (response.ok) {

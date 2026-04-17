@@ -18,7 +18,7 @@ export default function Configuracao() {
     },[])
 
     const getConfig=async()=>{
-        const endpoing=`/api/apiConfig?action=getConfis`
+        const endpoing=`/api/apiConfig?action=getConfis&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         try {
             const response=await fetch(endpoing,{
                 method:'GET',
@@ -49,7 +49,8 @@ export default function Configuracao() {
                 },
                 body:JSON.stringify({
                     action:'updateConfig',
-                    s_emailDestino_config:emailsfix
+                    s_emailDestino_config:emailsfix,
+                    apiKey:process.env.NEXT_PUBLIC_API_KEY
                 })
             })
             .then(res=>{

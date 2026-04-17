@@ -38,7 +38,7 @@ export default function TelaDashboard(){
 
 
     const obterDadosIniciais=()=>{
-        const endpoint=`/api/apiDashboard`
+        const endpoint=`/api/apiDashboard?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
@@ -49,7 +49,7 @@ export default function TelaDashboard(){
     }
 
     const obterAvaliacoes=()=>{
-        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes`
+        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
@@ -59,7 +59,7 @@ export default function TelaDashboard(){
 
     const obterCandidatosFiltrados=async (isNewFilter = false)=>{
         const currentPage = isNewFilter ? 1 : page;
-        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}`;
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
 
         const res = await fetch(endpoint);
         const data = await res.json();
@@ -89,7 +89,7 @@ export default function TelaDashboard(){
     };
 
     const exportarPlanilha = async () => {
-        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&isExport=true`;
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
         
         try {
             const res = await fetch(endpoint);

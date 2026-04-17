@@ -27,7 +27,8 @@ export default function Login() {
       body: JSON.stringify({
         email: `${email}`,
         password: `${senha}`,
-        action:'login'
+        action:'login',
+        apiKey: process.env.NEXT_PUBLIC_API_KEY
       }),
     }); 
     if (response.ok) {

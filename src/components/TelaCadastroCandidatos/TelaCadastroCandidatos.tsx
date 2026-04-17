@@ -52,7 +52,7 @@ export default function TelaCadastroCandidatos(){
 
     const obterCandidatos = async () => {
         setLoad(true)
-        const endpoint = `/api/apiFap?action=getAllCandidatosFap_cad`
+        const endpoint = `/api/apiFap?action=getAllCandidatosFap_cad&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res => res.json())
         .then(res => {
@@ -80,7 +80,8 @@ export default function TelaCadastroCandidatos(){
             body:JSON.stringify({
                 s_nome_candidato:nome,
                 s_cpf_candidato:cpf,
-                s_email_candidato:email
+                s_email_candidato:email,
+                apiKey:process.env.NEXT_PUBLIC_API_KEY
             })
         })
         .then(res => {
@@ -167,7 +168,8 @@ export default function TelaCadastroCandidatos(){
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     assunto: `Relatórios FAP - Avaliação Concluída (${new Date().toLocaleDateString()})`,
-                    arquivos: relatorios
+                    arquivos: relatorios,
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY
                 })
             })
             if (!responseEmail.ok) {
@@ -211,7 +213,7 @@ export default function TelaCadastroCandidatos(){
 
         try{
             setLoad(true)
-            const endpoint=`/api/apiCandidato?action=getCandidatosByAvaliacaoFiltro&nomeAvaliacao=${encodeURIComponent(filtroAvaliacoes)}`;
+            const endpoint=`/api/apiCandidato?action=getCandidatosByAvaliacaoFiltro&nomeAvaliacao=${encodeURIComponent(filtroAvaliacoes)}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
             const response = await fetch(endpoint)
             const res = await response.json()
             
