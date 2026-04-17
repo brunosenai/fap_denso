@@ -1,4 +1,4 @@
-#RESET BANCO SEM DADOS
+#RESET BANCO COM DADOS DE TESTE
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `fap`;
@@ -49,6 +49,7 @@ CREATE TABLE `fap` (
   `s_q16_fap` varchar(255),
   `s_relatorio_fap` varchar(255),
   `n_status_fap` int DEFAULT 0,
+  `n_candidatopresente_fap` int DEFAULT 0,
   PRIMARY KEY (`n_id_avaliacao`, `n_id_candidato`)
 );
 
@@ -86,11 +87,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 INSERT INTO `tipoPessoa` (`n_id_tipoPessoa`, `s_dsc_tipoPessoa`)
 VALUES
   (1, 'Avaliador'),
-  (2, 'Gestor'),
-  (3, 'Root');
+  (2, 'Office'),
+  (3, 'Administrador');
 INSERT INTO `pessoa` (`n_id_pessoa`, `n_id_tipoPessoa`, `s_nome_pessoa`, `s_cpf_pessoa`, `s_telefone_pessoa`, `s_email_pessoa`, `s_senha_pessoa`)
 VALUES
-  (1, 3, 'Bruno', '11111111111', '31', 'bpinho@fiemg.com.br', '26@cp13#BjT');
+  (1, 3, 'Bruno', '11111111111', '31', 'bpinho@fiemg.com.br', '123');
+  
 INSERT INTO `config` (`s_emailDestino_config`)
 VALUES
   ('bpinho@fiemg.com.br');

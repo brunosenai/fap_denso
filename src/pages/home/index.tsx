@@ -85,25 +85,25 @@ export default function Home() {
   }
 
   // =========================================================================
-  // NOVA FUNÇÃO: Marcar falta dinamicamente com Optimistic UI Update
+  // AÇÃO 1: Clicar no botão F (Marca Falta, Desmarca Checkbox)
   // =========================================================================
   const marcarFalta = async (idCandidato: number, idAvaliacao: number, statusPresenteAtual: number) => {
-    // Se está 0 (Faltou), vira 1 (Presente). Se está 1, vira 0. (Prevenção caso venha undefined)
-    const novoStatus = statusPresenteAtual === 0 ? 1 : 0;
+    const atual = statusPresenteAtual ?? 1;
+    const novoStatus = atual === 0 ? 1 : 0;
 
-    // 1. Atualização Otimista no Ecrã (O botão muda de cor instantaneamente)
+    // Atualização visual imediata
     setCandidatos(prev => prev.map(c => 
       c.n_id_candidato === idCandidato 
         ? { ...c, n_candidatopresente_fap: novoStatus } 
         : c
     ));
 
-    // 2. Se o candidato levou falta, removemos automaticamente a caixinha (checkbox) dele
+    // Se o candidato levou falta (0), removemos automaticamente a caixinha (checkbox) dele
     if (novoStatus === 0) {
       setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
     }
 
-    // 3. Envia silenciosamente para o banco de dados
+    // Envia para o banco de dados
     try {
       await fetch('/api/apiCandidato', {
         method: 'PUT',
@@ -121,11 +121,42 @@ export default function Home() {
     }
   }
 
-  // Correção na forma como o estado é atualizado para evitar bugs de re-renderização
-  const selecionaCandidato = (idCandidato: number, selecionado: boolean) => {
+  // =========================================================================
+  // AÇÃO 2: Clicar na Checkbox (Marca Checkbox, Remove Falta do F)
+  // =========================================================================
+  const selecionaCandidato = async (idCandidato: number, selecionado: boolean, statusPresenteAtual: number) => {
     if (selecionado) {
+      // 1. Marca a Checkbox
       setCandidatosSelecionados(prev => [...prev, idCandidato]);
+
+      // 2. ALTERNÂNCIA: Se estava com falta (0), tira a falta automaticamente
+      const atual = statusPresenteAtual ?? 1;
+      if (atual === 0) {
+        setCandidatos(prev => prev.map(c => 
+          c.n_id_candidato === idCandidato 
+            ? { ...c, n_candidatopresente_fap: 1 } 
+            : c
+        ));
+
+        // Envia para o banco de dados para garantir que a falta foi removida
+        try {
+          await fetch('/api/apiCandidato', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'marcarFalta',
+              id_avaliacao: avaliacaoSelecionada,
+              id_candidato: idCandidato,
+              presente: 1,
+              apiKey: process.env.NEXT_PUBLIC_API_KEY
+            })
+          });
+        } catch (error) {
+          console.error("Erro ao remover a falta:", error);
+        }
+      }
     } else {
+      // Apenas desmarca a Checkbox
       setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
     }
   }
@@ -185,7 +216,8 @@ export default function Home() {
               const estaSelecionado = candidatosSelecionados.some(id => String(id) === String(c.n_id_candidato));
               
               // Verifica se o candidato faltou (0 = Faltou, 1 = Presente)
-              const levouFalta = c.n_candidatopresente_fap === 0;
+              const statusAtual = c.n_candidatopresente_fap ?? 1;
+              const levouFalta = statusAtual === 0;
 
               return (
                 <div className={styles.fieldForm} key={c.n_id_candidato}>
@@ -204,16 +236,17 @@ export default function Home() {
                       name={`candidato_${c.n_id_candidato}`}
                       id={`candidato_${c.n_id_candidato}`}
                       checked={estaSelecionado}
-                      onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
-                      // Bloqueia se atingiu o limite ou se o candidato tem falta
-                      disabled={(!estaSelecionado && atingiuLimite) || levouFalta}
+                      // Passamos também o status atual (levouFalta) para a função
+                      onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked, statusAtual)}
+                      // IMPORTANTE: Removida a trava "|| levouFalta" para permitir a alternância!
+                      disabled={!estaSelecionado && atingiuLimite}
                     />
                   </div>
                   
                   {/* Botão F: Muda de classe dinamicamente e aciona a função passando os IDs e o Status atual */}
                   <div 
                     className={`${styles.fieldForm_btnFalta} ${levouFalta ? styles.fieldForm_btnFalta_checked : ''}`} 
-                    onClick={() => marcarFalta(c.n_id_candidato, avaliacaoSelecionada, c.n_candidatopresente_fap)}
+                    onClick={() => marcarFalta(c.n_id_candidato, avaliacaoSelecionada, statusAtual)}
                     style={{ cursor: 'pointer', userSelect: 'none' }}
                     title={levouFalta ? "Remover falta" : "Marcar falta"}
                   >
@@ -228,14 +261,14 @@ export default function Home() {
           <div className={styles.rodape}>
             <div className={styles.rodape_area}>
               <button title={'voltar'} className={styles.btnPadrao_claro} onClick={() => router.back()}>
-                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={-1}/>
+                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={40}/>
               </button>
               <button title={'logout'} className={styles.btnPadrao_escuro} onClick={() => logout()}>
-                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={-1}/>
+                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={40}/>
               </button>
             </div>
             <button className={styles.btnPadrao_claro_g} onClick={() => goto()}>
-              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={-1}/>
+              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40}/>
               avaliação
             </button>
           </div>

@@ -70,8 +70,6 @@ export default function TelaCadastroAvaliador(){
                 comandoOK:() => setPopupMessage(false)
             })
             setPopupMessage(true)                        
-        }finally{
-            // setLoad(false)
         }
     }
 
@@ -137,9 +135,7 @@ export default function TelaCadastroAvaliador(){
             setPopupMessage(true)                        
         }
         finally{
-            // setLoad(false)
             setPopupConfirmation(false)
-            obterAvaliadores()
         }        
     }
 
@@ -188,6 +184,32 @@ export default function TelaCadastroAvaliador(){
         setTipo("")
     }
 
+    // =========================================================================
+    // MÁSCARAS DE INPUT
+    // =========================================================================
+    const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let v = e.target.value.replace(/\D/g, ""); // Remove tudo o que não é dígito
+        if (v.length > 11) v = v.slice(0, 11); // Limita a 11 dígitos numéricos
+        
+        // Aplica a máscara: 000.000.000-00
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        
+        setCpf(v);
+    }
+
+    const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let v = e.target.value.replace(/\D/g, ""); // Remove tudo o que não é dígito
+        if (v.length > 11) v = v.slice(0, 11); // Limita a 11 dígitos numéricos (DDD + 9 dígitos)
+
+        // Aplica a máscara: (31)90000-0000
+        v = v.replace(/^(\d{2})(\d)/g, "($1)$2"); 
+        v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+        
+        setTelefone(v);
+    }
+
     const cadastrarAvaliador=async()=>{
         setLoad(true)
         try{
@@ -201,9 +223,10 @@ export default function TelaCadastroAvaliador(){
                     body:JSON.stringify({
                         n_id_tipoPessoa:tipo,
                         s_nome_pessoa:nome,
-                        s_cpf_pessoa:cpf,
+                        // BLINDAGEM: Limpa a máscara antes de enviar para a API (envia só números)
+                        s_cpf_pessoa: cpf.replace(/\D/g, ""),
                         s_email_pessoa:email,
-                        s_telefone_pessoa:telefone,
+                        s_telefone_pessoa: telefone.replace(/\D/g, ""),
                         apiKey:process.env.NEXT_PUBLIC_API_KEY
                     })
                 })
@@ -230,6 +253,8 @@ export default function TelaCadastroAvaliador(){
                         setPopupMessage(true)                        
                     }
                 })
+            } else {
+                setLoad(false); // Caso a validação falhe, remove o load
             }
         }catch(error){
             setLoad(false)
@@ -242,10 +267,6 @@ export default function TelaCadastroAvaliador(){
             })
             setPopupMessage(true)                        
         }
-        finally{
-            // setLoad(false)
-            obterAvaliadores()
-        }
     }
 
     return(            
@@ -256,7 +277,7 @@ export default function TelaCadastroAvaliador(){
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
-                        <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
+                        <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={40}/>
                         <h1>NOVO COLABORADOR</h1>
                     </div>
                     <div className={styles.telaCadastro_form}>
@@ -264,14 +285,33 @@ export default function TelaCadastroAvaliador(){
                             <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
                             <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
                         </div>
+                        
+                        {/* INPUT CPF COM MÁSCARA */}
                         <div className={styles.fieldForm}>
                             <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`cpf`} value={cpf} onChange={(e)=>setCpf(e.target.value)} />
+                            <input 
+                                type="text" 
+                                id={`cpf`} 
+                                value={cpf} 
+                                onChange={handleCpfChange} 
+                                maxLength={14} 
+                                placeholder="000.000.000-00" 
+                            />
                         </div>
+
+                        {/* INPUT TELEFONE COM MÁSCARA */}
                         <div className={styles.fieldForm}>
                             <label htmlFor={`telefone`}>Telefone<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`telefone`} value={telefone} onChange={(e)=>setTelefone(e.target.value)} />
+                            <input 
+                                type="text" 
+                                id={`telefone`} 
+                                value={telefone} 
+                                onChange={handleTelefoneChange} 
+                                maxLength={14} 
+                                placeholder="(00)00000-0000" 
+                            />
                         </div>
+
                         <div className={styles.fieldForm}>
                             <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
                             <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
@@ -283,7 +323,6 @@ export default function TelaCadastroAvaliador(){
                                 <option value="1">Avaliador</option>
                                 <option value="2">Gestor</option>
                             </select>
-                            {/* <input type="text" id={`tipo`} value={tipo} onChange={(e)=>setTipo(e.target.value)} /> */}
                         </div>                        
                         <div className={styles.fieldForm_center}>
                             <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
@@ -303,7 +342,7 @@ export default function TelaCadastroAvaliador(){
                             <div className={`${styles.c_titulo} ${styles.c3_avalidador}`}>Telefone</div>
                             <div className={`${styles.c_titulo} ${styles.c4_avalidador}`}>Tipo</div>
                             <div className={`${styles.c_titulo} ${styles.c5_avalidador} ${styles.c_comandos}`}>
-                                <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={20}/>
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>
@@ -313,11 +352,11 @@ export default function TelaCadastroAvaliador(){
                                     <div className={`${styles.c_dado} ${styles.c1_avalidador}`}>{av.s_nome_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c2_avalidador}`}>{av.s_email_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{av.s_telefone_pessoa}</div>
-                                    <div className={`${styles.c_dado} ${styles.c4_avalidador}`}>{av.n_id_tipoPessoa==1?'Avaliador':av.n_id_tipoPessoa==1?'Gestor':'Root'}</div>
+                                    <div className={`${styles.c_dado} ${styles.c4_avalidador}`}>{av.n_id_tipoPessoa==1?'Avaliador':av.n_id_tipoPessoa==2?'Gestor':'Root'}</div>
                                     <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`} onClick={()=>av.n_id_tipoPessoa!=3&&excluirPessoa(av.n_id_pessoa)}>
                                         {av.n_id_tipoPessoa!=3?
-                                            <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={-1}/>:
-                                            <Image src='/assets/icons/nodelete.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                            <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} style={{cursor:"pointer"}}/>:
+                                            <Image src='/assets/icons/nodelete.svg' alt='Não Excluir Avaliação' width={20} height={20} style={{opacity:0.5}}/>
                                         }
                                     </div>                                
                                 </div>
