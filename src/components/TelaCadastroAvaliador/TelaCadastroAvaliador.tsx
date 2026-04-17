@@ -137,7 +137,7 @@ export default function TelaCadastroAvaliador(){
             setPopupMessage(true)                        
         }
         finally{
-            setLoad(false)
+            // setLoad(false)
             setPopupConfirmation(false)
             obterAvaliadores()
         }        
@@ -243,7 +243,7 @@ export default function TelaCadastroAvaliador(){
             setPopupMessage(true)                        
         }
         finally{
-            setLoad(false)
+            // setLoad(false)
             obterAvaliadores()
         }
     }
