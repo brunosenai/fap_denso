@@ -49,6 +49,7 @@ CREATE TABLE `fap` (
   `s_q16_fap` varchar(255),
   `s_relatorio_fap` varchar(255),
   `n_status_fap` int DEFAULT 0,
+  `n_candidatopresente_fap` int DEFAULT 0,
   PRIMARY KEY (`n_id_avaliacao`, `n_id_candidato`)
 );
 
@@ -99,16 +100,16 @@ VALUES
   (7, 'Batman', '12345678900', 'batman@fap.com.br'),
   (8, 'Spiderman', '14725836900', 'spider@fap.com.br'),
   (9, 'ET', '75315965421', 'et@fap.com.br');
-INSERT INTO `fap` (`n_id_avaliacao`, `n_id_candidato`, `n_id_pessoa`)
+INSERT INTO `fap` (`n_id_avaliacao`, `n_id_candidato`, `n_id_pessoa`, `n_candidatopresente_fap`)
 VALUES
-  (1, 1, 1),
-  (1, 2, 1),
-  (1, 3, 1),
-  (1, 4, 2),
-  (1, 5, 2),
-  (1, 6, 2),
-  (2, 1, 1),
-  (2, 2, 1);
+  (1, 1, 1, 1),
+  (1, 2, 1, 1),
+  (1, 3, 1, 1),
+  (1, 4, 2, 1),
+  (1, 5, 2, 1),
+  (1, 6, 2, 1),
+  (2, 1, 1, 1),
+  (2, 2, 1, 1);
 INSERT INTO `tipoPessoa` (`n_id_tipoPessoa`, `s_dsc_tipoPessoa`)
 VALUES
   (1, 'Avaliador'),

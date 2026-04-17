@@ -23,7 +23,8 @@ services:
     depends_on:
       - db
   
-  app:
+app:
+    image: desenvolvimentocentro40/fap-app:latest # ADICIONE ESTA LINHA AQUI!
     build: .
     container_name: nextjs_fap
     restart: always

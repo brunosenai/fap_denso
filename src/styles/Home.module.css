@@ -64,6 +64,26 @@
     overflow: hidden;
 }
 
+.fieldForm_btnFalta{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 47px;
+    height: 47px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f4f4f4;
+    color: #ddd;
+}
+
+.fieldForm_btnFalta_checked{
+    border: 1px solid #008 !important;
+    background-color: var(--azulStellantis) !important;
+    color: #fff !important;
+}
+
 .fieldForm_input_nome{
     width: 100%;
     padding: 10px;

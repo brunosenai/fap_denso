@@ -32,10 +32,10 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                             )}
                         </select>
                     </div>
-                    <div className={styles.fieldSelect_c2}>
+                    {/* <div className={styles.fieldSelect_c2}>
                         <label className={styles.label} htmlFor="qtde">Qtd avaliadores</label>
                         <input className={styles.fieldForm} type="number" title='qtde' id={'qtde'} value={props.qtdAvaliadores} onChange={(e)=>{props.setQtdAvaliadores(Number(e.target.value))}} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

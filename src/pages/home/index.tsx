@@ -65,9 +65,14 @@ export default function Home() {
       })
       .then(res => res.json())
       .then(data => {
-        setCandidatos(data);
-        const maxCandidatosSelecionados = Math.ceil(data.length / qtdAvaliadores)
-        setMaxCandidatosSelecionados(maxCandidatosSelecionados)
+        // Blindagem contra erros de resposta
+        if (Array.isArray(data)) {
+            setCandidatos(data);
+            const maxCandidatosSelecionados = data.length
+            setMaxCandidatosSelecionados(maxCandidatosSelecionados)
+        } else {
+            setCandidatos([]);
+        }
         setLoad(false)
       });
     } catch (erro) {
@@ -79,13 +84,46 @@ export default function Home() {
     }
   }
 
+  // =========================================================================
+  // NOVA FUNÇÃO: Marcar falta dinamicamente com Optimistic UI Update
+  // =========================================================================
+  const marcarFalta = async (idCandidato: number, idAvaliacao: number, statusPresenteAtual: number) => {
+    // Se está 0 (Faltou), vira 1 (Presente). Se está 1, vira 0. (Prevenção caso venha undefined)
+    const novoStatus = statusPresenteAtual === 0 ? 1 : 0;
+
+    // 1. Atualização Otimista no Ecrã (O botão muda de cor instantaneamente)
+    setCandidatos(prev => prev.map(c => 
+      c.n_id_candidato === idCandidato 
+        ? { ...c, n_candidatopresente_fap: novoStatus } 
+        : c
+    ));
+
+    // 2. Se o candidato levou falta, removemos automaticamente a caixinha (checkbox) dele
+    if (novoStatus === 0) {
+      setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
+    }
+
+    // 3. Envia silenciosamente para o banco de dados
+    try {
+      await fetch('/api/apiCandidato', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'marcarFalta',
+          id_avaliacao: idAvaliacao,
+          id_candidato: idCandidato,
+          presente: novoStatus,
+          apiKey: process.env.NEXT_PUBLIC_API_KEY
+        })
+      });
+    } catch (error) {
+      console.error("Erro ao registar a falta:", error);
+    }
+  }
+
   // Correção na forma como o estado é atualizado para evitar bugs de re-renderização
   const selecionaCandidato = (idCandidato: number, selecionado: boolean) => {
     if (selecionado) {
-      if (candidatosSelecionados.length >= maxCandidatosSelecionados) {
-        alert(`Apenas ${maxCandidatosSelecionados} candidatos podem ser selecionados por avaliador`);
-        return;
-      }
       setCandidatosSelecionados(prev => [...prev, idCandidato]);
     } else {
       setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
@@ -103,12 +141,14 @@ export default function Home() {
     }
     setLoad(true)
     const path = `/fap`
-    if (candidatosSelecionados.length == maxCandidatosSelecionados && candidatosSelecionados.length > 0) {
+    
+    // Mantendo a sua regra de prosseguir se pelo menos 1 for selecionado
+    if (candidatosSelecionados.length > 0) {
       localStorage.setItem('n_id_avaliacao', avaliacaoSelecionada.toString());
       localStorage.setItem('candidatos', candidatosSelecionados.join(','));
       router.push(path);
     } else {
-      alert(`Selecione seus ${maxCandidatosSelecionados} candidatos para prosseguir`);
+      alert(`Selecione os seus candidatos para prosseguir`);
       setLoad(false)
     }
   }
@@ -139,20 +179,23 @@ export default function Home() {
       <div className={styles.page}>
         <div className={styles.telaMain}>
           <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} qtdAvaliadores={qtdAvaliadores} />
+          
           <div className={styles.formCandidatos}>
-            {candidatos.length > 0 && candidatos.map((c) => {
-              
-              // BLINDAGEM: Converte ambos para String. Isso garante que a caixa fique visualmente 
-              // marcada mesmo se houver divergência entre texto e número no array!
+            {candidatos.length > 0 && candidatos.map((c) => {              
               const estaSelecionado = candidatosSelecionados.some(id => String(id) === String(c.n_id_candidato));
+              
+              // Verifica se o candidato faltou (0 = Faltou, 1 = Presente)
+              const levouFalta = c.n_candidatopresente_fap === 0;
 
               return (
-                // BLINDAGEM: Nunca use index (i) como Key em listas onde o estado interativo muda!
                 <div className={styles.fieldForm} key={c.n_id_candidato}>
-                  <div className={styles.fieldForm_inputTexts}>
+                  
+                  {/* Feedback visual: Se levou falta, a opacidade diminui */}
+                  <div className={styles.fieldForm_inputTexts} style={{ opacity: levouFalta ? 0.5 : 1, transition: 'opacity 0.3s' }}>
                     <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
                     <input type="text" title={''} className={styles.fieldForm_input_cpf} value={c.s_cpf_candidato} readOnly />
                   </div>
+                  
                   <div className={styles.fieldForm_inputCheckbox}>
                     <input
                       type='checkbox'
@@ -162,24 +205,37 @@ export default function Home() {
                       id={`candidato_${c.n_id_candidato}`}
                       checked={estaSelecionado}
                       onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked)}
-                      disabled={!estaSelecionado && atingiuLimite}
+                      // Bloqueia se atingiu o limite ou se o candidato tem falta
+                      disabled={(!estaSelecionado && atingiuLimite) || levouFalta}
                     />
                   </div>
+                  
+                  {/* Botão F: Muda de classe dinamicamente e aciona a função passando os IDs e o Status atual */}
+                  <div 
+                    className={`${styles.fieldForm_btnFalta} ${levouFalta ? styles.fieldForm_btnFalta_checked : ''}`} 
+                    onClick={() => marcarFalta(c.n_id_candidato, avaliacaoSelecionada, c.n_candidatopresente_fap)}
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                    title={levouFalta ? "Remover falta" : "Marcar falta"}
+                  >
+                    F
+                  </div>
+
                 </div>
               );
             })}
           </div>
+
           <div className={styles.rodape}>
             <div className={styles.rodape_area}>
               <button title={'voltar'} className={styles.btnPadrao_claro} onClick={() => router.back()}>
-                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={40} style={{ marginRight: "5px" }} />
+                <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={-1}/>
               </button>
               <button title={'logout'} className={styles.btnPadrao_escuro} onClick={() => logout()}>
-                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={40} style={{ marginRight: "5px" }} />
+                <Image src="/assets/icons/logout.svg" alt="logout" width={40} height={-1}/>
               </button>
             </div>
             <button className={styles.btnPadrao_claro_g} onClick={() => goto()}>
-              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={40} style={{ marginRight: "5px" }} />
+              <Image src="/assets/icons/rule.svg" alt="avaliação" width={40} height={-1}/>
               avaliação
             </button>
           </div>

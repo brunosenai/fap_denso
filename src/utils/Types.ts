@@ -32,6 +32,7 @@ export type tCandidato={
 }
 export interface tcandidatoAvaliacao extends tCandidato{
     n_id_pessoa:number
+    n_candidatopresente_fap:number
 }
 
 export type tcandidatoCard={
@@ -65,7 +66,8 @@ export type tFap={
     s_q14_fap:string
     s_q15_fap:string
     s_q16_fap:string
-    s_relatorio_fap:string  
+    s_relatorio_fap:string
+    n_candidatopresente_fap:number
 }
 
 export type tPessoa={
