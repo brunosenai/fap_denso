@@ -71,7 +71,7 @@ export default function TelaCadastroAvaliador(){
             })
             setPopupMessage(true)                        
         }finally{
-            setLoad(false)
+            // setLoad(false)
         }
     }
 
