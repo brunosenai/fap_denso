@@ -279,6 +279,9 @@ export default function telaCadastro(){
         return idsSelecionados
     }
 
+    // =========================================================================
+    // NOVO FLUXO: GERAÇÃO DE RELATÓRIOS E TRATAMENTO DE ERROS DE FORMA LIMPA
+    // =========================================================================
     const gerarEnviarRelatoriosEmail = async () => {
         const ids = obterIdsAvaliacoesSelecionadas();
         
@@ -305,6 +308,20 @@ export default function telaCadastro(){
                 })
             });
 
+            const resData = await response.json();
+
+            // Interceta o erro específico do backend (Avaliação já processada)
+            if (response.status === 400 && resData.error === 'ALREADY_PROCESSED') {
+                setDadosPopupMessage({
+                    tipo: 2, // Alerta Amarelo
+                    titulo: "Alerta",
+                    mensagem: "As avaliações selecionadas já foram processadas e enviadas anteriormente.",
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
+                return;
+            }
+
             if (response.status !== 200) {
                 throw new Error("Falha ao gerar relatórios");
             }
@@ -316,8 +333,8 @@ export default function telaCadastro(){
                 comandoOK: () => setPopupMessage(false)
             });
             setPopupMessage(true);
+
         } catch (error) {
-            setLoad(false)
             console.error(error);
             setDadosPopupMessage({
                 tipo: 3, // Erro
@@ -327,9 +344,8 @@ export default function telaCadastro(){
             });
             setPopupMessage(true);
         } finally {
-            obterAvaliacoes(mostrarHistorico)
-            setLoad(false); // Desliga o loading
-            setPopupMessage(true); // Mostra o popup de sucesso ou erro
+            obterAvaliacoes(mostrarHistorico);
+            setLoad(false); 
         }
     }
 
@@ -347,7 +363,7 @@ export default function telaCadastro(){
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
-                        <Image src='/assets/icons/nova_avaliacao.svg' alt='Cadastro de Candidatos' width={30} height={-1}/>
+                        <Image src='/assets/icons/nova_avaliacao.svg' alt='Cadastro de Candidatos' width={30} height={30}/>
                         <h1>NOVA AVALIAÇÃO</h1>
                     </div>
                     <div className={styles.telaCadastro_form}>
@@ -381,27 +397,27 @@ export default function telaCadastro(){
                                 <input type="datetime-local" id={`filtroDataIni`} value={filtroDataIniAvaliacoes} onChange={(e)=>setFiltroDataIniAvaliacoes(e.target.value)} />
                                 <input type="datetime-local" id={`filtroDataFim`} value={filtroDataFimAvaliacoes} onChange={(e)=>setFiltroDataFimAvaliacoes(e.target.value)} />
                                 <div className={styles.btnPesquisa} onClick={()=>filtrarDatas()} title="Filtrar por Datas">
-                                    <Image src='/assets/icons/search_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                    <Image src='/assets/icons/search_w.svg' alt='Pesquisar Avaliação' width={20} height={20}/>
                                 </div>
                                 <div className={styles.btnPesquisa} onClick={()=>limparFiltros()} title="Limpar Filtros">
-                                    <Image src='/assets/icons/search_off_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
+                                    <Image src='/assets/icons/search_off_w.svg' alt='Limpar Avaliação' width={20} height={20}/>
                                 </div>
                                 <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Gerar relatórios e enviar por email">
-                                    <Image src='/assets/icons/report_w.svg' alt='Gerar relatórios' width={20} height={-1}/>
-                                    <Image src='/assets/icons/mail_w.svg' alt='Enviar relatórios por email' width={20} height={-1}/>
-                                </div>                                                               
+                                    <Image src='/assets/icons/report_w.svg' alt='Gerar relatórios' width={20} height={20}/>
+                                    <Image src='/assets/icons/mail_w.svg' alt='Enviar relatórios por email' width={20} height={20}/>
+                                </div>                                                                                               
                             </div>
                         </div>
                         <div className={styles.telaCadastro_lista_titulos}>
                             <div className={`${styles.c_titulo} ${styles.c1} ${styles.c_center}`}>
-                                <input type="checkbox" id={`checkboxTodos`} onChange={(e)=>{selecionarTodos(e.target)}} />
+                                <input type="checkbox" id={`checkboxTodos_header`} onChange={(e)=>{selecionarTodos(e.target)}} />
                             </div>
                             <div className={`${styles.c_titulo} ${styles.c2}`}>Nome Avaliação</div>
                             <div className={`${styles.c_titulo} ${styles.c3}`}>Data Avaliação</div>
                             <div className={`${styles.c_titulo} ${styles.c4} ${styles.c_center}`}>
                                 <div>st</div>
-                                <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={-1}/>
-                                <Image src='/assets/icons/info_w.svg' alt='Informações Avaliação' width={20} height={-1}/>
+                                <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={20}/>
+                                <Image src='/assets/icons/info_w.svg' alt='Informações Avaliação' width={20} height={20}/>
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>

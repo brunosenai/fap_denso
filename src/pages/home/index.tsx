@@ -260,7 +260,7 @@ export default function Home() {
 
           <div className={styles.rodape}>
             <div className={styles.rodape_area}>
-              <button title={'voltar'} className={styles.btnPadrao_claro} onClick={() => router.back()}>
+              <button title={'voltar'} className={styles.btnPadrao_claro} onClick={() => router.replace('/selecaomodulo/adm')}>
                 <Image src="/assets/icons/arrow_back.svg" alt="voltar" width={40} height={40}/>
               </button>
               <button title={'logout'} className={styles.btnPadrao_escuro} onClick={() => logout()}>
