@@ -410,7 +410,7 @@ export default function telaCadastro(){
                         </div>
                         <div className={styles.telaCadastro_lista_titulos}>
                             <div className={`${styles.c_titulo} ${styles.c1} ${styles.c_center}`}>
-                                <input type="checkbox" id={`checkboxTodos_header`} onChange={(e)=>{selecionarTodos(e.target)}} />
+                                <input type="checkbox" id={`checkboxTodos_header`} className={styles.chBranco} onChange={(e)=>{selecionarTodos(e.target)}} />
                             </div>
                             <div className={`${styles.c_titulo} ${styles.c2}`}>Nome Avaliação</div>
                             <div className={`${styles.c_titulo} ${styles.c3}`}>Data Avaliação</div>
@@ -425,7 +425,7 @@ export default function telaCadastro(){
                             {avaliacoesFiltradas.map((avaliacao,index)=>(
                                 <div key={index} className={styles.telaCadastro_lista_dados_linha}>
                                     <div className={`${styles.c_dado} ${styles.c1} ${styles.c_center}`}>
-                                        {avaliacao.n_status_avaliacao==1&&<input type="checkbox" id={`${avaliacao.n_id_avaliacao}`} onChange={(e)=>{}} />}
+                                        {avaliacao.n_status_avaliacao==1&&<input type="checkbox" className={styles.chBranco} id={`${avaliacao.n_id_avaliacao}`} onChange={(e)=>{}} />}
                                     </div>
                                     <div className={styles.c2}>{avaliacao.s_nome_avaliacao}</div>
                                     <div className={styles.c3}>{formatDateToText(avaliacao.dt_data_avaliacao)}</div>
