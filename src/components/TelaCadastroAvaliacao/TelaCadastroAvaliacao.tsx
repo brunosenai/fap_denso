@@ -41,25 +41,32 @@ export default function telaCadastro(){
         obterAvaliacoes(mostrarHistorico)
     },[])
 
-    const obterAvaliacoes=(historico:boolean)=>{
+    const obterAvaliacoes = (historico: boolean) => {
         setLoad(true)
-        try{
-            const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+        try {
+            const endpoint = `/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
             fetch(endpoint)
-            .then(res=>res.json())
-            .then(res=>{
-                setAvaliacoes(res)
-                setAvaliacoesFiltradas(res)
+            .then(res => res.json())
+            .then(res => {
+                // 🛡️ BLINDAGEM: Verifica se a API devolveu realmente uma lista (Array)
+                if (Array.isArray(res)) {
+                    setAvaliacoes(res)
+                    setAvaliacoesFiltradas(res)
+                } else {
+                    console.error("A API não retornou uma lista. Resposta:", res)
+                    setAvaliacoes([])
+                    setAvaliacoesFiltradas([])
+                }
                 setLoad(false)
             })
-        }catch(err){
+        } catch(err) {
             console.log(err)
             setLoad(false)
             setDadosPopupMessage({
-                tipo:3,
-                titulo:"Erro",
-                mensagem:"Erro ao obter avaliações!",
-                comandoOK:() => setPopupMessage(false)
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Erro ao obter avaliações!",
+                comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)
         }
