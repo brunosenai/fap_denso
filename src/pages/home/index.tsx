@@ -201,9 +201,6 @@ export default function Home() {
   }
 
   const trazerCandidato=async(n_id_candidato:number,n_id_avaliacao_atual:number)=>{
-    console.log(avaliacaoSelecionada)
-    console.log(n_id_candidato)
-    console.log(n_id_avaliacao_atual)
     setLoad(true)
     try {
       const endpoint = `/api/apiFap?action=getTrazerCandidado&n_id_candidato=${n_id_candidato}&n_id_avaliacao_atual=${n_id_avaliacao_atual}&n_id_avaliacao_nova=${avaliacaoSelecionada}&&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
