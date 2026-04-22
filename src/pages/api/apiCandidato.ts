@@ -129,6 +129,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({ message: "Internal Server Error: erro 500" })
             }
+        } else if (action == "getTrazerCandidato") {
+            try {
+                const [rows_cell] = await pool.query<RowDataPacket[]>(`
+                SELECT 
+                    c.n_id_candidato, 
+                    c.s_nome_candidato, 
+                    c.s_cpf_candidato, 
+                    f.n_id_avaliacao, 
+                    a.s_nome_avaliacao, 
+                    a.dt_data_avaliacao
+                FROM 
+                    fap f
+                INNER JOIN 
+                    candidato c ON f.n_id_candidato = c.n_id_candidato
+                INNER JOIN 
+                    avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
+                WHERE 
+                    f.n_status_fap = 0 AND f.n_id_avaliacao <> ?
+                ORDER BY 
+                    a.dt_data_avaliacao ASC, 
+                    c.s_nome_candidato ASC;
+                    `, [n_id_avaliacao]
+                )
+                res.status(200).json(rows_cell)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal Server Error: erro 500" })
+            }
         }
     } else if (req.method === 'POST') {
         const { s_nome_candidato, s_cpf_candidato, s_email_candidato } = req.body;

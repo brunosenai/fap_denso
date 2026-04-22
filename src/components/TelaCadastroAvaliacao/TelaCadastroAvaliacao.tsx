@@ -5,41 +5,45 @@ import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 import InfoAvaliacao from "../InfoAvaliacao/InfoAvaliacao"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
-import { tAvaliacao, tInfoAva, tFap } from "@/utils/Types"
-import {formatDateToText} from  "@/utils/Utils"
+import { tAvaliacao, tInfoAva } from "@/utils/Types"
+import { formatDateToText } from  "@/utils/Utils"
 import { useRouter } from "next/router"
 import Load from "../Load/Load"
 
-export default function telaCadastro(){
-    const router=useRouter()
-    const [nome,setNome]=useState<string>("")
-    const [data,setData]=useState<string>("")
-    const [avaliacoes,setAvaliacoes]=useState<tAvaliacao[]>([])
-    const [avaliacoesFiltradas,setAvaliacoesFiltradas]=useState<tAvaliacao[]>([])
-    const [filtroAvaliacoes,setFiltroAvaliacoes]=useState("")
-    const [filtroDataIniAvaliacoes,setFiltroDataIniAvaliacoes]=useState("")
-    const [filtroDataFimAvaliacoes,setFiltroDataFimAvaliacoes]=useState("")
-    const [popupConfirmation,setPopupConfirmation]=useState<boolean>(false)
-    const [popupMessage,setPopupMessage]=useState<boolean>(false)
-    const [showInfoAvaliacao,setShowInfoAvaliacao]=useState<boolean>(false)
-    const [isTablet, setIsTablet]=useState<boolean>()
-    const [load,setLoad]=useState(true)
-    const [mostrarHistorico,setMostrarHistorico]=useState(false)
-    const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
-        {
-            tipo:0,
-            titulo:"",
-            mensagem:"",
-            comandoOK:() => setPopupMessage(false)
-        }
-    )
-    const [idAvaliacaoExcluir,setIdAvaliacaoExcluir]=useState<number>(0)
-    const [infoAva,setInfoAva]=useState<tInfoAva>()
+// CORREÇÃO 1: Nome do componente OBRIGATORIAMENTE com Letra Maiúscula
+export default function TelaCadastro() {
+    const router = useRouter()
+    const [nome, setNome] = useState<string>("")
+    const [data, setData] = useState<string>("")
+    const [avaliacoes, setAvaliacoes] = useState<tAvaliacao[]>([])
+    const [avaliacoesFiltradas, setAvaliacoesFiltradas] = useState<tAvaliacao[]>([])
+    const [filtroAvaliacoes, setFiltroAvaliacoes] = useState("")
+    const [filtroDataIniAvaliacoes, setFiltroDataIniAvaliacoes] = useState("")
+    const [filtroDataFimAvaliacoes, setFiltroDataFimAvaliacoes] = useState("")
+    const [popupConfirmation, setPopupConfirmation] = useState<boolean>(false)
+    const [popupMessage, setPopupMessage] = useState<boolean>(false)
+    const [showInfoAvaliacao, setShowInfoAvaliacao] = useState<boolean>(false)
+    
+    const [isTablet, setIsTablet] = useState<boolean>(false)
+    // CORREÇÃO 2: Flag para evitar Erros de Hidratação entre o Servidor e o Cliente
+    const [isMounted, setIsMounted] = useState<boolean>(false)
+    
+    const [load, setLoad] = useState(true)
+    const [mostrarHistorico, setMostrarHistorico] = useState(false)
+    const [dadosPopupMessage, setDadosPopupMessage] = useState<PopupMessageProps>({
+        tipo: 0,
+        titulo: "",
+        mensagem: "",
+        comandoOK: () => setPopupMessage(false)
+    })
+    const [idAvaliacaoExcluir, setIdAvaliacaoExcluir] = useState<number>(0)
+    const [infoAva, setInfoAva] = useState<tInfoAva>()
 
-    useEffect(()=>{
+    useEffect(() => {
+        setIsMounted(true) // Confirma que o HTML já está no browser
         setIsTablet(verifyIsTablet())
         obterAvaliacoes(mostrarHistorico)
-    },[])
+    }, [])
 
     const obterAvaliacoes = (historico: boolean) => {
         setLoad(true)
@@ -48,7 +52,6 @@ export default function telaCadastro(){
             fetch(endpoint)
             .then(res => res.json())
             .then(res => {
-                // 🛡️ BLINDAGEM: Verifica se a API devolveu realmente uma lista (Array)
                 if (Array.isArray(res)) {
                     setAvaliacoes(res)
                     setAvaliacoesFiltradas(res)
@@ -72,124 +75,124 @@ export default function telaCadastro(){
         }
     }
 
-    const getInfoAvaliacao=async(idAvaliacao:number)=>{
+    const getInfoAvaliacao = async (idAvaliacao: number) => {
         setLoad(true)
-        try{
-            const endpoint=`/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+        try {
+            const endpoint = `/api/apiAvaliacao?action=getInfoAvaliacao&n_id_avaliacao=${idAvaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
             fetch(endpoint)
-            .then(res=>res.json())
-            .then(res=>{
+            .then(res => res.json())
+            .then(res => {
                 setInfoAva(res)
                 setLoad(false)
                 setShowInfoAvaliacao(true)
             })
-            .finally(()=>{
+            .finally(() => {
                 setLoad(false)
             })
-        }catch(err){
+        } catch(err) {
             console.log(err)
             setLoad(false)
             setDadosPopupMessage({
-                tipo:3,
-                titulo:"Erro",
-                mensagem:"Erro ao obter informações da avaliação!",
-                comandoOK:() => setPopupMessage(false)
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Erro ao obter informações da avaliação!",
+                comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)
-        }finally{
+        } finally {
             setLoad(false)
         }
     }
 
-    const excluirAvaliacao=(id:number)=>{
-        try{
-            const endpoint=`/api/apiAvaliacao`
-            fetch(endpoint,{
-                method:"DELETE",
-                headers:{
-                    "Content-Type":"application/json"
+    const excluirAvaliacao = (id: number) => {
+        try {
+            const endpoint = `/api/apiAvaliacao`
+            fetch(endpoint, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({
-                    id_avaliacao:id,
-                    apiKey:process.env.NEXT_PUBLIC_API_KEY
+                body: JSON.stringify({
+                    id_avaliacao: id,
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY
                 })
             })
-            .then(res=>{
-                if(res.status!=200){
+            .then(res => {
+                if (res.status != 200) {
                     setDadosPopupMessage({
-                        tipo:3,
-                        titulo:"Erro",
-                        mensagem:"Erro ao excluir avaliação!",
-                        comandoOK:() => setPopupMessage(false)
+                        tipo: 3,
+                        titulo: "Erro",
+                        mensagem: "Erro ao excluir avaliação!",
+                        comandoOK: () => setPopupMessage(false)
                     })
                     setPopupMessage(true)
-                }else{
+                } else {
                     obterAvaliacoes(mostrarHistorico)
                 }
             })
-        }catch(err){
+        } catch(err) {
             console.log(err)
             setLoad(false)
             setDadosPopupMessage({
-                tipo:3,
-                titulo:"Erro",
-                mensagem:"Erro ao excluir avaliação!",
-                comandoOK:() => setPopupMessage(false)
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Erro ao excluir avaliação!",
+                comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)
-        }finally{
+        } finally {
             setLoad(false)
         }
     }
 
-    const cadastrarAvaliacao=()=>{
-        if(nome.trim()=="" || data.trim()==""){
+    const cadastrarAvaliacao = () => {
+        if (nome.trim() == "" || data.trim() == "") {
             setDadosPopupMessage({
-                tipo:3,
-                titulo:"Erro",
-                mensagem:"Preencha todos os campos obrigatórios!",
-                comandoOK:() => setPopupMessage(false)
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Preencha todos os campos obrigatórios!",
+                comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)
             return
         }
-        try{
-            const endpoint=`/api/apiAvaliacao`
-            fetch(endpoint,{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
+        try {
+            const endpoint = `/api/apiAvaliacao`
+            fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({
-                    s_nome_avaliacao:nome,
-                    dt_data_avaliacao:data,
-                    apiKey:process.env.NEXT_PUBLIC_API_KEY
+                body: JSON.stringify({
+                    s_nome_avaliacao: nome,
+                    dt_data_avaliacao: data,
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY
                 })
             })
-            .then(res=>{
-                if(res.status!=200){
+            .then(res => {
+                if (res.status != 200) {
                     setDadosPopupMessage({
-                        tipo:3,
-                        titulo:"Erro",
-                        mensagem:"Erro ao gravar avaliação!",
-                        comandoOK:() => setPopupMessage(false)
+                        tipo: 3,
+                        titulo: "Erro",
+                        mensagem: "Erro ao gravar avaliação!",
+                        comandoOK: () => setPopupMessage(false)
                     })
                     setPopupMessage(true)
-                }else{
+                } else {
                     obterAvaliacoes(mostrarHistorico)
                 }
             })
-        }catch(err){
+        } catch(err) {
             console.log(err)
             setLoad(false)
             setDadosPopupMessage({
-                tipo:3,
-                titulo:"Erro",
-                mensagem:"Erro ao gravar avaliação!",
-                comandoOK:() => setPopupMessage(false)
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Erro ao gravar avaliação!",
+                comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)
-        }finally{
+        } finally {
             setLoad(false)
             setNome("")
             setData("")
@@ -236,59 +239,49 @@ export default function telaCadastro(){
         setAvaliacoesFiltradas(avaliacoes);
     }
 
-    const comandoExcluir=(id:number)=>{
+    const comandoExcluir = (id: number) => {
         setIdAvaliacaoExcluir(id)
         setPopupConfirmation(true)
     }
 
-    const comandoSim=()=>{
+    const comandoSim = () => {
         excluirAvaliacao(idAvaliacaoExcluir)
         setPopupConfirmation(false)
     }
 
-    const comandoNao=()=>{setPopupConfirmation(false)}
+    const comandoNao = () => { setPopupConfirmation(false) }
 
-    const obterCheckboxSelecionados=()=>{
-        const cb=document.querySelectorAll<HTMLInputElement>("input[type='checkbox']:checked");
-        const tcb=Array.from(cb)
-        if(tcb.length==0)
-            return []
-        const tcbfix=tcb[0].id=='checkboxTodos'?tcb.slice(1):tcb
+    const obterCheckboxSelecionados = () => {
+        const cb = document.querySelectorAll<HTMLInputElement>("input[type='checkbox']:checked");
+        const tcb = Array.from(cb)
+        if (tcb.length == 0) return []
+        const tcbfix = tcb[0].id == 'checkboxTodos_header' ? tcb.slice(1) : tcb
         return tcbfix
     }
 
-    const obterTodosCheckbox=()=>{
-        const cb=document.querySelectorAll<HTMLInputElement>("input[type='checkbox']");
-        const tcb=Array.from(cb)
-        const tcbfix=tcb[0].id=='checkboxTodos'?tcb.slice(1):tcb
+    const obterTodosCheckbox = () => {
+        const cb = document.querySelectorAll<HTMLInputElement>("input[type='checkbox']");
+        const tcb = Array.from(cb)
+        if (tcb.length == 0) return [] // Segurança extra
+        const tcbfix = tcb[0].id == 'checkboxTodos_header' ? tcb.slice(1) : tcb
         return tcbfix
     }
 
-    const selecionarTodos=(cb:HTMLInputElement)=>{
-        if(cb.checked){
-            const todosCb=obterTodosCheckbox()
-            todosCb.forEach((c)=>{
-                c.checked=true
-            })
-        }else{
-            const todosCb=obterTodosCheckbox()
-            todosCb.forEach((c)=>{
-                c.checked=false
-            })
-        }
+    const selecionarTodos = (cb: HTMLInputElement) => {
+        const todosCb = obterTodosCheckbox()
+        todosCb.forEach((c) => {
+            c.checked = cb.checked
+        })
     }
 
-    const obterIdsAvaliacoesSelecionadas=()=>{
-        const cbSelecionados=obterCheckboxSelecionados()
-        const idsSelecionados=cbSelecionados.map((cb)=>{
+    const obterIdsAvaliacoesSelecionadas = () => {
+        const cbSelecionados = obterCheckboxSelecionados()
+        const idsSelecionados = cbSelecionados.map((cb) => {
             return parseInt(cb.id)
         })
         return idsSelecionados
     }
 
-    // =========================================================================
-    // NOVO FLUXO: GERAÇÃO DE RELATÓRIOS E TRATAMENTO DE ERROS DE FORMA LIMPA
-    // =========================================================================
     const gerarEnviarRelatoriosEmail = async () => {
         const ids = obterIdsAvaliacoesSelecionadas();
         
@@ -317,10 +310,9 @@ export default function telaCadastro(){
 
             const resData = await response.json();
 
-            // Interceta o erro específico do backend (Avaliação já processada)
             if (response.status === 400 && resData.error === 'ALREADY_PROCESSED') {
                 setDadosPopupMessage({
-                    tipo: 2, // Alerta Amarelo
+                    tipo: 2, 
                     titulo: "Alerta",
                     mensagem: "As avaliações selecionadas já foram processadas e enviadas anteriormente.",
                     comandoOK: () => setPopupMessage(false)
@@ -334,7 +326,7 @@ export default function telaCadastro(){
             }
 
             setDadosPopupMessage({
-                tipo: 1, // Sucesso
+                tipo: 1, 
                 titulo: "Sucesso",
                 mensagem: "Os relatórios foram gerados, compactados e enviados por e-mail com sucesso!",
                 comandoOK: () => setPopupMessage(false)
@@ -344,7 +336,7 @@ export default function telaCadastro(){
         } catch (error) {
             console.error(error);
             setDadosPopupMessage({
-                tipo: 3, // Erro
+                tipo: 3, 
                 titulo: "Erro",
                 mensagem: "Ocorreu um erro no servidor ao gerar e enviar os relatórios.",
                 comandoOK: () => setPopupMessage(false)
@@ -356,17 +348,17 @@ export default function telaCadastro(){
         }
     }
 
-    const controleMostrarHistorico=(evt:boolean)=>{
+    const controleMostrarHistorico = (evt: boolean) => {
         setMostrarHistorico(evt)
         obterAvaliacoes(evt)
     }
 
-    return(
+    return (
         <>
-            {load&&<Load/>}
-            {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
-            {popupConfirmation&&<PopupConfirmation titulo="Excluir" mensagem="Esta avaliação será excluída!" pergunta="Confirma exclusão da avaliação?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
-            {showInfoAvaliacao&&<InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
+            {load && <Load/>}
+            {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
+            {popupConfirmation && <PopupConfirmation titulo="Excluir" mensagem="Esta avaliação será excluída!" pergunta="Confirma exclusão da avaliação?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
+            {showInfoAvaliacao && <InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
@@ -426,7 +418,10 @@ export default function telaCadastro(){
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={20}/>
                                 <Image src='/assets/icons/info_w.svg' alt='Informações Avaliação' width={20} height={20}/>
                             </div>
-                            {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
+                            
+                            {/* AQUI ESTÁ A MAGIA CONTRA ERROS DE HIDRATAÇÃO */}
+                            {isMounted && !isTablet && <div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
+                            
                         </div>
                         <div className={styles.telaCadastro_lista_dados}>
                             {avaliacoesFiltradas.map((avaliacao,index)=>(

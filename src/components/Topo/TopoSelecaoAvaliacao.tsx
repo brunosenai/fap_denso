@@ -8,6 +8,7 @@ interface TopoSelecaoAvaliacaoProps{
     //setQtdAvaliadores:React.Dispatch<React.SetStateAction<number>>
     setQtdAvaliadores:(dtq:number)=>void
     qtdAvaliadores:number
+    setMostrarTelaFrazerCandidato:(b:boolean)=>void
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -31,6 +32,11 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                                 <option key={index} value={item.n_id_avaliacao}>{item.s_nome_avaliacao}</option>
                             )}
                         </select>
+                    </div>
+                    <div className={styles.fieldSelect_c2}>
+                        <button className={styles.btnPadrao} onClick={()=>props.setMostrarTelaFrazerCandidato(true)} title="Trazer Candidato de outra avaliação">
+                            <Image src={'/assets/icons/transfer.svg'} alt={'Trazer Candidato de outra avaliação'} width={20} height={-1} />
+                        </button>
                     </div>
                     {/* <div className={styles.fieldSelect_c2}>
                         <label className={styles.label} htmlFor="qtde">Qtd avaliadores</label>

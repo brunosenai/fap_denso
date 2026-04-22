@@ -30,9 +30,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             action,
             n_id_candidato,
             n_id_avaliacao,
+            n_id_avaliacao_atual,
+            n_id_avaliacao_nova,
         } = req.query;
 
-        if (action == "getListaCandidatos") {
+        if (action == "getTrazerCandidado") {
+            try {
+                const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
+                    UPDATE
+                        fap
+                    SET
+                        n_id_avaliacao=?
+                    WHERE
+                        n_id_avaliacao=? AND n_id_candidato=?;
+                    `, [n_id_avaliacao_nova,n_id_avaliacao_atual,n_id_candidato]
+                );
+                res.status(200).json(rows_cadidatos);
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal Server Error: erro 500" });
+            }
+        } else if (action == "getListaCandidatos") {
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     SELECT

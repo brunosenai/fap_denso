@@ -35,6 +35,15 @@ export interface tcandidatoAvaliacao extends tCandidato{
     n_candidatopresente_fap:number
 }
 
+export type tTrazerCandidato={
+    n_id_candidato:number
+    s_nome_candidato:string
+    s_cpf_candidato:string
+    n_id_avaliacao:number
+    s_nome_avaliacao:string
+    dt_data_avaliacao:string
+}
+
 export type tcandidatoCard={
     s_nome_candidato:string
     s_email_candidato:string
