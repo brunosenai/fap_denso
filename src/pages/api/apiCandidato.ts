@@ -131,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         } else if (action == "getTrazerCandidato") {
             try {
-                const [rows_cell] = await pool.query<RowDataPacket[]>(`
+                const [rows_candidatos] = await pool.query<RowDataPacket[]>(`
                 SELECT 
                     c.n_id_candidato, 
                     c.s_nome_candidato, 
@@ -152,7 +152,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     c.s_nome_candidato ASC;
                     `, [n_id_avaliacao]
                 )
-                res.status(200).json(rows_cell)
+                const [rows_avaliacoes] = await pool.query<RowDataPacket[]>(`
+                    SELECT 
+                        n_id_avaliacao, 
+                        s_nome_avaliacao, 
+                        dt_data_avaliacao
+                    FROM 
+                        avaliacao
+                    WHERE 
+                        dt_data_avaliacao >= CURDATE()
+                    ORDER BY
+                        dt_data_avaliacao ASC;
+                    `, []
+                )
+                const retorno={
+                    avaliacoes: rows_avaliacoes,
+                    candidatos: rows_candidatos
+                }
+                res.status(200).json(retorno)
             } catch (error) {
                 console.error(error);
                 res.status(500).json({ message: "Internal Server Error: erro 500" })
