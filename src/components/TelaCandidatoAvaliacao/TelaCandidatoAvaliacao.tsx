@@ -6,6 +6,7 @@ import { tCandidato,tAvaliacao } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 import PopupImportarDados from "../Popup/PopupImportarDados"
+import Load from "../Load/Load"
 
 export default function TelaCandidatoAvaliacao(){
     const router=useRouter()
@@ -20,6 +21,7 @@ export default function TelaCandidatoAvaliacao(){
     const [candidatosAva,setCandidatosAva]=useState<tCandidato[]>([])
     const [isTablet, setIsTablet]=useState<boolean>()
     const [showImportarDados,setShowImportarDados]=useState<boolean>(false)
+    const [load, setLoad] = useState<boolean>(false)
     
     useEffect(()=>{
         setIsTablet(verifyIsTablet())
@@ -27,24 +29,42 @@ export default function TelaCandidatoAvaliacao(){
     },[])
 
     const obterDadosIniciais=()=>{
-        const endpoint=`/api/apiCandidatoAvaliacao?action=getIniData&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
-        fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setAvaliacoes(res.avaliacoes)
-            setCandidatos(res.candidatos)
-            setCandidatosFiltrados(res.candidatos)
-            setAvaliacoesFiltrados(res.avaliacoes)
-        })
+        try{
+            setLoad(true)
+            const endpoint=`/api/apiCandidatoAvaliacao?action=getIniData&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+            fetch(endpoint)
+            .then(res=>res.json())
+            .then(res=>{
+                setAvaliacoes(res.avaliacoes)
+                setCandidatos(res.candidatos)
+                setCandidatosFiltrados(res.candidatos)
+                setAvaliacoesFiltrados(res.avaliacoes)
+                setLoad(false)
+            }).catch(err=>{
+                setLoad(false)
+            })
+        }catch(err){
+            setLoad(false)
+        }
     }
 
     const obterCandidatosAvaliacao=(id:number)=>{
-        const endpoint=`/api/apiCandidatoAvaliacao?action=CandidatosPorAvaliacao&idAvaliacao=${id}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
-        fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setCandidatosAva(res)
-        })
+        try{
+            setLoad(true)
+            const endpoint=`/api/apiCandidatoAvaliacao?action=CandidatosPorAvaliacao&idAvaliacao=${id}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+            fetch(endpoint)
+            .then(res=>res.json())
+            .then(res=>{
+                setCandidatosAva(res)
+                setLoad(false)
+            })
+            .catch(err=>{
+                setLoad(false)
+            })
+        }
+        catch(err){
+            setLoad(false)
+        }   
     }
 
     const selecionarCandidato=(id:number)=>{
@@ -88,25 +108,35 @@ export default function TelaCandidatoAvaliacao(){
     }
 
     const desassociarCandidato=async(idCandidato:number,idAvaliacao:number)=>{
-        const endpoint=`/api/apiCandidatoAvaliacao`
-        fetch(endpoint,{
-            method:"DELETE",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                n_id_candidato:idCandidato,
-                n_id_avaliacao:idAvaliacao,
-                apiKey:process.env.NEXT_PUBLIC_API_KEY
+        try{
+            setLoad(true)
+            const endpoint=`/api/apiCandidatoAvaliacao`
+            fetch(endpoint,{
+                method:"DELETE",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    n_id_candidato:idCandidato,
+                    n_id_avaliacao:idAvaliacao,
+                    apiKey:process.env.NEXT_PUBLIC_API_KEY
+                })
             })
-        })
-        .then(res=>{
-            if(res.status!=200){
-                alert("Erro ao desassociar candidato à avaliação!")
-            }else{
-                obterCandidatosAvaliacao(avaliacaoSel)
-            }
-        })
+            .then(res=>{
+                if(res.status!=200){
+                    alert("Erro ao desassociar candidato à avaliação!")
+                    setLoad(false)
+                }else{
+                    obterCandidatosAvaliacao(avaliacaoSel)
+                    setLoad(false)
+                }
+            })
+            .catch(err=>{
+                setLoad(false)
+            })
+        }catch(err){
+            setLoad(false)
+        }
     }    
 
     const filtrarCandidatos=(filtro:string)=>{
@@ -136,6 +166,7 @@ export default function TelaCandidatoAvaliacao(){
 
     return(
         <>
+            {load && <Load />}
             {showImportarDados&&<PopupImportarDados comandoFechar={comandoFecharPopupImportação}/>}
             <div className={styles.telaCadastro}>
                 <div className={`${styles.telaCadastro_sessao1}`}>

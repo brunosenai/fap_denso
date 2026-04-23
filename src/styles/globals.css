@@ -47,6 +47,12 @@
 
   --alturaBarraFerrametasTablet:90px;
   --alturaBarraComandosTablet:50px;
+
+  --maxZindex:2147483647;
+  --zindex_load:2147483646;
+  --zindex_msg1:2147483645;
+  --zindex_msg2:2147483644;
+  --zindex_msg3:2147483643;
 }
 
 @media (prefers-color-scheme: dark) {

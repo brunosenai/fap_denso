@@ -71,16 +71,19 @@ export default function TelaCadastroCandidatos() {
         setLoad(true)
         const endpoint = `/api/apiFap?action=getAllCandidatosFap_cad&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
-            .then(res => res.json())
-            .then(res => {
-                if (Array.isArray(res)) {
-                    setCandidatos(res)
-                } else {
-                    setCandidatos([])
-                }
-            })
-            .catch(err => console.error(err))
-            .finally(() => setLoad(false))
+        .then(res => res.json())
+        .then(res => {
+            if (Array.isArray(res)) {
+                setCandidatos(res)
+            } else {
+                setCandidatos([])
+            }
+            setLoad(false)
+        })
+        .catch(err =>{
+            setLoad(false);
+            console.error(err)
+        })
     }
 
     const cadastrarCandidato = async () => {
@@ -108,30 +111,31 @@ export default function TelaCadastroCandidatos() {
                 apiKey: process.env.NEXT_PUBLIC_API_KEY
             })
         })
-            .then(res => {
-                if (res.status != 200) {
-                    setDadosPopupMessage({
-                        tipo: 3,
-                        titulo: "Erro",
-                        mensagem: "Erro ao gravar candidato!",
-                        comandoOK: () => setPopupMessage(false)
-                    })
-                    setPopupMessage(true)
-                } else {
-                    setDadosPopupMessage({
-                        tipo: 1,
-                        titulo: "Sucesso",
-                        mensagem: "Candidato cadastrado com sucesso",
-                        comandoOK: () => setPopupMessage(false)
-                    })
-                    setPopupMessage(true)
-                    setNome("")
-                    setCpf("")
-                    setEmail("")
-                    obterCandidatos()
-                }
-            })
-            .finally(() => setLoad(false))
+        .then(res => {
+            if (res.status != 200) {
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Erro",
+                    mensagem: "Erro ao gravar candidato!",
+                    comandoOK: () => setPopupMessage(false)
+                })
+                setLoad(false)
+                setPopupMessage(true)
+            } else {
+                setLoad(false)
+                setDadosPopupMessage({
+                    tipo: 1,
+                    titulo: "Sucesso",
+                    mensagem: "Candidato cadastrado com sucesso",
+                    comandoOK: () => setPopupMessage(false)
+                })
+                setPopupMessage(true)
+                setNome("")
+                setCpf("")
+                setEmail("")
+                obterCandidatos()
+            }
+        })
     }
 
     const baixaRelatorios = async (relatorios: any) => {

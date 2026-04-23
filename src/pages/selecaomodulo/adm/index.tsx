@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/SelecaoModulo.module.css";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function SelecaoModulo() {
   const router=useRouter()
