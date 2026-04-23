@@ -38,6 +38,11 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                             <Image src={'/assets/icons/transfer.svg'} alt={'Trazer Candidato de outra avaliação'} width={20} height={-1} />
                         </button>
                     </div>
+                    <div className={styles.fieldSelect_c2}>
+                        <button className={styles.btnPadrao} onClick={()=>props.setMostrarTelaFrazerCandidato(true)} title="Gerenciar Avaliação">
+                            <Image src={'/assets/icons/edit_square.svg'} alt={'Gerenciar Avaliação'} width={20} height={-1} />
+                        </button>
+                    </div>
                     {/* <div className={styles.fieldSelect_c2}>
                         <label className={styles.label} htmlFor="qtde">Qtd avaliadores</label>
                         <input className={styles.fieldForm} type="number" title='qtde' id={'qtde'} value={props.qtdAvaliadores} onChange={(e)=>{props.setQtdAvaliadores(Number(e.target.value))}} />

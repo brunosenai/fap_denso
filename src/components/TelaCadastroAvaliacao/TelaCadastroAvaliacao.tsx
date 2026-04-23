@@ -48,7 +48,8 @@ export default function TelaCadastro() {
     const obterAvaliacoes = (historico: boolean) => {
         setLoad(true)
         try {
-            const endpoint = `/api/apiAvaliacao?action=getAvaliacoes&historico=${historico}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+            const endpoint = `/api/apiAvaliacao?action=getAvaliacoes&historico=${historico?'true':'false'}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+            console.log(endpoint)
             fetch(endpoint)
             .then(res => res.json())
             .then(res => {
