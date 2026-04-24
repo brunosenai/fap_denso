@@ -291,44 +291,44 @@ export default function Fap() {
       {popupConfirm && <PopupConfirmation titulo="Sair" mensagem={'O seu progresso está salvo automaticamente no dispositivo. Confirma que deseja voltar?'} pergunta="Confirma que deseja sair?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
       {popup[0] && <PopupFap
         titulo="Condução segura do ciclo (C2, C3, C4, C5, C8)"
-        mediacao="O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a situações de risco ambiental e de segurança ao longo de toda a avaliação."
+        mediacao="O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a eventuais situações de risco ambiental e de segurança ao longo de toda a avaliação?"
         evidencias="EPIs colocados antes dodo início do teste e mantidos durante todo o ciclo;Ferramentas utilizadas sem improvisações ou uso indevido;Posto mantido em condição segura, organizado e sem riscos evidentes;Demonstra percepção riscos e ajusta conduta espontaneamente."
         i={1} fecharPopup={fecharPopup}/>
       }
       {popup[1] && <PopupFap
         titulo="Tratamento adequado de Não Conformidade – Stop & Call (C7, C8, C10)"
-        mediacao="O candidato identifica anomalia no processo, na peça ou na ferramenta e aciona corretamente o protocolo: Parar e sinalizar."
+        mediacao="O candidato detectou corretamente eventuais não conformidades ao logo do teste e acionou devidamente o protocolo &#34;Parar e Sinalizar&#34; ou Ignorou desvios, e/ou montou  peças defeituosas, sendo esta condição causada ou não por ele."
         evidencias="Identifica e interrompe o ciclo ao identificar desvios;Sinaliza ao avaliador imediatamente;Não prossegue com a peça defeituosa."
         i={2} fecharPopup={fecharPopup}/>
       }
       {popup[2] && <PopupFap
         titulo="DISCIPLINA OPERACIONAL (C1, C9, C10)"
-        mediacao="O candidato segue os padrões de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada."
+        mediacao="O candidato segue a documentação padrão de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada."
         evidencias="Segue a sequência passo a passo;Não improvisa métodos;Não utiliza o celular ou realiza atos incompatíveis com o posto."
         i={3} fecharPopup={fecharPopup}/>
       }
       {popup[3] && <PopupFap
         titulo="MONTAGEM CORRETA (C4, C5, C10)"
-        mediacao="O candidato realiza a montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem."
+        mediacao="O candidato realiza a correta montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem: documentação/físico."
         evidencias="Encaixes perfeitos e montagens sem folgas;Aperto de adequado de todos os elementos de fixação;Zero danos à peça;Montagem conforme peça-padrão."
         i={4} fecharPopup={fecharPopup}/>
       }
       {popup[4] && <PopupFap
         titulo="MANUTENÇÃO DO POSTO DE TRABALHO – 5S (C1, C3, C4) "
-        mediacao="O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada de ferramentas e peças de maneira racional."
+        mediacao="O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada da ferramenta, devida alocação das peças observando sua quantidade padronizada de maneira racional."
         evidencias="Ferramentas mantidas no local designado;Peças e contenedores mantidas organizadas na quantidade certa e no local designado;Posto livre de resíduos ou objetos alhieos à atividade."
         i={5} fecharPopup={fecharPopup}/>
       }
       {popup[5] && <PopupFap
         titulo="ACOMPANHAMENTO DO TAKT TIME (C6, C8, C9)"
-        mediacao="O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos."
+        mediacao="O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos e demonstra boa desenvoltura com o uso de ferramentas manuais."
         evidencias="Deslocamentos laterais junto ao motor para montagem;Montagens dentro do takt time."
         i={6} fecharPopup={fecharPopup}/>
       }
       {popup[6] && <PopupFap
         titulo="RESILIÊNCIA FÍSICA E MENTAL (C9, C11)"
         mediacao="O candidato mantém foco, postura, constância e estabilidade emocional durante toda a atividade, mesmo sob repetitividade, desconforto controlado e micropressões."
-        evidencias="Constância de ritmo;Zero reclamações improdutivas;Zero quedas de desempenho;Reações equilibradas diante de eventuais frustrações."
+        evidencias="Constância de ritmo;Zero reclamações improdutivas e postura receptiva;Zero quedas de desempenho;Reações equilibradas diante de eventuais frustrações."
         i={7} fecharPopup={fecharPopup}/>
       }
       <Head>

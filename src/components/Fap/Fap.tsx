@@ -36,7 +36,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               </div>
               <div className={styles.fapSection_field}>
                 <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d1_${iAba}`} checked={Boolean(fap.n_posto2_fap)} onChange={(e) => handleChange("n_posto2_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 1</label>
+                <label htmlFor={`d1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 4</label>
               </div>
             </div>
             <div className={styles.fapSection_col}>
@@ -46,7 +46,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               </div>
               <div className={styles.fapSection_field}>
                 <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d2_${iAba}`} checked={Boolean(fap.n_posto4_fap)} onChange={(e) => handleChange("n_posto4_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 2</label>
+                <label htmlFor={`d2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 5</label>
               </div>
             </div>
             <div className={styles.fapSection_col}>
@@ -56,7 +56,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               </div>
               <div className={styles.fapSection_field}>
                 <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d3_${iAba}`} checked={Boolean(fap.n_posto6_fap)} onChange={(e) => handleChange("n_posto6_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 3</label>
+                <label htmlFor={`d3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 6</label>
               </div>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
             </div>
           </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a situações de risco ambiental e de segurança ao longo de toda a avaliação.</div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a eventuais situações de risco ambiental e de segurança ao longo de toda a avaliação?</div>
           <div className={styles.fapSection_linhas}>
             <div className={styles.fapSection_lin}>
               <div className={styles.fapSection_field}>
@@ -93,7 +93,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
             </div>            
           </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato identifica anomalia no processo, na peça ou na ferramenta e aciona corretamente o protocolo: Parar e sinalizar.</div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato detectou corretamente eventuais não conformidades ao logo do teste e acionou devidamente o protocolo "Parar e Sinalizar" ou Ignorou desvios, e/ou montou  peças defeituosas, sendo esta condição causada ou não por ele.</div>
           <div className={styles.fapSection_linhas}>
             <div className={styles.fapSection_lin}>
               <div className={styles.fapSection_field}>
@@ -116,7 +116,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
             </div>
           </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato segue os padrões de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada.</div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato segue a documentação padrão de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -147,7 +147,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
             </div>
           </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza a montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem.</div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza a correta montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem: documentação/físico.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -178,7 +178,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
             </div>
           </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada de ferramentas e peças de maneira racional.</div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada da ferramenta, devida alocação das peças observando sua quantidade padronizada de maneira racional.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
@@ -209,7 +209,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
             </div>
           </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos.</div>
+          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos e demonstra boa desenvoltura com o uso de ferramentas manuais.</div>
           <div className={styles.fapSection_colunas}>
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>

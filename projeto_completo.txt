@@ -196,7 +196,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               </div>
               <div className={styles.fapSection_field}>
                 <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d1_${iAba}`} checked={Boolean(fap.n_posto2_fap)} onChange={(e) => handleChange("n_posto2_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 1</label>
+                <label htmlFor={`d1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 4</label>
               </div>
             </div>
             <div className={styles.fapSection_col}>
@@ -206,7 +206,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               </div>
               <div className={styles.fapSection_field}>
                 <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d2_${iAba}`} checked={Boolean(fap.n_posto4_fap)} onChange={(e) => handleChange("n_posto4_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 2</label>
+                <label htmlFor={`d2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 5</label>
               </div>
             </div>
             <div className={styles.fapSection_col}>
@@ -216,7 +216,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
               </div>
               <div className={styles.fapSection_field}>
                 <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d3_${iAba}`} checked={Boolean(fap.n_posto6_fap)} onChange={(e) => handleChange("n_posto6_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 3</label>
+                <label htmlFor={`d3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 6</label>
               </div>
             </div>
           </div>
@@ -865,15 +865,15 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto2_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 1</Text>
+              <Text style={styles.checkboxText}>Desmontagem 4</Text>
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto4_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 2</Text>
+              <Text style={styles.checkboxText}>Desmontagem 5</Text>
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto6_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 3</Text>
+              <Text style={styles.checkboxText}>Desmontagem 6</Text>
             </View>
           </View>
 
@@ -1137,15 +1137,15 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto2_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 1</Text>
+              <Text style={styles.checkboxText}>Desmontagem 4</Text>
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto4_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 2</Text>
+              <Text style={styles.checkboxText}>Desmontagem 5</Text>
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto6_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 3</Text>
+              <Text style={styles.checkboxText}>Desmontagem 6</Text>
             </View>
           </View>
 

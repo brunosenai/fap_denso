@@ -162,15 +162,15 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto2_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 1</Text>
+              <Text style={styles.checkboxText}>Desmontagem 4</Text>
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto4_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 2</Text>
+              <Text style={styles.checkboxText}>Desmontagem 5</Text>
             </View>
             <View style={styles.checkboxItem}>
               <View style={fapCandidato?.n_posto6_fap === 1 ? styles.boxChecked : styles.boxUnchecked} />
-              <Text style={styles.checkboxText}>Desmontagem 3</Text>
+              <Text style={styles.checkboxText}>Desmontagem 6</Text>
             </View>
           </View>
 
