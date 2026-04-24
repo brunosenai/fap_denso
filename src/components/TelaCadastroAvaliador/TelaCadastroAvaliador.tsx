@@ -7,6 +7,7 @@ import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
 import { tAvaliador } from "@/utils/Types"
 import { useRouter } from "next/router"
+import {formatarTelefone, formatarCPF} from "@/utils/Utils"
 import Load from "../Load/Load"
 
 export default function TelaCadastroAvaliador(){
@@ -351,7 +352,7 @@ export default function TelaCadastroAvaliador(){
                                 <div key={index} className={styles.telaCadastro_lista_dados_linha}>
                                     <div className={`${styles.c_dado} ${styles.c1_avalidador}`}>{av.s_nome_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c2_avalidador}`}>{av.s_email_pessoa}</div>
-                                    <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{av.s_telefone_pessoa}</div>
+                                    <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{formatarTelefone(av.s_telefone_pessoa)}</div>
                                     <div className={`${styles.c_dado} ${styles.c4_avalidador}`}>{av.n_id_tipoPessoa==1?'Avaliador':av.n_id_tipoPessoa==2?'Gestor':'Root'}</div>
                                     <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`} onClick={()=>av.n_id_tipoPessoa!=3&&excluirPessoa(av.n_id_pessoa)}>
                                         {av.n_id_tipoPessoa!=3?

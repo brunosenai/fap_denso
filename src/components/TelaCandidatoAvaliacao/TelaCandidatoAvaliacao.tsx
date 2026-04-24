@@ -7,6 +7,7 @@ import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 import PopupImportarDados from "../Popup/PopupImportarDados"
 import PopupMudarCandidatoTurma from "../Popup/PopupMudarCandidatoTurma"
+import {formatarCPF} from "@/utils/Utils"
 import Load from "../Load/Load"
 
 export default function TelaCandidatoAvaliacao(){
@@ -208,7 +209,7 @@ export default function TelaCandidatoAvaliacao(){
                                         <div key={i} className={`${candidatoSel == c.n_id_candidato && styles.telaCadastro_lista_dados_linha_sel} ${styles.telaCadastro_lista_dados_linha}`} onClick={() => selecionarCandidato(c.n_id_candidato)}>
                                             <div className={`${styles.c_dado} ${styles.c1_candidatoAvaliacao_cand}`}>{c.n_id_candidato}</div>
                                             <div className={`${styles.c_dado} ${styles.c2_candidatoAvaliacao_cand}`}>{c.s_nome_candidato}</div>
-                                            <div className={`${styles.c_dado} ${styles.c3_candidatoAvaliacao_cand}`}>{c.s_cpf_candidato}</div>
+                                            <div className={`${styles.c_dado} ${styles.c3_candidatoAvaliacao_cand}`}>{formatarCPF(c.s_cpf_candidato)}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -264,7 +265,7 @@ export default function TelaCandidatoAvaliacao(){
                                 <div key={i} className={styles.telaCadastro_lista_dados_linha}>
                                     <div className={`${styles.c_dado} ${styles.c1_listaCandidatos}`}>{c.n_id_candidato}</div>
                                     <div className={`${styles.c_dado} ${styles.c2_listaCandidatos}`}>{c.s_nome_candidato}</div>
-                                    <div className={`${styles.c_dado} ${styles.c3_listaCandidatos}`}>{c.s_cpf_candidato}</div>
+                                    <div className={`${styles.c_dado} ${styles.c3_listaCandidatos}`}>{formatarCPF(c.s_cpf_candidato)}</div>
                                     <div className={`${styles.c_dado} ${styles.c4_listaCandidatos}`}>
                                         <Image src='/assets/icons/delete.svg' alt='Excluir' width={25} height={-1} onClick={() => desassociarCandidato(c.n_id_candidato, avaliacaoSel)}/>
                                         <Image src='/assets/icons/transfer.svg' alt='Excluir' width={25} height={-1} onClick={() => mostrarTelaMoverCandidato(c)}/>

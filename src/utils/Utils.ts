@@ -8,6 +8,24 @@ export const verifyIsTablet=()=>{
   return isTablet
 }
 
+export const formatarCPF = (cpfBruto: string | number): string => {
+  const cpfLimpo = String(cpfBruto).replace(/\D/g, "");
+  if (cpfLimpo.length !== 11) {
+    return cpfLimpo; // Retorna o que conseguiu se for inválido
+  }
+  return cpfLimpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+}
+
+export const formatarTelefone = (telefoneBruto: string | number): string => {
+  const telLimpo = String(telefoneBruto).replace(/\D/g, "");
+  if (telLimpo.length === 11) {
+    return telLimpo.replace(/(\d{2})(\d{5})(\d{4})/, "($1)$2-$3");
+  } else if (telLimpo.length === 10) {
+    return telLimpo.replace(/(\d{2})(\d{4})(\d{4})/, "($1)$2-$3");
+  }
+  return telLimpo;
+}
+
 export const formatDateToText = (dateString: string|undefined): string => {
     if (!dateString) return "";
     const date = new Date(dateString);

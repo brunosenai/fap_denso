@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import TopoSelecaoAvaliacao from "@/components/Topo/TopoSelecaoAvaliacao";
 import { tAvaliacao, tcandidatoAvaliacao } from "@/utils/Types";
 import PopupTrazerCandidato from "@/components/Popup/PopupTrazerCandidato";
+import {formatarCPF} from "@/utils/Utils";
 import Load from "@/components/Load/Load";
 
 export default function Home() {
@@ -248,7 +249,7 @@ export default function Home() {
                   {/* Feedback visual: Se levou falta, a opacidade diminui */}
                   <div className={styles.fieldForm_inputTexts} style={{ opacity: levouFalta ? 0.5 : 1, transition: 'opacity 0.3s' }}>
                     <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
-                    <input type="text" title={''} className={styles.fieldForm_input_cpf} value={c.s_cpf_candidato} readOnly />
+                    <input type="text" title={''} className={styles.fieldForm_input_cpf} value={formatarCPF(c.s_cpf_candidato)} readOnly />
                   </div>
                   
                   <div className={styles.fieldForm_inputCheckbox}>
@@ -259,9 +260,7 @@ export default function Home() {
                       name={`candidato_${c.n_id_candidato}`}
                       id={`candidato_${c.n_id_candidato}`}
                       checked={estaSelecionado}
-                      // Passamos também o status atual (levouFalta) para a função
                       onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked, statusAtual)}
-                      // IMPORTANTE: Removida a trava "|| levouFalta" para permitir a alternância!
                       disabled={!estaSelecionado && atingiuLimite}
                     />
                   </div>
