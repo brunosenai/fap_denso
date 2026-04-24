@@ -8,7 +8,8 @@ interface TopoSelecaoAvaliacaoProps{
     //setQtdAvaliadores:React.Dispatch<React.SetStateAction<number>>
     setQtdAvaliadores:(dtq:number)=>void
     qtdAvaliadores:number
-    setMostrarTelaFrazerCandidato:(b:boolean)=>void
+    setMostrarTelaTrazerCandidato:(b:boolean)=>void
+    setMostrarTelaMovimentacaoAvancada:(b:boolean)=>void
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -34,12 +35,12 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                         </select>
                     </div>
                     <div className={styles.fieldSelect_c2}>
-                        <button className={styles.btnPadrao} onClick={()=>props.setMostrarTelaFrazerCandidato(true)} title="Trazer Candidato de outra avaliação">
+                        <button className={styles.btnPadrao} onClick={()=>props.setMostrarTelaTrazerCandidato(true)} title="Trazer Candidato de outra avaliação">
                             <Image src={'/assets/icons/transfer.svg'} alt={'Trazer Candidato de outra avaliação'} width={20} height={-1} />
                         </button>
                     </div>
                     <div className={styles.fieldSelect_c2}>
-                        <button className={styles.btnPadrao} onClick={()=>props.setMostrarTelaFrazerCandidato(true)} title="Gerenciar Avaliação">
+                        <button className={styles.btnPadrao} onClick={()=>props.setMostrarTelaMovimentacaoAvancada(true)} title="Gerenciar Avaliação">
                             <Image src={'/assets/icons/edit_square.svg'} alt={'Gerenciar Avaliação'} width={20} height={-1} />
                         </button>
                     </div>
