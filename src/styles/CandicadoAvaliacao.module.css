@@ -60,6 +60,11 @@
     font-size: x-small;
 }
 
+.telaCadastro_topo h1{
+    text-align: center;
+    width: 100%;
+}
+
 .telaCadastro_form{
     display: flex;
     flex-direction: column;
@@ -164,6 +169,7 @@
     color: #fff;
     max-height: 25px;
     min-height: 25px;
+    gap:10px;
 }
 .c_dado{
     display: flex;
@@ -175,6 +181,7 @@
     text-wrap: nowrap;
     overflow: hidden;
     font-size: small;
+    gap:10px;
 }
 .c_comandos{
     justify-content: space-around !important;

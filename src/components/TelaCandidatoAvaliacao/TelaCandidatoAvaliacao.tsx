@@ -6,6 +6,7 @@ import { tCandidato,tAvaliacao } from "@/utils/Types"
 import {formatDateToText} from  "@/utils/Utils"
 import { useRouter } from "next/router"
 import PopupImportarDados from "../Popup/PopupImportarDados"
+import PopupMudarCandidatoTurma from "../Popup/PopupMudarCandidatoTurma"
 import Load from "../Load/Load"
 
 export default function TelaCandidatoAvaliacao(){
@@ -21,7 +22,9 @@ export default function TelaCandidatoAvaliacao(){
     const [candidatosAva,setCandidatosAva]=useState<tCandidato[]>([])
     const [isTablet, setIsTablet]=useState<boolean>()
     const [showImportarDados,setShowImportarDados]=useState<boolean>(false)
+    const [showMudarCandidatoTurma,setMudarCandidatoTurma]=useState<boolean>(false)
     const [load, setLoad] = useState<boolean>(false)
+    const [candidatoSelecionado, setCandidatoSelecionado] = useState<tCandidato | null>(null);
     
     useEffect(()=>{
         setIsTablet(verifyIsTablet())
@@ -164,15 +167,21 @@ export default function TelaCandidatoAvaliacao(){
         obterDadosIniciais()
     }
 
+    const mostrarTelaMoverCandidato=(cand:tCandidato)=>{
+        setCandidatoSelecionado(cand)
+        setMudarCandidatoTurma(true)
+    }
+
     return(
         <>
             {load && <Load />}
             {showImportarDados&&<PopupImportarDados comandoFechar={comandoFecharPopupImportação}/>}
+            {showMudarCandidatoTurma&&<PopupMudarCandidatoTurma avaliacaoAtual={avaliacaoSel} candidatoSelecionado={candidatoSelecionado} setMostrarTelaMudarCandidato={setMudarCandidatoTurma} moverCandidato={()=>{}}/>}
             <div className={styles.telaCadastro}>
                 <div className={`${styles.telaCadastro_sessao1}`}>
                     <div className={styles.telaCadastro_topo}>
                         <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
-                        <h1>RELACIONAR CANDIDATO/AVALIAÇÃO</h1>
+                        <h1>GESTÃO DE CANDIDATO COM AVALIAÇÃO<br/>Avaliações não realizadas</h1>
                     </div>
                     <div className={styles.telaCadastro_topo}>
                         <button className={styles.btnPadrao} onClick={()=>iniciarImportacao()}>
@@ -246,6 +255,7 @@ export default function TelaCandidatoAvaliacao(){
                             <div className={`${styles.c_titulo} ${styles.c3_listaCandidatos}`}>cpf</div>
                             <div className={`${styles.c_titulo} ${styles.c4_listaCandidatos}`}>
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir' width={25} height={-1} />
+                                <Image src='/assets/icons/transfer_w.svg' alt='Excluir' width={25} height={-1} />
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>
@@ -255,8 +265,9 @@ export default function TelaCandidatoAvaliacao(){
                                     <div className={`${styles.c_dado} ${styles.c1_listaCandidatos}`}>{c.n_id_candidato}</div>
                                     <div className={`${styles.c_dado} ${styles.c2_listaCandidatos}`}>{c.s_nome_candidato}</div>
                                     <div className={`${styles.c_dado} ${styles.c3_listaCandidatos}`}>{c.s_cpf_candidato}</div>
-                                    <div className={`${styles.c_dado} ${styles.c4_listaCandidatos}`} onClick={() => desassociarCandidato(c.n_id_candidato, avaliacaoSel)}>
-                                        <Image src='/assets/icons/delete.svg' alt='Excluir' width={25} height={-1} />
+                                    <div className={`${styles.c_dado} ${styles.c4_listaCandidatos}`}>
+                                        <Image src='/assets/icons/delete.svg' alt='Excluir' width={25} height={-1} onClick={() => desassociarCandidato(c.n_id_candidato, avaliacaoSel)}/>
+                                        <Image src='/assets/icons/transfer.svg' alt='Excluir' width={25} height={-1} onClick={() => mostrarTelaMoverCandidato(c)}/>
                                     </div>
                                 </div>
                             ))}

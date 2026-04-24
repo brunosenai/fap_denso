@@ -9,15 +9,13 @@ interface popupProps {
 
 export default function PopupImportarDados(props: popupProps) {
     const [load, setLoad] = useState(false);
-    const [popupMessage,setPopupMessage]=useState<boolean>(false)
-    const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
-        {
-            tipo:0,
-            titulo:"",
-            mensagem:"",
-            comandoOK:() => setPopupMessage(false)
-        }
-    )
+    const [popupMessage, setPopupMessage] = useState<boolean>(false)
+    const [dadosPopupMessage, setDadosPopupMessage] = useState<PopupMessageProps>({
+        tipo: 0,
+        titulo: "",
+        mensagem: "",
+        comandoOK: () => setPopupMessage(false)
+    })
     const [dadosCSV, setDadosCSV] = useState<any[]>([]);
 
     const enviarParaApi = async (candidatos: any[]) => {
@@ -76,20 +74,147 @@ export default function PopupImportarDados(props: popupProps) {
             const texto = e.target?.result as string;
             const linhas = texto.split('\n');
             const dadosLimpos = [];
+
+            if (linhas.length === 0) return;
+
+            // =========================================================================
+            // 1. VALIDAÇÃO DE CABEÇALHO
+            // =========================================================================
+            const cabecalhoEsperado = ["Nome", "CPF", "Email", "Data", "hora", "Título Fap"];
+            // Pega a primeira linha, divide por ;, limpa espaços e ignora maiúsculas/minúsculas para validar
+            const cabecalhoArquivo = linhas[0].split(';').map(col => col.trim().toLowerCase());
             
+            let cabecalhoValido = true;
+            for (let i = 0; i < cabecalhoEsperado.length; i++) {
+                if (cabecalhoArquivo[i] !== cabecalhoEsperado[i].toLowerCase()) {
+                    cabecalhoValido = false;
+                    break;
+                }
+            }
+
+            if (!cabecalhoValido) {
+                setDadosCSV([]);
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Cabeçalho Inválido",
+                    mensagem: `Os títulos das colunas na planilha estão incorretos. O arquivo deve ter exatamente a ordem: ${cabecalhoEsperado.join('; ')}`,
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
+                evento.target.value = '';
+                return;
+            }
+
+            // Expressoes finais para garantir que a formatação está OK antes de enviar
+            const regexDataFinal = /^\d{4}-\d{2}-\d{2}$/;
+            const regexHoraFinal = /^\d{2}:\d{2}:\d{2}$/;
+            
+            let erroFormato = false;
+            let erroDuplicidade = false;
+
+            // Memória para checar duplicidades
+            const cpfsLidos = new Set();
+            const emailsLidos = new Set();
+
             for (let i = 1; i < linhas.length; i++) {
-                const colunas = linhas[i].split(';');
+                const linha = linhas[i].trim();
+                if (!linha) continue;
+
+                const colunas = linha.split(';');
                 if (colunas.length >= 3 && colunas[0].trim() !== '') {
+                    
+                    const nome = colunas[0].trim();
+                    const cpf = colunas[1].replace(/\D/g, ''); 
+                    const email = colunas[2].trim();
+                    let dataCSV = colunas[3]?.trim() || "";
+                    let horaCSV = colunas[4]?.trim() || "";
+                    const titulo_avaliacao = colunas[5]?.trim() || null;
+
+                    // =========================================================================
+                    // 2. VERIFICAÇÃO DE DUPLICIDADE (CPF e E-mail no mesmo arquivo)
+                    // =========================================================================
+                    if (cpfsLidos.has(cpf) || emailsLidos.has(email)) {
+                        erroDuplicidade = true;
+                        break;
+                    }
+                    cpfsLidos.add(cpf);
+                    emailsLidos.add(email);
+
+                    // =========================================================================
+                    // 3. FORMATAÇÃO AUTOMÁTICA SILENCIOSA (Datas e Horas)
+                    // =========================================================================
+                    // Se for DD/MM/YYYY converte para YYYY-MM-DD
+                    if (dataCSV) {
+                        const matchDataCompleta = dataCSV.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                        if (matchDataCompleta) {
+                            dataCSV = `${matchDataCompleta[3]}-${matchDataCompleta[2]}-${matchDataCompleta[1]}`;
+                        } else {
+                            // Se for DD/MM/YY converte para 20YY-MM-DD
+                            const matchDataCurta = dataCSV.match(/^(\d{2})\/(\d{2})\/(\d{2})$/);
+                            if (matchDataCurta) {
+                                dataCSV = `20${matchDataCurta[3]}-${matchDataCurta[2]}-${matchDataCurta[1]}`;
+                            }
+                        }
+                    }
+
+                    // Se for HH:MM converte para HH:MM:00
+                    if (horaCSV) {
+                        const matchHoraIncompleta = horaCSV.match(/^(\d{2}):(\d{2})$/);
+                        if (matchHoraIncompleta) {
+                            horaCSV = `${matchHoraIncompleta[1]}:${matchHoraIncompleta[2]}:00`;
+                        }
+                    }
+
+                    // Validação Final (Se ainda estiver fora do padrão após as correções)
+                    if (dataCSV && !regexDataFinal.test(dataCSV)) {
+                        erroFormato = true;
+                        break;
+                    }
+                    if (horaCSV && !regexHoraFinal.test(horaCSV)) {
+                        erroFormato = true;
+                        break;
+                    }
+
                     dadosLimpos.push({
-                        nome: colunas[0].trim(),
-                        cpf: colunas[1].replace(/\D/g, ''), 
-                        email: colunas[2].trim(),
-                        data: colunas[3]?.trim() || null,
-                        hora: colunas[4]?.trim() || null,
-                        titulo_avaliacao: colunas[5]?.trim() || null
+                        nome,
+                        cpf,
+                        email,
+                        data: dataCSV || null,
+                        hora: horaCSV || null,
+                        titulo_avaliacao
                     });
                 }
             }
+
+            // =========================================================================
+            // ALERTAS DE PARADA
+            // =========================================================================
+            if (erroDuplicidade) {
+                setDadosCSV([]);
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Duplicidade Encontrada",
+                    mensagem: "Foram encontrados CPFs ou E-mails duplicados nesta planilha. Corrija o arquivo e tente novamente.",
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
+                evento.target.value = '';
+                return;
+            }
+
+            if (erroFormato) {
+                setDadosCSV([]);
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Erro de Formatação",
+                    mensagem: "Planilha de importação inconsistente, verifique o formato das datas para YYYY-MM-DD e o formato das horas para HH:MM:SS",
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
+                evento.target.value = '';
+                return;
+            }
+
             setDadosCSV(dadosLimpos); 
         };
         reader.readAsText(file);

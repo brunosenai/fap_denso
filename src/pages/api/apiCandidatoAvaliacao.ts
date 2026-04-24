@@ -24,13 +24,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             try {
                 const [rows_candidatos] = await pool.query<RowDataPacket[]>(`
                     SELECT
-                        n_id_candidato,
-                        s_nome_candidato,
-                        s_cpf_candidato
+                        c.n_id_candidato,
+                        c.s_nome_candidato,
+                        c.s_cpf_candidato
                     FROM
-                        candidato
+                        candidato c
+                    LEFT JOIN fap f ON f.n_id_candidato = c.n_id_candidato
+                    WHERE f.n_status_fap = 0
                     ORDER BY
-                        n_id_candidato DESC;
+                        c.n_id_candidato DESC;
                     `,[]
                 )
                 const [rows_avaliacoes] = await pool.query<RowDataPacket[]>(`
@@ -39,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM
                         avaliacao
                     WHERE
-                        dt_data_avaliacao >= CURDATE()
+                        dt_data_avaliacao >= CURDATE() AND n_status_avaliacao=0
                     ORDER BY
                         dt_data_avaliacao ASC
                     `,[]

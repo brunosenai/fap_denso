@@ -246,6 +246,18 @@
     border-radius: 5px;
 }
 
+.telaCadastro_area_filtro_c{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 75%;
+    gap:10px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
 .telaCadastro_area_filtro_c1{
     display: flex;
     flex-direction: row;
@@ -264,6 +276,18 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 75%;
+    gap:10px;
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
+.telaCadastro_area_filtro_c3{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    /* width: 75%; */
     gap:10px;
     padding: 5px;
     border: 1px solid #aaa;

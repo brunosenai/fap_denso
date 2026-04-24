@@ -401,11 +401,13 @@ export default function TelaCadastro() {
                                 </div>
                                 <div className={styles.btnPesquisa} onClick={()=>limparFiltros()} title="Limpar Filtros">
                                     <Image src='/assets/icons/search_off_w.svg' alt='Limpar Avaliação' width={20} height={20}/>
-                                </div>
+                                </div>                                                                                           
+                            </div>
+                            <div className={styles.telaCadastro_area_filtro_c3}>
                                 <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Gerar relatórios e enviar por email">
                                     <Image src='/assets/icons/report_w.svg' alt='Gerar relatórios' width={20} height={20}/>
                                     <Image src='/assets/icons/mail_w.svg' alt='Enviar relatórios por email' width={20} height={20}/>
-                                </div>                                                                                               
+                                </div>   
                             </div>
                         </div>
                         <div className={styles.telaCadastro_lista_titulos}>
