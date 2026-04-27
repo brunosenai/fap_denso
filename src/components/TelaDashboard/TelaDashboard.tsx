@@ -50,7 +50,7 @@ export default function TelaDashboard(){
     }
 
     const obterAvaliacoes=()=>{
-        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&historico=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
