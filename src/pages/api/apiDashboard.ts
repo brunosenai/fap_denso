@@ -51,6 +51,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     total_avaliados,
                     total_aprovados,
                     total_reprovados,
+                    reprovado_apenas_dicotomica,
+                    reprovado_apenas_gradual,
+                    reprovado_pelas_duas,
                     ROUND((total_aprovados * 100.0 / total_avaliados), 2) AS taxa_aprovacao,
 
                   
@@ -69,6 +72,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         COUNT(*) AS total_avaliados,
                         SUM(CASE WHEN n_resultado_fap <> 0 THEN 1 ELSE 0 END) AS total_aprovados,
                         SUM(CASE WHEN n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados,
+
+                        SUM(CASE WHEN (reprovou_dicotomica = 1 AND reprovou_gradual = 0) THEN 1 ELSE 0 END) AS reprovado_apenas_dicotomica,
+                        SUM(CASE WHEN (reprovou_dicotomica = 0 AND reprovou_gradual = 1) THEN 1 ELSE 0 END) AS reprovado_apenas_gradual,
+                        SUM(CASE WHEN (reprovou_dicotomica = 1 AND reprovou_gradual = 1) THEN 1 ELSE 0 END) AS reprovado_pelas_duas,
                         
                         SUM(CASE WHEN n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
                         SUM(CASE WHEN n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
@@ -101,12 +108,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     FROM (
                         SELECT 
-                            f.*,
-                            ROW_NUMBER() OVER (PARTITION BY f.n_id_candidato ORDER BY f.dt_date_fap DESC) as ordem
-                        FROM 
-                            fap f
-                        WHERE 
-                            f.n_status_fap = 1
+                            *,
+                            -- Flag de Reprovação Dicotômica (Q6 ou Q7 falharam)
+                            CASE WHEN (n_q6_fap = 0 OR n_q7_fap = 0) THEN 1 ELSE 0 END AS reprovou_dicotomica,
+                            
+                            -- Flag de Reprovação Gradual (Soma de Q8 a Q12 + pontos das dicotômicas <= 13)
+                            -- Nota: Assumi que acerto nas dicotômicas vale 1 ponto cada.
+                            CASE WHEN (
+                                COALESCE(n_q6_fap, 0) + 
+                                COALESCE(n_q7_fap, 0) + 
+                                COALESCE(n_q8_fap, 0) + 
+                                COALESCE(n_q9_fap, 0) + 
+                                COALESCE(n_q10_fap, 0) + 
+                                COALESCE(n_q11_fap, 0) + 
+                                COALESCE(n_q12_fap, 0)
+                            ) <= 13 THEN 1 ELSE 0 END AS reprovou_gradual
+                        FROM (
+                            SELECT 
+                                f.*,
+                                ROW_NUMBER() OVER (PARTITION BY f.n_id_candidato ORDER BY f.dt_date_fap DESC) as ordem
+                            FROM 
+                                fap f
+                            WHERE 
+                                f.n_status_fap = 1
+                        ) AS base_ranking
+                
                     ) AS sub
                     WHERE sub.ordem = 1
                 ) AS resumo_interno
@@ -158,6 +184,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             nota3: [rows[0].q8_p3, rows[0].q9_p3, rows[0].q10_p3, rows[0].q11_p3, rows[0].q12_p3],
             nota4: [rows[0].q8_p4, rows[0].q9_p4, rows[0].q10_p4, rows[0].q11_p4, rows[0].q12_p4]
         };
+
+        const dadosMotivosReprovacao = [
+            { value: rows[0].reprovado_apenas_dicotomica || 0, name: 'Reprovação Gradual' },
+            { value: rows[0].reprovado_apenas_gradual || 0, name: 'Reprovação Dicotômica' },
+            { value: rows[0].reprovado_pelas_duas || 0, name: 'Reprovação em Ambas' }
+        ].filter(item => item.value > 0);
+
         return res.status(200).json({
             cards: {
                 totalAvaliados: rows[0].total_avaliados || 0,
@@ -170,6 +203,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             graficoDicotomico: dadosDicotomicos,
             graficoGradual: dadosGradual,
             tabelaCandidatos: listaCandidatos,
+            graficoMotivosReprovacao: dadosMotivosReprovacao
         });
     }catch(error){
         console.error(error);

@@ -39,7 +39,7 @@ export default function GraficoBarraGradual({ dados }: BarraGradualProps) {
         color: ['#FF5757', '#FFBD59', '#7ED957', '#00BF63'], // Vermelho, Laranja, Verde Claro, Verde Escuro
         legend: {
             orient: 'vertical',
-            left: '8%',    
+            left: '0%',    
             top: 'center',     
             itemGap: 15,      
             textStyle: {
@@ -73,10 +73,10 @@ export default function GraficoBarraGradual({ dados }: BarraGradualProps) {
             }
         }],
         series: [
-            { name: 'Nota 1', type: 'bar', barGap: 0, label: labelOption, data: dados.nota1 },
-            { name: 'Nota 2', type: 'bar', label: labelOption, data: dados.nota2 },
-            { name: 'Nota 3', type: 'bar', label: labelOption, data: dados.nota3 },
-            { name: 'Nota 4', type: 'bar', label: labelOption, data: dados.nota4 }
+            { name: 'Abaixo do Básico', type: 'bar', barGap: 0, label: labelOption, data: dados.nota1 },
+            { name: 'Básico', type: 'bar', label: labelOption, data: dados.nota2 },
+            { name: 'Adequado', type: 'bar', label: labelOption, data: dados.nota3 },
+            { name: 'Avançado', type: 'bar', label: labelOption, data: dados.nota4 }
         ]
     };
 

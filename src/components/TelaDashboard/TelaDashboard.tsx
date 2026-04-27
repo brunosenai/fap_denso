@@ -8,6 +8,7 @@ import GraficoPizza from "./Charts/GraficoPizza"
 import GraficoBarraDicotomica from "./Charts/GraficoBarraDicotomica"
 import GraficoBarraGradual from "./Charts/GraficoBarraGradual"
 import { tCandidatoFap } from "@/utils/Types"
+import GraficoRadialReprovados from "./Charts/GraficoRadialReprovados"
 
 export default function TelaDashboard(){
     const [dadosDashboard,setDadosDashboard]=useState<any>('')
@@ -152,25 +153,7 @@ export default function TelaDashboard(){
                     </div>
                     <div className={styles.graficosGerais}>
                         <div className={styles.graficosGerais_legenda}>
-                            <h1>LEGENDA</h1>
-                            <div className={styles.graficosGerais_legendaTexto}>
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox1}></div>
-                                    <h5>Avançado</h5>
-                                </div>
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox2}></div>
-                                    <h5>Adequado</h5>
-                                </div >
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox3}></div>
-                                    <h5>Básico</h5>
-                                </div>
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox4}></div>
-                                    <h5>Abaixo do Básico</h5>
-                                </div>
-                            </div>
+                            <GraficoRadialReprovados dados={dadosDashboard.graficoMotivosReprovacao} titulo={""} />
                         </div>
                         <div className={styles.graficosGerais_desempenho}>
                             <GraficoBarraGradual dados={dadosDashboard.graficoGradual} />
