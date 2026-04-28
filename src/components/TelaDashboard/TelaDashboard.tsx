@@ -8,6 +8,7 @@ import GraficoPizza from "./Charts/GraficoPizza"
 import GraficoBarraDicotomica from "./Charts/GraficoBarraDicotomica"
 import GraficoBarraGradual from "./Charts/GraficoBarraGradual"
 import { tCandidatoFap } from "@/utils/Types"
+import GraficoRadialReprovados from "./Charts/GraficoRadialReprovados"
 
 export default function TelaDashboard(){
     const [dadosDashboard,setDadosDashboard]=useState<any>('')
@@ -18,13 +19,13 @@ export default function TelaDashboard(){
     const [dataFim,setDataFim]=useState<any>('')
     const [candidatos,setCandidatos]=useState<any[]>([])
     const [candidatosFiltrados,setCandidatosFiltrados]=useState<any[]>([])
+    const [ isLoading, setIsLoading]=useState<boolean>(false)
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-    useEffect(()=>{
-        obterDadosIniciais()
-        obterAvaliacoes()
-    },[])
+    useEffect(() => {
+        obterAvaliacoes();
+    }, []);
 
     useEffect(() => {
         obterCandidatosFiltrados(true);
@@ -37,43 +38,49 @@ export default function TelaDashboard(){
     }, [page]);
 
 
-    const obterDadosIniciais=()=>{
-        const endpoint=`/api/apiDashboard?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+    const obterAvaliacoes = () => {
+        setIsLoading(true); 
+        const endpoint = `/api/apiAvaliacao?action=getAvaliacoes&historico=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+        
         fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setDadosDashboard(res)
-            setCandidatos(res.tabelaCandidatos)
-            setCandidatosFiltrados(res.tabelaCandidatos)
-        })
+            .then(res => res.json())
+            .then(res => {
+                setAvaliacoes(res)
+            })
+            .catch(error => {
+                console.error("Erro ao obter avaliações:", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
-    const obterAvaliacoes=()=>{
-        const endpoint=`/api/apiAvaliacao?action=getAvaliacoes&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
-        fetch(endpoint)
-        .then(res=>res.json())
-        .then(res=>{
-            setAvaliacoes(res)
-        })
-    }
-
-    const obterCandidatosFiltrados=async (isNewFilter = false)=>{
+    const obterCandidatosFiltrados = async (isNewFilter = false) => {
+        setIsLoading(true); 
         const currentPage = isNewFilter ? 1 : page;
         const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
 
-        const res = await fetch(endpoint);
-        const data = await res.json();
+        try {
+            const res = await fetch(endpoint);
+            const data = await res.json();
+            
+            setDadosDashboard(data); 
 
-        if (isNewFilter) {
-            setCandidatosFiltrados(data.tabelaCandidatos);
-            setPage(1);
-            setHasMore(true);
-        } else {
-            if (data.tabelaCandidatos.length === 0) {
-                setHasMore(false);
-                return;
+            if (isNewFilter) {
+                setCandidatosFiltrados(data.tabelaCandidatos);
+                setPage(1);
+                setHasMore(true);
+            } else {
+                if (data.tabelaCandidatos.length === 0) {
+                    setHasMore(false);
+                } else {
+                    setCandidatosFiltrados(prev => [...prev, ...data.tabelaCandidatos]);
+                }
             }
-            setCandidatosFiltrados(prev => [...prev, ...data.tabelaCandidatos]);
+        } catch (error) {
+            console.error("Erro ao obter candidatos filtrados:", error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -125,7 +132,15 @@ export default function TelaDashboard(){
     };
 
     if (!dadosDashboard) {
-        return <div className={styles.loading}>Carregando Dashboard...</div>
+        return (
+            <div className={styles.fullScreenLoading}>
+                <img 
+                    src="/assets/stellantis_logo.png" 
+                    alt="Carregando Dashboard..." 
+                    className={styles.pulsingLogo} 
+                />
+            </div>
+        );
     }
 
     return(
@@ -152,25 +167,7 @@ export default function TelaDashboard(){
                     </div>
                     <div className={styles.graficosGerais}>
                         <div className={styles.graficosGerais_legenda}>
-                            <h1>LEGENDA</h1>
-                            <div className={styles.graficosGerais_legendaTexto}>
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox1}></div>
-                                    <h5>Avançado</h5>
-                                </div>
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox2}></div>
-                                    <h5>Adequado</h5>
-                                </div >
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox3}></div>
-                                    <h5>Básico</h5>
-                                </div>
-                                <div className={styles.legandaContainer}>
-                                    <div className={styles.legendaBox4}></div>
-                                    <h5>Abaixo do Básico</h5>
-                                </div>
-                            </div>
+                            <GraficoRadialReprovados dados={dadosDashboard.graficoMotivosReprovacao} titulo={""} />
                         </div>
                         <div className={styles.graficosGerais_desempenho}>
                             <GraficoBarraGradual dados={dadosDashboard.graficoGradual} />
@@ -213,7 +210,22 @@ export default function TelaDashboard(){
                                 </tr>
                             </thead>
                             <tbody>
-                                {candidatosFiltrados && candidatosFiltrados.length > 0 ? (
+                                {isLoading ? (
+                                    <tr>
+                                        <td colSpan={4} style={{ 
+                                            borderBottom: 'none', 
+                                            padding: 0
+                                        }}>
+                                            <div className={styles.loadingContainer}>
+                                                <img 
+                                                    src="/assets/stellantis_logo.png" 
+                                                    alt="Carregando..." 
+                                                    className={styles.pulsingLogo} 
+                                                />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : candidatosFiltrados && candidatosFiltrados.length > 0 ? (
                                     candidatosFiltrados.map((candidato, index) => (
                                         <tr key={index}>
                                             <td>{candidato.nome}</td>
@@ -222,7 +234,7 @@ export default function TelaDashboard(){
                                             <td>
                                                 <span
                                                     className={`${styles.badge} ${
-                                                    candidato.resultado !== 0 ? styles.aprovado : styles.reprovado
+                                                        candidato.resultado !== 0 ? styles.aprovado : styles.reprovado
                                                     }`}
                                                 >
                                                     {candidato.resultado !== 0 ? "APROVADO" : "REPROVADO"}
@@ -232,7 +244,7 @@ export default function TelaDashboard(){
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={5} className={styles.noRegisters}>
+                                        <td colSpan={4} className={styles.noRegisters}>
                                             Nenhum candidato encontrado.
                                         </td>
                                     </tr>
