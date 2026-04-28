@@ -50,22 +50,38 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
     useEffect(() => {
         let resultado = avaliacoes;
 
+        // Filtro de Nome
         if (filtroCandidato1.trim() !== '') {
             resultado = resultado.filter(a => 
                 (a.s_nome_avaliacao || "").toLowerCase().includes(filtroCandidato1.toLowerCase())
             );
         }
 
+        // Filtro Blindado de Data
         if (filtroAvaliacao1.trim() !== '') {
             resultado = resultado.filter(a => {
                 if (!a.dt_data_avaliacao) return false;
-                const dataFormatada = String(a.dt_data_avaliacao).substring(0, 10);
-                return dataFormatada === filtroAvaliacao1;
+                
+                const strData = String(a.dt_data_avaliacao);
+                
+                // Tenta extrair formato de banco de dados (ex: "2030-12-09T00:00:00" -> "2030-12-09")
+                const matchISO = strData.match(/(\d{4}-\d{2}-\d{2})/);
+                if (matchISO && matchISO[1] === filtroAvaliacao1) return true;
+
+                // Tenta extrair formato brasileiro (ex: "09/12/2030 00:00" -> inverte para "2030-12-09")
+                const matchBR = strData.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+                if (matchBR) {
+                    const dataInvertida = `${matchBR[3]}-${matchBR[2]}-${matchBR[1]}`;
+                    if (dataInvertida === filtroAvaliacao1) return true;
+                }
+
+                return false; // Se a data não bater com nada, oculta o registro
             });
         }
 
         setAvaliacoesFiltradas1(resultado);
 
+        // Limpeza de segurança se o item selecionado sumir
         if (avaliacaoSelecionada1 && !resultado.some(a => a.n_id_avaliacao === avaliacaoSelecionada1.n_id_avaliacao)) {
             setAvaliacaoSelecionada1(null);
             setCandidatosFiltrados1([]); 
@@ -79,22 +95,38 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
     useEffect(() => {
         let resultado = avaliacoes;
 
+        // Filtro de Nome
         if (filtroCandidato2.trim() !== '') {
             resultado = resultado.filter(a => 
                 (a.s_nome_avaliacao || "").toLowerCase().includes(filtroCandidato2.toLowerCase())
             );
         }
 
+        // Filtro Blindado de Data
         if (filtroAvaliacao2.trim() !== '') {
             resultado = resultado.filter(a => {
                 if (!a.dt_data_avaliacao) return false;
-                const dataFormatada = String(a.dt_data_avaliacao).substring(0, 10);
-                return dataFormatada === filtroAvaliacao2;
+                
+                const strData = String(a.dt_data_avaliacao);
+                
+                // Tenta extrair formato de banco de dados
+                const matchISO = strData.match(/(\d{4}-\d{2}-\d{2})/);
+                if (matchISO && matchISO[1] === filtroAvaliacao2) return true;
+
+                // Tenta extrair formato brasileiro
+                const matchBR = strData.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+                if (matchBR) {
+                    const dataInvertida = `${matchBR[3]}-${matchBR[2]}-${matchBR[1]}`;
+                    if (dataInvertida === filtroAvaliacao2) return true;
+                }
+
+                return false;
             });
         }
 
         setAvaliacoesFiltradas2(resultado);
 
+        // Limpeza de segurança se o item selecionado sumir
         if (avaliacaoSelecionada2 && !resultado.some(a => a.n_id_avaliacao === avaliacaoSelecionada2.n_id_avaliacao)) {
             setAvaliacaoSelecionada2(null);
             setCandidatosFiltrados2([]); 
@@ -112,9 +144,9 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
             const endpoint = `/api/apiMovimentacaoAvancada?action=getIni&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
             const response = await fetch(endpoint);
             const data = await response.json();
-            // setCandidatos(data.candidatos);
-            // setCandidatosFiltrados1(data.candidatos);
-            // setCandidatosFiltrados2(data.candidatos);
+            setCandidatos(data.candidatos);
+            setCandidatosFiltrados1(data.candidatos);
+            setCandidatosFiltrados2(data.candidatos);
             setAvaliacoes(data.avaliacoes);
             setAvaliacoesFiltradas1(data.avaliacoes);
             setAvaliacoesFiltradas2(data.avaliacoes);
@@ -282,8 +314,8 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                                                 />
                                             </div>
                                             <div className={styles.popup_conteudo_filtroArea_field}>
-                                                <label htmlFor="dtAva1">Avaliação</label>
-                                                <input id="dtAva1" title='dtAva' type="date" value={filtroAvaliacao1} onChange={(evt) => setFiltroAvaliacao1(evt.target.value)} />
+                                                <label htmlFor="dtAva1">Avaliação Data:</label>
+                                                <input id="dtAva1" title='dtAva1' type="date" value={filtroAvaliacao1} onChange={(evt) => setFiltroAvaliacao1(evt.target.value)} />
                                             </div>
                                         </div>
                                     </div>                               
@@ -306,7 +338,7 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div style={{ padding: "15px", color: "#666" }}>Nenhuma avaliação encontrada com estes filtros.</div>
+                                            <div style={{ padding: "15px", color: "#666" }}>Nenhum candidato encontrado com estes filtros.</div>
                                         )}
                                     </div>
                                 </div>
@@ -363,8 +395,8 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                                                 />
                                             </div>
                                             <div className={styles.popup_conteudo_filtroArea_field}>
-                                                <label htmlFor="dtAva2">Avaliação</label>
-                                                <input id="dtAva2" title='dtAva' type="date" value={filtroAvaliacao2} onChange={(evt) => setFiltroAvaliacao2(evt.target.value)} />
+                                                <label htmlFor="dtAva2">Avaliação Data:</label>
+                                                <input id="dtAva2" title='dtAva2' type="date" value={filtroAvaliacao2} onChange={(evt) => setFiltroAvaliacao2(evt.target.value)} />
                                             </div>
                                         </div>
                                     </div>                               
@@ -387,7 +419,7 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div style={{ padding: "15px", color: "#666" }}>Nenhuma avaliação encontrada com estes filtros.</div>
+                                            <div style={{ padding: "15px", color: "#666" }}>Nenhum candidato encontrado com estes filtros.</div>
                                         )}
                                     </div>
                                 </div>
@@ -428,8 +460,6 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                             title="Selecionar" 
                             className={styles.popup_btn} 
                             onClick={() => {
-                                // O seu código de movimentar está nos botões centrais, 
-                                // este botão pode ser usado para confirmar se precisar no futuro.
                             }}
                         >
                             Movimentar
