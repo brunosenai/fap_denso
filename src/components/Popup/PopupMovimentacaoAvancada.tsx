@@ -306,7 +306,7 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div style={{ padding: "15px", color: "#666" }}>Nenhum candidato encontrado com estes filtros.</div>
+                                            <div style={{ padding: "15px", color: "#666" }}>Nenhuma avaliação encontrada com estes filtros.</div>
                                         )}
                                     </div>
                                 </div>
@@ -387,7 +387,7 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div style={{ padding: "15px", color: "#666" }}>Nenhum candidato encontrado com estes filtros.</div>
+                                            <div style={{ padding: "15px", color: "#666" }}>Nenhuma avaliação encontrada com estes filtros.</div>
                                         )}
                                     </div>
                                 </div>
