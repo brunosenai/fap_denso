@@ -112,9 +112,9 @@ export default function PopupMovimentacaoAvancada(props: popupProps) {
             const endpoint = `/api/apiMovimentacaoAvancada?action=getIni&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
             const response = await fetch(endpoint);
             const data = await response.json();
-            setCandidatos(data.candidatos);
-            setCandidatosFiltrados1(data.candidatos);
-            setCandidatosFiltrados2(data.candidatos);
+            // setCandidatos(data.candidatos);
+            // setCandidatosFiltrados1(data.candidatos);
+            // setCandidatosFiltrados2(data.candidatos);
             setAvaliacoes(data.avaliacoes);
             setAvaliacoesFiltradas1(data.avaliacoes);
             setAvaliacoesFiltradas2(data.avaliacoes);
