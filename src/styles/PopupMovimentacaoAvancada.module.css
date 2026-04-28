@@ -17,7 +17,8 @@
     justify-content: flex-start;
     align-items: flex-start;
     width: 95%;
-    max-height: 80dvh;
+    max-height: 95dvh;
+    min-height: 95dvh;
     margin: 10px;
     border-radius: 10px;
     overflow: hidden;
@@ -37,7 +38,7 @@
     overflow: hidden;
 }
 
-.popup_conteudo_corpo{
+.popup_conteudo_corpo {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -46,11 +47,25 @@
     background-color: #fff;
     color: #222;
     width: 100%;
+    /* MUDANÇAS AQUI: */
+    flex: 1;
+    min-height: 0;
+}
+
+.popup_conteudo_corpo_linha {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: large;
+    background-color: #fff;
+    color: #222;
+    width: 100%;
     padding: 20px;
     gap: 10px;
-    /* --- AS DUAS LINHAS MÁGICAS --- */
-    flex: 1; 
-    min-height: 0; 
+    /* MUDANÇAS AQUI: */
+    flex: 1;
+    min-height: 0;
 }
 
 .popup_conteudo_controles{
@@ -108,7 +123,41 @@
     border-radius: 5px;
 }
 
-.lista{
+.lista {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 1px solid #aaa;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+}
+
+.lista_semBordas{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex: 1;
+    min-height: 0px;
+}
+
+.lista_semBordas_row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    gap:20px;
+}
+
+.lista_1{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -116,6 +165,7 @@
     width: 100%;
     flex: 1;
     min-height: 0px;
+    gap:10px;
 }
 
 .lista_titulos{
@@ -224,6 +274,21 @@
     gap:30px;
 }
 
+.popup_btn_auto{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--azulStellantis);
+    color: #fff;
+    padding: 0px 20px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    text-transform: uppercase;
+    gap:10px;
+}
+
 .popup_btn{
     display: flex;
     flex-direction: column;
@@ -232,6 +297,30 @@
     background-color: var(--azulStellantis);
     color: #fff;
     width: 150px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 10px;
+    text-transform: uppercase;
+}
+
+.areaBtnMove{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 100%;
+    padding-top: 85px;
+}
+
+.popup_btn_move{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--azulStellantis);
+    color: #fff;
+    width: 40px;
     height: 40px;
     cursor: pointer;
     border-radius: 10px;

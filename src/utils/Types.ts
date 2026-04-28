@@ -15,6 +15,17 @@ export type tAvaliador={
     s_senha_pessoa:string
 }
 
+export type tCandidatoAvaliacao={
+    n_id_candidato:number
+    s_nome_candidato:string
+    s_cpf_candidato:string
+    s_email_candidato:string
+    n_id_avaliacao:number
+    s_nome_avaliacao:string
+    dt_data_avaliacao:string
+    n_candidatopresente_fap:number
+}
+
 export type tCandidatoFap={
     n_id_candidato:number
     s_nome_candidato: string
@@ -29,6 +40,7 @@ export type tCandidato={
     s_nome_candidato:string
     s_cpf_candidato:string
     s_email_candidato:string
+    n_id_avaliacao:number
 }
 export interface tcandidatoAvaliacao extends tCandidato{
     n_id_pessoa:number

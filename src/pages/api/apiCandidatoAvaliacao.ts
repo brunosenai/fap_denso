@@ -22,6 +22,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if(action == "getIniData"){
             try {
+                // const [rows_candidatos] = await pool.query<RowDataPacket[]>(`
+                //     SELECT
+                //         c.n_id_candidato,
+                //         c.s_nome_candidato,
+                //         c.s_cpf_candidato
+                //     FROM
+                //         candidato c
+                //     LEFT JOIN fap f ON f.n_id_candidato = c.n_id_candidato
+                //     WHERE f.n_status_fap = 0
+                //     ORDER BY
+                //         c.n_id_candidato DESC;
+                //     `,[]
+                // )
                 const [rows_candidatos] = await pool.query<RowDataPacket[]>(`
                     SELECT
                         c.n_id_candidato,
@@ -30,11 +43,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM
                         candidato c
                     LEFT JOIN fap f ON f.n_id_candidato = c.n_id_candidato
-                    WHERE f.n_status_fap = 0
+                    LEFT JOIN avaliacao a ON a.n_id_avaliacao = f.n_id_avaliacao
+                        WHERE a.n_status_avaliacao = 0
                     ORDER BY
                         c.n_id_candidato DESC;
                     `,[]
-                )
+                )                
                 const [rows_avaliacoes] = await pool.query<RowDataPacket[]>(`
                     SELECT
                         *
@@ -45,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ORDER BY
                         dt_data_avaliacao ASC
                     `,[]
-                )
+                ) 
                 const data={
                     candidatos:rows_candidatos,
                     avaliacoes:rows_avaliacoes
