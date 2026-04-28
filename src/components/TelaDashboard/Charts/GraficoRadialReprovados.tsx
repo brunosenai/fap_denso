@@ -33,7 +33,7 @@ export default function GraficoRadialReprovados({ dados, titulo }: RadialProps) 
         {
           name: titulo,
           type: 'pie',
-          radius: ['40%', '70%'],
+          radius: ['30%', '60%'],
           center: ['50%', '70%'],
   
           startAngle: 180,
