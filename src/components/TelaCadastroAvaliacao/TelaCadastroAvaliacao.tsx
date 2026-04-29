@@ -363,17 +363,19 @@ export default function TelaCadastro() {
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
-                        <Image src='/assets/icons/nova_avaliacao.svg' alt='Cadastro de Candidatos' width={30} height={30}/>
+                        <Image src='/assets/icons/nova_avaliacao.svg' alt='Cadastro de Candidatos' width={25} height={-1}/>
                         <h1>NOVA AVALIAÇÃO</h1>
                     </div>
                     <div className={styles.telaCadastro_form}>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`nome`}>Nome Avaliação<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
-                        </div>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`data`}>Data e Hora<span className={styles.obrigatorio}>*</span></label>
-                            <input type="datetime-local" id={`data`} value={data} onChange={(e)=>setData(e.target.value)} />
+                        <div className={styles.telaCadastro_form_ladoAlado}>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`nome`}>Nome Avaliação<span className={styles.obrigatorio}>*</span></label>
+                                <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`data`}>Data e Hora<span className={styles.obrigatorio}>*</span></label>
+                                <input type="datetime-local" id={`data`} value={data} onChange={(e)=>setData(e.target.value)} />
+                            </div>
                         </div>
                         <div className={styles.fieldForm_center}>
                             <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliacao()}>cadastrar nova</button>

@@ -267,28 +267,30 @@ export default function TelaCadastroCandidatos() {
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
-                        <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={40} height={40} />
+                        <Image src='/assets/icons/novo_candidato.svg' alt='Cadastro de Candidatos' width={30} height={-1} />
                         <h1>NOVO CANDIDATO</h1><br />
                     </div>
                     <div className={styles.telaCadastro_form}>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`nome`} value={nome} onChange={(e) => setNome(e.target.value)} />
-                        </div>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                            <input 
-                                type="text" 
-                                id={`cpf`} 
-                                value={cpf} 
-                                onChange={handleCpfChange} 
-                                maxLength={14}
-                                placeholder="000.000.000-00"
-                            />
-                        </div>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`email`} value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <div className={styles.telaCadastro_form_ladoAlado}>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
+                                <input type="text" id={`nome`} value={nome} onChange={(e) => setNome(e.target.value)} />
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
+                                <input 
+                                    type="text" 
+                                    id={`cpf`} 
+                                    value={cpf} 
+                                    onChange={handleCpfChange} 
+                                    maxLength={14}
+                                    placeholder="000.000.000-00"
+                                />
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
+                                <input type="text" id={`email`} value={email} onChange={(e) => setEmail(e.target.value)} />
+                            </div>
                         </div>
                         <div className={styles.fieldForm_center}>
                             <button className={styles.btnPadrao} onClick={() => cadastrarCandidato()}>cadastrar novo</button>

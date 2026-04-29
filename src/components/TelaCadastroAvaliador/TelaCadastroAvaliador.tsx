@@ -278,53 +278,52 @@ export default function TelaCadastroAvaliador(){
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
-                        <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={40} height={40}/>
+                        <Image src='/assets/icons/novo_avaliador.svg' alt='Cadastro de Candidatos' width={30} height={-1}/>
                         <h1>NOVO COLABORADOR</h1>
                     </div>
                     <div className={styles.telaCadastro_form}>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+                        <div className={styles.telaCadastro_form_ladoAlado}>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`nome`}>Nome Completo<span className={styles.obrigatorio}>*</span></label>
+                                <input type="text" id={`nome`} value={nome} onChange={(e)=>setNome(e.target.value)} />
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
+                                <input 
+                                    type="text" 
+                                    id={`cpf`} 
+                                    value={cpf} 
+                                    onChange={handleCpfChange} 
+                                    maxLength={14} 
+                                    placeholder="000.000.000-00" 
+                                />
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`telefone`}>Telefone<span className={styles.obrigatorio}>*</span></label>
+                                <input 
+                                    type="text" 
+                                    id={`telefone`} 
+                                    value={telefone} 
+                                    onChange={handleTelefoneChange} 
+                                    maxLength={14} 
+                                    placeholder="(00)00000-0000" 
+                                />
+                            </div>
                         </div>
-                        
-                        {/* INPUT CPF COM MÁSCARA */}
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`cpf`}>CPF<span className={styles.obrigatorio}>*</span></label>
-                            <input 
-                                type="text" 
-                                id={`cpf`} 
-                                value={cpf} 
-                                onChange={handleCpfChange} 
-                                maxLength={14} 
-                                placeholder="000.000.000-00" 
-                            />
+                        <div className={styles.telaCadastro_form_ladoAlado}>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
+                                <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`tipo`}>Tipo Colaborador<span className={styles.obrigatorio}>*</span></label>
+                                <select id={`tipo`} value={tipo} onChange={(e)=>setTipo(e.target.value)}>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="1">Avaliador</option>
+                                    <option value="2">Gestor</option>
+                                </select>
+                            </div>
                         </div>
-
-                        {/* INPUT TELEFONE COM MÁSCARA */}
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`telefone`}>Telefone<span className={styles.obrigatorio}>*</span></label>
-                            <input 
-                                type="text" 
-                                id={`telefone`} 
-                                value={telefone} 
-                                onChange={handleTelefoneChange} 
-                                maxLength={14} 
-                                placeholder="(00)00000-0000" 
-                            />
-                        </div>
-
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`email`}>E-Mail<span className={styles.obrigatorio}>*</span></label>
-                            <input type="text" id={`email`} value={email} onChange={(e)=>setEmail(e.target.value)} />
-                        </div>
-                        <div className={styles.fieldForm}>
-                            <label htmlFor={`tipo`}>Tipo Colaborador<span className={styles.obrigatorio}>*</span></label>
-                            <select id={`tipo`} value={tipo} onChange={(e)=>setTipo(e.target.value)}>
-                                <option value="">Selecione o tipo</option>
-                                <option value="1">Avaliador</option>
-                                <option value="2">Gestor</option>
-                            </select>
-                        </div>                        
                         <div className={styles.fieldForm_center}>
                             <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliador()}>cadastrar novo</button>
                         </div>

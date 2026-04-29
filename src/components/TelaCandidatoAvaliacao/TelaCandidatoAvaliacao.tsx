@@ -181,8 +181,8 @@ export default function TelaCandidatoAvaliacao(){
             <div className={styles.telaCadastro}>
                 <div className={`${styles.telaCadastro_sessao1}`}>
                     <div className={styles.telaCadastro_topo}>
-                        <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={40} height={-1}/>
-                        <h1>GESTÃO DE CANDIDATO COM AVALIAÇÃO<br/>Avaliações não realizadas</h1>
+                        <Image src='/assets/icons/merge.svg' alt='Cadastro de Candidatos' width={30} height={-1}/>
+                        <h1>GESTÃO DE CANDIDATO / AVALIAÇÃO<br/>Avaliações não realizadas</h1>
                     </div>
                     <div className={styles.telaCadastro_topo}>
                         <button className={styles.btnPadrao} onClick={()=>iniciarImportacao()}>
