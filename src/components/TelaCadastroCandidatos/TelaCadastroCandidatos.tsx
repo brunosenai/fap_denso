@@ -10,16 +10,15 @@ import PopupSelecaoAvaliacao from "../Popup/PopupSelecaoAvaliacao"
 
 export default function TelaCadastroCandidatos() {
     const router = useRouter()
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+
     const [nome, setNome] = useState<string>("")
     const [cpf, setCpf] = useState<string>("")
     const [email, setEmail] = useState<string>("")
 
     const [candidatos, setCandidatos] = useState<tCandidatoFap[]>([])
     const [candidatosFiltrados, setCandidatosFiltrados] = useState<tCandidatoFap[]>([])
-
-    // Estados de Paginação
-    const [paginaAtual, setPaginaAtual] = useState(1);
-    const [totalPaginas, setTotalPaginas] = useState(1);
 
     const [filtroAvaliacoes, setFiltroAvaliacoes] = useState("")
     const [filtroCandidatos, setFiltroCandidatos] = useState("")
@@ -37,13 +36,14 @@ export default function TelaCadastroCandidatos() {
 
     useEffect(() => {
         setIsTablet(verifyIsTablet())
-        obterCandidatos(1) // Inicia na página 1
+        obterCandidatos()
     }, [])
 
     // =========================================================================
-    // FILTRO DINÂMICO LOCAL (Filtra a página atual)
+    // FILTRO DINÂMICO
     // =========================================================================
     useEffect(() => {
+        // Blindagem para evitar erro se candidatos não for um array
         if (!Array.isArray(candidatos)) return;
 
         if (filtroCandidatos.trim() === "") {
@@ -60,7 +60,7 @@ export default function TelaCadastroCandidatos() {
     // MÁSCARA DE CPF
     // =========================================================================
     const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let v = e.target.value.replace(/\D/g, ""); 
+        let v = e.target.value.replace(/\D/g, ""); // Remove tudo o que não é dígito
         if (v.length > 11) v = v.slice(0, 11);
 
         v = v.replace(/(\d{3})(\d)/, "$1.$2");
@@ -70,26 +70,21 @@ export default function TelaCadastroCandidatos() {
         setCpf(v);
     }
 
-    // =========================================================================
-    // BUSCA COM PAGINAÇÃO
-    // =========================================================================
-    const obterCandidatos = async (pagina: number = 1) => {
+const obterCandidatos = async (pagina: number = 1) => {
         setLoad(true)
+        // Note que agora enviamos a &pagina=X na URL
         const endpoint = `/api/apiFap?action=getAllCandidatosFap_cad&pagina=${pagina}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res => res.json())
         .then(res => {
-            // Se a API retornar a nova estrutura paginada
+            // A API agora devolve o objeto com a paginação
             if (res.dados && Array.isArray(res.dados)) {
                 setCandidatos(res.dados)
                 setPaginaAtual(res.paginaAtual)
                 setTotalPaginas(res.totalPaginas)
-            } 
-            // Fallback caso a API ainda retorne a lista antiga (sem paginação)
-            else if (Array.isArray(res)) {
+            } else if (Array.isArray(res)) {
+                 // Fallback de segurança se a API antiga ainda estiver em cache
                 setCandidatos(res)
-                setPaginaAtual(1)
-                setTotalPaginas(1)
             } else {
                 setCandidatos([])
             }
@@ -120,6 +115,7 @@ export default function TelaCadastroCandidatos() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 s_nome_candidato: nome,
+                // Limpa a máscara antes de enviar para o banco de dados
                 s_cpf_candidato: cpf.replace(/\D/g, ""),
                 s_email_candidato: email,
                 apiKey: process.env.NEXT_PUBLIC_API_KEY
@@ -147,7 +143,7 @@ export default function TelaCadastroCandidatos() {
                 setNome("")
                 setCpf("")
                 setEmail("")
-                obterCandidatos(1) // Força a voltar para a primeira página para ver o novo
+                obterCandidatos()
             }
         })
     }
@@ -240,12 +236,12 @@ export default function TelaCadastroCandidatos() {
     const limparFiltros = () => {
         setFiltroAvaliacoes("")
         setFiltroCandidatos("")
-        obterCandidatos(1) // Reseta para a primeira página
+        obterCandidatos()
     }
 
     const pesquisarCandidatoPelaAvaliacao = async () => {
         if (!filtroAvaliacoes || filtroAvaliacoes.trim() === "") {
-            obterCandidatos(1);
+            obterCandidatos();
             return;
         }
         try {
@@ -255,9 +251,6 @@ export default function TelaCadastroCandidatos() {
             const res = await response.json()
             if (Array.isArray(res)) {
                 setCandidatos(res)
-                // Como esta rota específica não está paginada, resetamos visualmente os botões
-                setPaginaAtual(1);
-                setTotalPaginas(1);
             } else {
                 setCandidatos([])
             }
@@ -391,33 +384,6 @@ export default function TelaCadastroCandidatos() {
                                 );
                             })}
                         </div>
-                        
-                        {/* === BARRA DE PAGINAÇÃO === */}
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', padding: '15px 0', width: '100%', alignItems: 'center', backgroundColor: '#fff', borderTop: '1px solid #ccc' }}>
-                            <button 
-                                className={styles.btnPadrao} 
-                                style={{ width: '120px', opacity: paginaAtual <= 1 ? 0.5 : 1, cursor: paginaAtual <= 1 ? 'not-allowed' : 'pointer', height: '35px' }}
-                                disabled={paginaAtual <= 1}
-                                onClick={() => obterCandidatos(paginaAtual - 1)}
-                            >
-                                Anterior
-                            </button>
-                            
-                            <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#222' }}>
-                                Página {paginaAtual} de {totalPaginas}
-                            </span>
-                            
-                            <button 
-                                className={styles.btnPadrao} 
-                                style={{ width: '120px', opacity: paginaAtual >= totalPaginas ? 0.5 : 1, cursor: paginaAtual >= totalPaginas ? 'not-allowed' : 'pointer', height: '35px' }}
-                                disabled={paginaAtual >= totalPaginas}
-                                onClick={() => obterCandidatos(paginaAtual + 1)}
-                            >
-                                Próxima
-                            </button>
-                        </div>
-                        {/* ========================== */}
-                        
                     </div>
                 </div>
             </div>
