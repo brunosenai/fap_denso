@@ -30,7 +30,7 @@
   --alturaRodapeFap:70px;
   --paddingTelaMainFap:40px;
   --alturaCamposPreenchimentoFap:350px;
-  --altura_btn_camposPreenchimentoFap:25px;
+  --altura_btn_camposPreenchimentoFap:35px;
   --alturaTotalCamposPreenchimentoFap:calc(var(--alturaCamposPreenchimentoFap)+var(--altura_btn_camposPreenchimentoFap));
   --paddingTelaMainHome:40px;
   --alturaFormAvaliador:305px;
