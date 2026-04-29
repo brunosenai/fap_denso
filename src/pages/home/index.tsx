@@ -42,7 +42,7 @@ export default function Home() {
     if (avaliacaoSelecionada !== -1) {
       intervalo = setInterval(() => {
         getCandidatosByAvaliacao(avaliacaoSelecionada, false);
-      }, 2000); 
+      }, 3000); 
     }
     
     return () => {
