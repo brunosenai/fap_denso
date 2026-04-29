@@ -234,7 +234,6 @@ export default function TelaCadastroCandidatos() {
             obterCandidatos();
             return;
         }
-
         try {
             setLoad(true)
             const endpoint = `/api/apiCandidato?action=getCandidatosByAvaliacaoFiltro&nomeAvaliacao=${encodeURIComponent(filtroAvaliacoes)}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
@@ -262,7 +261,7 @@ export default function TelaCadastroCandidatos() {
     return (
         <>
             {load && <Load />}
-            {popupPesquisarAvaliacao && <PopupSelecaoAvaliacao setFiltroAvaliacoes={setFiltroAvaliacoes} comandoFechar={() => setPopupPesquisarAvaliacao(false)} />}
+            {popupPesquisarAvaliacao && <PopupSelecaoAvaliacao setFiltroAvaliacoes={setFiltroAvaliacoes} comandoFechar={() =>{setPopupPesquisarAvaliacao(false)}}/>}
             {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK} />}
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>

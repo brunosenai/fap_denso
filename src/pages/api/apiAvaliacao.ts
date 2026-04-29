@@ -138,7 +138,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         FROM
                             avaliacao
                         WHERE
-                            dt_data_avaliacao >= CURDATE()
+                            dt_data_avaliacao >= CURDATE() AND n_status_avaliacao<=1
                         ORDER BY
                             dt_data_avaliacao ASC
                         `,[]
