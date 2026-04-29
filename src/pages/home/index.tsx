@@ -8,8 +8,10 @@ import TopoSelecaoAvaliacao from "@/components/Topo/TopoSelecaoAvaliacao";
 import { tAvaliacao, tcandidatoAvaliacao } from "@/utils/Types";
 import PopupTrazerCandidato from "@/components/Popup/PopupTrazerCandidato";
 import PopupMovimentacaoAvancada from "@/components/Popup/PopupMovimentacaoAvancada";
-import {formatarCPF} from "@/utils/Utils";
+import { formatarCPF } from "@/utils/Utils";
 import Load from "@/components/Load/Load";
+
+let n_id_pessoa: number = -1;
 
 export default function Home() {
   const router = useRouter();
@@ -25,9 +27,28 @@ export default function Home() {
   const [mostrarTelaMovimentacaoAvancada, setMostrarTelaMovimentacaoAvancada] = useState<boolean>(false)
 
   useEffect(() => {
-    setIsTablet(verifyIsTablet())
+    n_id_pessoa = localStorage.getItem('n_id_pessoa') ? Number(localStorage.getItem('n_id_pessoa')) : -1;
+    setIsTablet(verifyIsTablet());
     getAvaliacoes();
   }, []);
+
+  // =========================================================================
+  // POLLING: Sincronização automática entre tablets
+  // =========================================================================
+  useEffect(() => {
+    setIsTablet(verifyIsTablet());
+    let intervalo: NodeJS.Timeout;
+    
+    if (avaliacaoSelecionada !== -1) {
+      intervalo = setInterval(() => {
+        getCandidatosByAvaliacao(avaliacaoSelecionada, false);
+      }, 2000); 
+    }
+    
+    return () => {
+      if (intervalo) clearInterval(intervalo);
+    };
+  }, [avaliacaoSelecionada]);
 
   const changeQtdAvaliadores = (qtd: number) => {
     const maxCandidatosSelecionados = Math.ceil(candidatos.length / qtd)
@@ -40,9 +61,7 @@ export default function Home() {
     setLoad(true)
     try {
       const endpoint = `/api/apiAvaliacao?action=getAvaliacoesHojeEmDiante&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
-      fetch(endpoint, {
-        method: "GET"
-      })
+      fetch(endpoint, { method: "GET" })
       .then(res => res.json())
       .then(data => {
         setAvaliacoes(data);
@@ -61,54 +80,53 @@ export default function Home() {
     getCandidatosByAvaliacao(idAvaliacao);
   }
 
-  const getCandidatosByAvaliacao = async (idAvaliacao: number) => {
-    setLoad(true)
+  const getCandidatosByAvaliacao = async (idAvaliacao: number, showLoad: boolean = true) => {
+    if(showLoad) setLoad(true)
     try {
       const endpoint = `/api/apiCandidato?action=getCandidatosByAvaliacao&n_id_avaliacao=${idAvaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
-      fetch(endpoint, {
-        method: "GET"
-      })
+      fetch(endpoint, { method: "GET" })
       .then(res => res.json())
       .then(data => {
-        // Blindagem contra erros de resposta
         if (Array.isArray(data)) {
             setCandidatos(data);
-            const maxCandidatosSelecionados = data.length
-            setMaxCandidatosSelecionados(maxCandidatosSelecionados)
+            
+            // ATUALIZA AS CHECKBOXES COM BASE NO BANCO
+            const meusCandidatosDb = data
+              .filter(c => c.n_id_pessoa === n_id_pessoa)
+              .map(c => c.n_id_candidato);
+            
+            setCandidatosSelecionados(meusCandidatosDb);
+            const maxCandidatos = data.length; 
+            setMaxCandidatosSelecionados(maxCandidatos);
+            
         } else {
             setCandidatos([]);
+            setCandidatosSelecionados([]);
         }
         setLoad(false)
       });
     } catch (erro) {
       setLoad(false)
       console.error(`Erro:${erro}`)
-    }
-    finally {
+    } finally {
       setLoad(false)
     }
   }
 
-  // =========================================================================
-  // AÇÃO 1: Clicar no botão F (Marca Falta, Desmarca Checkbox)
-  // =========================================================================
   const marcarFalta = async (idCandidato: number, idAvaliacao: number, statusPresenteAtual: number) => {
     const atual = statusPresenteAtual ?? 1;
     const novoStatus = atual === 0 ? 1 : 0;
 
-    // Atualização visual imediata
     setCandidatos(prev => prev.map(c => 
       c.n_id_candidato === idCandidato 
         ? { ...c, n_candidatopresente_fap: novoStatus } 
         : c
     ));
 
-    // Se o candidato levou falta (0), removemos automaticamente a caixinha (checkbox) dele
     if (novoStatus === 0) {
       setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
     }
 
-    // Envia para o banco de dados
     try {
       await fetch('/api/apiCandidato', {
         method: 'PUT',
@@ -126,24 +144,40 @@ export default function Home() {
     }
   }
 
-  // =========================================================================
-  // AÇÃO 2: Clicar na Checkbox (Marca Checkbox, Remove Falta do F)
-  // =========================================================================
   const selecionaCandidato = async (idCandidato: number, selecionado: boolean, statusPresenteAtual: number) => {
-    if (selecionado) {
-      // 1. Marca a Checkbox
-      setCandidatosSelecionados(prev => [...prev, idCandidato]);
+    
+    // Para a API e banco de dados, tem de ir null para não quebrar a Foreign Key
+    const pessoaId = selecionado ? n_id_pessoa : null;
 
-      // 2. ALTERNÂNCIA: Se estava com falta (0), tira a falta automaticamente
+    if (selecionado) {
+      setCandidatosSelecionados(prev => [...prev, idCandidato]);
+      setCandidatos(prev => prev.map(c => c.n_id_candidato === idCandidato ? { ...c, n_id_pessoa: n_id_pessoa } : c));
+    } else {
+      setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
+      // PARA O TYPESCRIPT: Usamos 0 localmente para limpar, pois a interface Types.ts espera um número!
+      setCandidatos(prev => prev.map(c => c.n_id_candidato === idCandidato ? { ...c, n_id_pessoa: 0 } : c));
+    }
+
+    try {
+      await fetch('/api/apiCandidato', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'vincularAvaliador', 
+          id_avaliacao: avaliacaoSelecionada,
+          id_candidato: idCandidato,
+          id_pessoa: pessoaId, // <-- Agora envia o null corretamente
+          apiKey: process.env.NEXT_PUBLIC_API_KEY
+        })
+      });
+    } catch (error) {
+      console.error("Erro ao vincular candidato:", error);
+    }
+
+    if (selecionado) {
       const atual = statusPresenteAtual ?? 1;
       if (atual === 0) {
-        setCandidatos(prev => prev.map(c => 
-          c.n_id_candidato === idCandidato 
-            ? { ...c, n_candidatopresente_fap: 1 } 
-            : c
-        ));
-
-        // Envia para o banco de dados para garantir que a falta foi removida
+        setCandidatos(prev => prev.map(c => c.n_id_candidato === idCandidato ? { ...c, n_candidatopresente_fap: 1 } : c));
         try {
           await fetch('/api/apiCandidato', {
             method: 'PUT',
@@ -160,9 +194,6 @@ export default function Home() {
           console.error("Erro ao remover a falta:", error);
         }
       }
-    } else {
-      // Apenas desmarca a Checkbox
-      setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
     }
   }
 
@@ -178,7 +209,6 @@ export default function Home() {
     setLoad(true)
     const path = `/fap`
     
-    // Mantendo a sua regra de prosseguir se pelo menos 1 for selecionado
     if (candidatosSelecionados.length > 0) {
       localStorage.setItem('n_id_avaliacao', avaliacaoSelecionada.toString());
       localStorage.setItem('candidatos', candidatosSelecionados.join(','));
@@ -203,16 +233,13 @@ export default function Home() {
     router.replace('/');
   }
 
-  const trazerCandidato=async(n_id_candidato:number,n_id_avaliacao_atual:number)=>{
+  const trazerCandidato = async (n_id_candidato: number, n_id_avaliacao_atual: number) => {
     setLoad(true)
     try {
       const endpoint = `/api/apiFap?action=getTrazerCandidado&n_id_candidato=${n_id_candidato}&n_id_avaliacao_atual=${n_id_avaliacao_atual}&n_id_avaliacao_nova=${avaliacaoSelecionada}&&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
-      fetch(endpoint, {
-        method: "GET"
-      })
+      fetch(endpoint, { method: "GET" })
       .then(res => res.json())
       .then(data => {
-        //setAvaliacoes(data);
         setLoad(false)
         getCandidatosByAvaliacao(avaliacaoSelecionada);
       })
@@ -226,31 +253,40 @@ export default function Home() {
   return (
     <>
       {load && <Load />}
-      {mostrarTelaMovimentacaoAvancada&&<PopupMovimentacaoAvancada comandoFechar={()=>setMostrarTelaMovimentacaoAvancada(false)} />}
-      {mostrarTelaTrazerCandidato&&<PopupTrazerCandidato trazerCandidato={trazerCandidato} setMostrarTelaFrazerCandidato={setMostrarTelaTrazerCandidato} avaliacaoSelecionada={avaliacaoSelecionada}/>}
+      {mostrarTelaMovimentacaoAvancada && <PopupMovimentacaoAvancada comandoFechar={() => setMostrarTelaMovimentacaoAvancada(false)} />}
+      {mostrarTelaTrazerCandidato && <PopupTrazerCandidato trazerCandidato={trazerCandidato} setMostrarTelaFrazerCandidato={setMostrarTelaTrazerCandidato} avaliacaoSelecionada={avaliacaoSelecionada} />}
+      
       <Head>
         <title>Stellantis - Teste de Aptidão Prática</title>
         <meta name="description" content="Generated by create next app" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/assets/icons/favicon.ico" />
       </Head>
+      
       <div className={styles.page}>
         <div className={styles.telaMain}>
-          <TopoSelecaoAvaliacao setAvaliacao={setAvaliacao} avaliacoes={avaliacoes} setQtdAvaliadores={changeQtdAvaliadores} setMostrarTelaTrazerCandidato={setMostrarTelaTrazerCandidato} setMostrarTelaMovimentacaoAvancada={setMostrarTelaMovimentacaoAvancada} qtdAvaliadores={qtdAvaliadores} />
+          <TopoSelecaoAvaliacao 
+            setAvaliacao={setAvaliacao} 
+            avaliacoes={avaliacoes} 
+            setQtdAvaliadores={changeQtdAvaliadores} 
+            setMostrarTelaTrazerCandidato={setMostrarTelaTrazerCandidato} 
+            setMostrarTelaMovimentacaoAvancada={setMostrarTelaMovimentacaoAvancada} 
+            qtdAvaliadores={qtdAvaliadores} 
+          />
           
           <div className={styles.formCandidatos}>
             {candidatos.length > 0 && candidatos.map((c) => {              
               const estaSelecionado = candidatosSelecionados.some(id => String(id) === String(c.n_id_candidato));
-              
-              // Verifica se o candidato faltou (0 = Faltou, 1 = Presente)
               const statusAtual = c.n_candidatopresente_fap ?? 1;
               const levouFalta = statusAtual === 0;
+
+              // Identifica se o candidato tem dono E não é null E não é o utilizador atual
+              const pertenceAOutro = c.n_id_pessoa !== null && c.n_id_pessoa !== n_id_pessoa;
 
               return (
                 <div className={styles.fieldForm} key={c.n_id_candidato}>
                   
-                  {/* Feedback visual: Se levou falta, a opacidade diminui */}
-                  <div className={styles.fieldForm_inputTexts} style={{ opacity: levouFalta ? 0.5 : 1, transition: 'opacity 0.3s' }}>
+                  <div className={styles.fieldForm_inputTexts} style={{ opacity: levouFalta || pertenceAOutro ? 0.5 : 1, transition: 'opacity 0.3s' }}>
                     <input type="text" title={''} className={styles.fieldForm_input_nome} value={c.s_nome_candidato} readOnly />
                     <input type="text" title={''} className={styles.fieldForm_input_cpf} value={formatarCPF(c.s_cpf_candidato)} readOnly />
                   </div>
@@ -264,15 +300,18 @@ export default function Home() {
                       id={`candidato_${c.n_id_candidato}`}
                       checked={estaSelecionado}
                       onChange={(evt) => selecionaCandidato(c.n_id_candidato, evt.target.checked, statusAtual)}
-                      disabled={!estaSelecionado && atingiuLimite}
+                      disabled={pertenceAOutro || (!estaSelecionado && atingiuLimite)} 
                     />
                   </div>
                   
-                  {/* Botão F: Muda de classe dinamicamente e aciona a função passando os IDs e o Status atual */}
                   <div 
                     className={`${styles.fieldForm_btnFalta} ${levouFalta ? styles.fieldForm_btnFalta_checked : ''}`} 
-                    onClick={() => marcarFalta(c.n_id_candidato, avaliacaoSelecionada, statusAtual)}
-                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                    onClick={() => {
+                        if (!pertenceAOutro) {
+                            marcarFalta(c.n_id_candidato, avaliacaoSelecionada, statusAtual);
+                        }
+                    }}
+                    style={{ cursor: pertenceAOutro ? 'not-allowed' : 'pointer', userSelect: 'none', opacity: pertenceAOutro ? 0.5 : 1 }}
                     title={levouFalta ? "Remover falta" : "Marcar falta"}
                   >
                     F

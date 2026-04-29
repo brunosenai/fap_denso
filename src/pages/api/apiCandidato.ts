@@ -45,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         } else if (action == "getListaCandidatos") {
             try {
-                // CORREÇÃO DE SEGURANÇA (SQL INJECTION): Converte a string "1,2,3" num Array de números [1,2,3]
                 const arrIds = String(listaIds).split(',').map(id => Number(id.trim()));
 
                 const [rows_cell] = await pool.query<RowDataPacket[]>(`
@@ -53,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM candidato
                     WHERE n_id_candidato IN (?)
                     ORDER BY s_nome_candidato ASC
-                    `, [arrIds] // O MySQL2 resolve automaticamente arrays com o '?'
+                    `, [arrIds]
                 )
                 res.status(200).json(rows_cell)
             } catch (error) {
@@ -82,6 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         f.n_id_candidato,
                         c.s_nome_candidato,
                         c.s_cpf_candidato,
+                        f.n_id_pessoa,
                         f.n_candidatopresente_fap
                     FROM fap f
                     LEFT JOIN candidato c ON c.n_id_candidato=f.n_id_candidato
@@ -96,7 +96,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         } else if (action == "getDadosByFap") {
             try {
-                // CORREÇÃO DE SEGURANÇA (SQL INJECTION): Mesma blindagem aqui!
                 const arrIds = String(listaIds).split(',').map(id => Number(id.trim()));
 
                 const [rows_fap] = await pool.query<RowDataPacket[]>(`
@@ -192,7 +191,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { action } = req.body;
 
         // ==========================================
-        // NOVA AÇÃO: Marcar Falta
+        // AÇÃO: Marcar Falta
         // ==========================================
         if (action === 'marcarFalta') {
             const { id_avaliacao, id_candidato, presente } = req.body;
@@ -210,7 +209,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         } 
         // ==========================================
-        // Ação Antiga (vínculo de avaliadores)
+        // NOVA AÇÃO: Vincular / Desvincular Avaliador
+        // ==========================================
+        else if (action === 'vincularAvaliador') {
+            const { id_avaliacao, id_candidato, id_pessoa } = req.body;
+            try {
+                await pool.query<ResultSetHeader>(`
+                    UPDATE fap 
+                    SET n_id_pessoa = ? 
+                    WHERE n_id_avaliacao = ? AND n_id_candidato = ?;
+                `, [id_pessoa, id_avaliacao, id_candidato]);
+
+                return res.status(200).json({ message: 'Vínculo atualizado com sucesso!' });
+            } catch (error) {
+                console.error(error);
+                return res.status(500).json({ message: "Erro ao atualizar vínculo." });
+            }
+        }
+        // ==========================================
+        // Ação Antiga (vínculo em massa - se ainda usar noutra tela)
         // ==========================================
         else {
             const { id_pessoa, id_avaliacao, idsCandidatos } = req.body;
