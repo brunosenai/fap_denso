@@ -101,7 +101,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ${action == "getAllCandidatosFap" ? "INNER JOIN" : "LEFT JOIN"} 
                         fap f ON c.n_id_candidato = f.n_id_candidato
                     GROUP BY 
-                        c.n_id_candidato;
+                        c.n_id_candidato
+                    ORDER BY 
+                        c.n_id_candidato DESC;
                     `, []
                 );
                 res.status(200).json(rows_cadidatos);
