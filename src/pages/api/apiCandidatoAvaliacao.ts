@@ -36,15 +36,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 //     `,[]
                 // )
                 const [rows_candidatos] = await pool.query<RowDataPacket[]>(`
-                    SELECT
+                    SELECT DISTINCT
                         c.n_id_candidato,
                         c.s_nome_candidato,
                         c.s_cpf_candidato
                     FROM
                         candidato c
-                    LEFT JOIN fap f ON f.n_id_candidato = c.n_id_candidato
-                    LEFT JOIN avaliacao a ON a.n_id_avaliacao = f.n_id_avaliacao
-                        WHERE a.n_status_avaliacao = 0
+                    LEFT JOIN 
+                        fap f ON f.n_id_candidato = c.n_id_candidato
+                    WHERE 
+                        f.n_status_fap = 0 OR f.n_id_candidato IS NULL
                     ORDER BY
                         c.n_id_candidato DESC;
                     `,[]

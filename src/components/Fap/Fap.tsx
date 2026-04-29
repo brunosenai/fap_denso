@@ -121,19 +121,19 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
             <div className={styles.fapSection_col}>
               <div className={styles.fapSection_field}>
                 <input type="radio" name={`q8_${iAba}`} id={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 4} onChange={() => handleChange("n_q8_fap", 4)} />
-                <label htmlFor={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Executa 100% da sequência SEM hesitação, conduta exemplar. (4 pontos)</label>
+                <label htmlFor={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Executa 100% da sequência SEM hesitação, conduta exemplar.</label>
               </div>
               <div className={styles.fapSection_field}>
                 <input type="radio" name={`q8_${iAba}`} id={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 3} onChange={() => handleChange("n_q8_fap", 3)} />
-                <label htmlFor={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Hesitações LEVES (conferência constante da documentação), SEM quebras de padrão. (3 pontos)</label>
+                <label htmlFor={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Hesitações LEVES (conferência constante da documentação), SEM quebras de padrão.</label>
               </div>
               <div className={styles.fapSection_field}>
                 <input type="radio" name={`q8_${iAba}`} id={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 2} onChange={() => handleChange("n_q8_fap", 2)} />
-                <label htmlFor={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Quebras de sequências corrigidas APENAS mediante avisos CONSTANTES. (2 pontos)</label>
+                <label htmlFor={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Quebras de sequências corrigidas APENAS mediante avisos CONSTANTES.</label>
               </div>
               <div className={styles.fapSection_field}>
                 <input type="radio" name={`q8_${iAba}`} id={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 1} onChange={() => handleChange("n_q8_fap", 1)} />
-                <label htmlFor={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Desrespeito total a sequência/Risco operacional. (1 ponto)</label>
+                <label htmlFor={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Desrespeito total a sequência/Risco operacional.</label>
               </div>
             </div>
           </div>

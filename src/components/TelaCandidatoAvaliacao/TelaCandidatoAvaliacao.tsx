@@ -43,6 +43,7 @@ export default function TelaCandidatoAvaliacao(){
                 setCandidatos(res.candidatos)
                 setCandidatosFiltrados(res.candidatos)
                 setAvaliacoesFiltrados(res.avaliacoes)
+                console.log(res.candidatos)
                 setLoad(false)
             }).catch(err=>{
                 setLoad(false)
