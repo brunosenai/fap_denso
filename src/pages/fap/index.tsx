@@ -245,6 +245,10 @@ export default function Fap() {
     // 4. LIMPEZA DE CACHE APÓS SUCESSO
     // =========================================================================
     const idavaliacao = localStorage.getItem("n_id_avaliacao");
+    
+    if(idavaliacao=='14')
+      return
+    
     localStorage.removeItem(`fap_cache_aval_${idavaliacao}`);
     localStorage.removeItem("candidatos");
     localStorage.removeItem("n_id_avaliacao");
