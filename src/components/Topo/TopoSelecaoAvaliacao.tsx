@@ -10,6 +10,8 @@ interface TopoSelecaoAvaliacaoProps{
     qtdAvaliadores:number
     setMostrarTelaTrazerCandidato:(b:boolean)=>void
     setMostrarTelaMovimentacaoAvancada:(b:boolean)=>void
+    finalizarAvaliacao:()=>void
+
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -44,10 +46,11 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                             <Image src={'/assets/icons/edit_square.svg'} alt={'Gerenciar Avaliação'} width={20} height={-1} />
                         </button>
                     </div>
-                    {/* <div className={styles.fieldSelect_c2}>
-                        <label className={styles.label} htmlFor="qtde">Qtd avaliadores</label>
-                        <input className={styles.fieldForm} type="number" title='qtde' id={'qtde'} value={props.qtdAvaliadores} onChange={(e)=>{props.setQtdAvaliadores(Number(e.target.value))}} />
-                    </div> */}
+                    <div className={styles.fieldSelect_c2}>
+                        <button className={styles.btnFinalizar} onClick={()=>props.finalizarAvaliacao()} title="Finalizar Avaliação">
+                            <Image src={'/assets/icons/flag_check.svg'} alt={'Finalizar Avaliação'} width={20} height={-1} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

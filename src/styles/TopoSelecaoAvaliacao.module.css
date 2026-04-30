@@ -94,3 +94,19 @@
     cursor: pointer;
     text-transform: uppercase;
 }
+
+.btnFinalizar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;  
+    background-color: #FFF27C;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    width: 50px;
+    height: 30px;
+    font-size: medium;
+    cursor: pointer;
+    text-transform: uppercase;
+}

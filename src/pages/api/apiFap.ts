@@ -147,7 +147,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             s_q16_fap 
         } = req.body;
 
-        if (action == "editarFapCandidato") {
+        if (action == "getFinalizacaoForcada") {
+            try {
+                const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
+                    SELECT
+                        n_id_avaliacao,
+                        n_id_candidato
+                    FROM
+                        fap
+                    WHERE
+                        n_id_avaliacao=? AND n_candidatopresente_fap<>0;                    
+                `,[n_id_avaliacao])
+                if(rows_cadidatos.length>0){
+                    res.status(424).json({ message: "Failed Dependency: erro 424" });
+                }else{
+                    await pool.query<ResultSetHeader>(`
+                        UPDATE
+                            fap
+                        SET
+                            n_status_fap=1
+                        WHERE
+                            n_id_avaliacao=?;
+                    `,[n_id_avaliacao])
+                    await pool.query<ResultSetHeader>(`
+                        UPDATE
+                            avaliacao
+                        SET
+                            n_status_avaliacao=1
+                        WHERE
+                            n_id_avaliacao=?;
+                    `,[n_id_avaliacao])
+                }
+                res.status(200).json({ message: "Ok" });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal Server Error: erro 500" });
+            }
+        }else if (action == "editarFapCandidato") {
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     UPDATE fap
