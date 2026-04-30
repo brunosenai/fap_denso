@@ -1,4 +1,5 @@
 .telaCadastroCandidatos{
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,8 +15,8 @@
 .cardTopoContainer{
     margin-top: 30px;
     display: flex;
-    width: 100%;
-    justify-content: center;
+    width: 95%;
+    justify-content: space-between;
     gap: 20px;
 }
 
@@ -79,6 +80,110 @@
     justify-content: center;
     gap: 40px;
     height: 240px;
+}
+
+.filterButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0px;
+    top:63px;
+    position: absolute;
+    flex-shrink: 0;
+    z-index: 998;
+    padding: 10px 10px;
+    cursor: pointer;
+    border-radius: 0px 8px 8px 0px;
+    background-color: var(--azulStellantis);
+    
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebarFilter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%); /* Escondido */
+    display: flex;
+    align-self: start;
+    justify-self: start;
+    flex-direction: column;
+
+    input, select{
+        height: 30px;
+        width: 100%;
+        border-radius: 4px;
+        background-color: white;
+        border: 2px solid #0a0a0a;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        filter: invert(0.5);
+    }
+
+}
+
+.sidebarActions{
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.filterButtonActive {
+    transform: translateX(300px);
+    background-color: white;
+    border-color: transparent;
+    z-index: 1000;
+}
+
+/* Quando ativa, ela volta para a posição 0 */
+.sidebarFilter.active {
+    transform: translateX(0);
+}
+
+.sidebarHeader {
+    padding: 20px;
+    background-image: linear-gradient(to bottom, #253059, #243783);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3{
+        color: white;
+    }
+}
+
+.sidebarHeader button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.sidebarContent {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.1); 
+    backdrop-filter: blur(4px);   
 }
 
 .cardsGraficos_1{
@@ -185,31 +290,12 @@
     width: 65%;
 }
 
-.filterBand{
-    margin-top: 30px;
-    margin-bottom: 30px;
-    gap: 20px;
-    display: flex;
-    width: 95%;
-    font-size: 18px;
-    justify-content: center;
-    align-items: center;
-    height: 10%;
-    background-color: #fff;
-
-
-    input, select{
-        height: 40%;
-        width: 15%;
-        border-radius: 4px;
-        background-color: white;
-        border: 2px solid #0a0a0a;
-    }
-}
 
 .candidatesTable{
     background-color: #fff;
+    margin-top: 30px;
     width: 95%;
+    box-sizing: border-box;
     display: block;
     height: 65%;
     overflow-y: auto;
@@ -219,6 +305,7 @@
     width: 100%;
     text-align: center;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .table td, .table th {
@@ -268,14 +355,15 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    height: 40%;
-    width: 10%;
+    height: 30px;
+    width: 100%;
+    margin-top: 10px;
     cursor: pointer;
-    border-radius: 8px;
-    background-color: var(--azulStellantis);
+    border-radius: 5px;
+    background-image: linear-gradient(to bottom, #253059, #243783);
     color: white;
-    font-size: 16px;
-    border: 2px solid var(--azulStellantis);
+    font-size: 14px;
+    border: 2px solid transparent;
 }
 
 .fullScreenLoading {
@@ -283,7 +371,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh; /* Ocupa a altura total da tela */
+  height: 100vh;
 }
 
 .loadingContainer {

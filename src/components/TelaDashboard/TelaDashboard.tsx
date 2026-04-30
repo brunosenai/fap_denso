@@ -20,9 +20,9 @@ export default function TelaDashboard(){
     const [candidatos,setCandidatos]=useState<any[]>([])
     const [candidatosFiltrados,setCandidatosFiltrados]=useState<any[]>([])
     const [ isLoading, setIsLoading]=useState<boolean>(false)
+    const [ showFilter, setShowFilter]=useState<boolean>(false)
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-
     useEffect(() => {
         obterAvaliacoes();
     }, []);
@@ -152,7 +152,45 @@ export default function TelaDashboard(){
                 <CardTopo  currentFilter={dashboardFilter} titulo={"TAXA DE APROVAÇÃO"} texto={dadosDashboard.cards.taxaAprovacao} color={4} filter="geral" setDashboardFilter={setDashboardFilter}/>
                 <CardTopo  currentFilter={dashboardFilter} titulo={"TAXA DE REPROVAÇÃO"} texto={dadosDashboard.cards.taxaReprovacao} color={4} filter="geral" setDashboardFilter={setDashboardFilter}/>
            </div>
-           {dashboardFilter && dashboardFilter == 'geral' && (
+           <div 
+                className={`${styles.filterButton} ${showFilter ? styles.filterButtonActive : ''}`} 
+                onClick={() => setShowFilter(!showFilter)}
+            >
+                <Image 
+                    src={showFilter ? "assets/icons/arrow_back.svg" : "assets/icons/filter_white.svg"} 
+                    alt={"Filtros"} 
+                    width={20} 
+                    height={20} 
+                />
+            </div>
+            <div className={`${styles.sidebarFilter} ${showFilter ? styles.active : ''}`}>
+                    <div className={styles.sidebarHeader}>
+                        <h3>Filtros</h3>
+                    </div>
+                    <div className={styles.sidebarContent}>
+                        <label>Ver candidatos da avaliação</label>
+                        <select value={avaliacao} onChange={(e) => setAvaliacao(e.target.value)}>
+                            <option value="todas">Todas</option>
+                            {avaliacoes && avaliacoes.map((item: any) => (
+                                <option key={item.n_id_avaliacao} value={item.n_id_avaliacao}>
+                                    {item.s_nome_avaliacao}
+                                </option>
+                            ))}
+                        </select>
+                        <label>Do dia</label>
+                        <input type="date" name="" title="dtini" id="dtini" value={dataInicio} onChange={(e)=>{setDataInicio(e.target.value)}} /> 
+                            <p>Até</p>
+                        <input type="date" name="" title="dtfim" id="dtfim" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
+
+                        <div className={styles.sidebarActions}>
+                            <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>
+                            <button onClick={exportarPlanilha} className={styles.exportButton}>Exportar CSV</button>
+                        </div>
+                    </div>
+            </div>
+            {showFilter && <div className={styles.overlay} onClick={() => setShowFilter(false)} />}
+
+            {dashboardFilter && dashboardFilter == 'geral' && (
                 <>
                     <div className={styles.cardsGraficos}>
                         <div className={styles.cardsGraficos_1}>
@@ -177,28 +215,6 @@ export default function TelaDashboard(){
            )}
            {dashboardFilter && dashboardFilter != 'geral' && (
                 <>
-                    <div className={styles.filterBand}>
-                        Ver candidatos da avaliação 
-                        <select title="avaliacao" name="avaliacao" id="avaliacao" value={avaliacao} onChange={(e) => setAvaliacao(e.target.value)}>
-                            <option value="todas">Todas</option>
-                            {avaliacoes && avaliacoes.map((item: any) => (
-                                <option key={item.n_id_avaliacao} value={item.n_id_avaliacao}>
-                                    {item.s_nome_avaliacao}
-                                </option>
-                            ))}
-                        </select>
-                        do dia  
-                        <input type="date" name="" title="dtini" id="dtini" value={dataInicio} onChange={(e)=>{setDataInicio(e.target.value)}} /> 
-                        até 
-                        <input type="date" name="" title="dtfim" id="dtfim" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
-                        <button className={styles.exportButton} onClick={()=>{limparFiltros()}}>
-                            Limpar filtros
-                        </button>   
-                        <button className={styles.exportButton} onClick={()=>{exportarPlanilha()}}>
-                            Exportar planilha
-                        </button> 
-                    </div>
-
                     <div className={styles.candidatesTable} onScroll={handleScroll}>
                         <table className={styles.table}>
                             <thead>
