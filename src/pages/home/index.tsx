@@ -57,6 +57,40 @@ export default function Home() {
     setCandidatosSelecionados([])
   }
 
+  const finalizarAvaliacao = async () => {
+    console.log(avaliacaoSelecionada)
+    if(avaliacaoSelecionada==-1){
+      alert('Selecione uma avaliação para finalizar')
+      return
+    }
+    setLoad(true)
+    try {
+      const endpoint = `/api/apiFap`;
+      fetch(endpoint, {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'getFinalizacaoForcada',
+          n_id_avaliacao: avaliacaoSelecionada,
+          apiKey: process.env.NEXT_PUBLIC_API_KEY
+        })        
+      })
+      .then(
+        res=>{
+          if(res.status==200){
+            getAvaliacoes()
+          }else{
+            alert('Não é possóvel finalizar uma avaliação sem avaliar todos os candidatos presentes.')
+          }
+        }
+      )
+    } catch (e) {
+      console.error(`Erro:${e}`)
+    } finally {
+      setLoad(false)
+    }
+  }
+
   const getAvaliacoes = async () => {
     setLoad(true)
     try {
@@ -113,21 +147,34 @@ export default function Home() {
     }
   }
 
+  // =========================================================================
+  // AÇÃO 1: Clicar no botão F (Marca Falta, Desmarca Checkbox e Desvincula)
+  // =========================================================================
   const marcarFalta = async (idCandidato: number, idAvaliacao: number, statusPresenteAtual: number) => {
     const atual = statusPresenteAtual ?? 1;
     const novoStatus = atual === 0 ? 1 : 0;
 
-    setCandidatos(prev => prev.map(c => 
-      c.n_id_candidato === idCandidato 
-        ? { ...c, n_candidatopresente_fap: novoStatus } 
-        : c
-    ));
+    // 1. Atualização Visual Imediata (Altera a falta e limpa o dono se levou falta)
+    setCandidatos(prev => prev.map(c => {
+      if (c.n_id_candidato === idCandidato) {
+        return { 
+          ...c, 
+          n_candidatopresente_fap: novoStatus,
+          // Se for falta (0), limpa o dono. Se for remover a falta (1), mantém como está.
+          n_id_pessoa: novoStatus === 0 ? 0 : c.n_id_pessoa 
+        };
+      }
+      return c;
+    }));
 
+    // 2. Desmarca a checkbox localmente (se levou falta)
     if (novoStatus === 0) {
       setCandidatosSelecionados(prev => prev.filter(id => id !== idCandidato));
     }
 
+    // 3. Envia para o Banco de Dados
     try {
+      // Pedido 1: Gravar a Falta
       await fetch('/api/apiCandidato', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -139,8 +186,24 @@ export default function Home() {
           apiKey: process.env.NEXT_PUBLIC_API_KEY
         })
       });
+
+      // Pedido 2: Desvincular o Avaliador (Se levou falta)
+      if (novoStatus === 0) {
+        await fetch('/api/apiCandidato', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'vincularAvaliador', 
+            id_avaliacao: idAvaliacao,
+            id_candidato: idCandidato,
+            id_pessoa: null, // Envia null para o banco quebrar o vínculo
+            apiKey: process.env.NEXT_PUBLIC_API_KEY
+          })
+        });
+      }
+
     } catch (error) {
-      console.error("Erro ao registar a falta:", error);
+      console.error("Erro ao processar a falta:", error);
     }
   }
 
@@ -271,6 +334,7 @@ export default function Home() {
             setQtdAvaliadores={changeQtdAvaliadores} 
             setMostrarTelaTrazerCandidato={setMostrarTelaTrazerCandidato} 
             setMostrarTelaMovimentacaoAvancada={setMostrarTelaMovimentacaoAvancada} 
+            finalizarAvaliacao={finalizarAvaliacao}
             qtdAvaliadores={qtdAvaliadores} 
           />
           
