@@ -42,45 +42,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const [rows] = await pool.query<RowDataPacket[]>(`
             SELECT 
                 *,
-                -- Cálculo Simples de Erros (Total - Acertos)
                 (total_avaliados - acertos_q6) AS erros_q6,
                 (total_avaliados - acertos_q7) AS erros_q7
             FROM (
                 SELECT 
-                  
                     total_avaliados,
                     total_aprovados,
                     total_reprovados,
                     reprovado_apenas_dicotomica,
                     reprovado_apenas_gradual,
                     reprovado_pelas_duas,
-                    ROUND((total_aprovados * 100.0 / total_avaliados), 2) AS taxa_aprovacao,
-
-                  
+                    ROUND((total_aprovados * 100.0 / NULLIF(total_avaliados, 0)), 2) AS taxa_aprovacao,
                     acertos_q6,
                     acertos_q7,
-
-              
                     q8_p1, q8_p2, q8_p3, q8_p4,
                     q9_p1, q9_p2, q9_p3, q9_p4,
                     q10_p1, q10_p2, q10_p3, q10_p4,
                     q11_p1, q11_p2, q11_p3, q11_p4,
                     q12_p1, q12_p2, q12_p3, q12_p4
-
                 FROM (
                     SELECT 
                         COUNT(*) AS total_avaliados,
                         SUM(CASE WHEN n_resultado_fap <> 0 THEN 1 ELSE 0 END) AS total_aprovados,
                         SUM(CASE WHEN n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados,
-
                         SUM(apenas_dicotomica) AS reprovado_apenas_dicotomica,
                         SUM(apenas_gradual) AS reprovado_apenas_gradual,
                         SUM(ambas) AS reprovado_pelas_duas,
-                        
                         SUM(CASE WHEN n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
                         SUM(CASE WHEN n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
-
-                      
                         SUM(CASE WHEN n_q8_fap = 1 THEN 1 ELSE 0 END) AS q8_p1,
                         SUM(CASE WHEN n_q8_fap = 2 THEN 1 ELSE 0 END) AS q8_p2,
                         SUM(CASE WHEN n_q8_fap = 3 THEN 1 ELSE 0 END) AS q8_p3,
@@ -105,27 +94,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         SUM(CASE WHEN n_q12_fap = 2 THEN 1 ELSE 0 END) AS q12_p2,
                         SUM(CASE WHEN n_q12_fap = 3 THEN 1 ELSE 0 END) AS q12_p3,
                         SUM(CASE WHEN n_q12_fap = 4 THEN 1 ELSE 0 END) AS q12_p4
-
                     FROM (
                         SELECT 
                             f.*,
                             ROW_NUMBER() OVER (PARTITION BY f.n_id_candidato ORDER BY f.dt_date_fap DESC) as ordem,
-
                             CASE WHEN (f.n_nota_fap < 13) AND (f.n_q6_fap = 1 AND f.n_q7_fap = 1) THEN 1 ELSE 0 END AS apenas_gradual,
-
                             CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap >= 13) THEN 1 ELSE 0 END AS apenas_dicotomica,
-
                             CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap < 13) THEN 1 ELSE 0 END AS ambas
                         FROM 
                             fap f
                         WHERE 
-                            f.n_status_fap = 1
+                            f.n_status_fap = 1 ${filtroSql} -- AQUI ENTRA O FILTRO DINÂMICO
                     ) AS sub
                     WHERE sub.ordem = 1
                 ) AS resumo_interno
             ) AS resumo_final;
-            `,[] 
-        )
+        `, params);
+
+
+        /**/ 
 
         const [listaCandidatos] = await pool.query<RowDataPacket[]>(`
             SELECT 
