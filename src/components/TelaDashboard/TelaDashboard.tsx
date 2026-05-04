@@ -189,89 +189,88 @@ export default function TelaDashboard(){
                     </div>
             </div>
             {showFilter && <div className={styles.overlay} onClick={() => setShowFilter(false)} />}
-
-            {dashboardFilter && dashboardFilter == 'geral' && (
-                <>
-                    <div className={styles.cardsGraficos}>
-                        <div className={styles.cardsGraficos_1}>
-                            <GraficoPizza 
-                                titulo="Aprovados vs Reprovados" 
-                                dados={dadosDashboard.graficoPizzaGeral} 
-                            />
+            <div key={dashboardFilter} className={styles.fadeContext}>
+                {dashboardFilter && dashboardFilter == 'geral' ? (
+                    <>
+                        <div className={styles.cardsGraficos}>
+                            <div className={styles.cardsGraficos_1}>
+                                <GraficoPizza 
+                                    titulo="Aprovados vs Reprovados" 
+                                    dados={dadosDashboard.graficoPizzaGeral} 
+                                />
+                            </div>
+                            <div className={styles.cardsGraficos_2}>
+                                <GraficoBarraDicotomica dados={dadosDashboard.graficoDicotomico} />
+                            </div>
                         </div>
-                        <div className={styles.cardsGraficos_2}>
-                            <GraficoBarraDicotomica dados={dadosDashboard.graficoDicotomico} />
+                        <div className={styles.graficosGerais}>
+                            <div className={styles.graficosGerais_legenda}>
+                                <GraficoRadialReprovados dados={dadosDashboard.graficoMotivosReprovacao} titulo={""} />
+                            </div>
+                            <div className={styles.graficosGerais_desempenho}>
+                                <GraficoBarraGradual dados={dadosDashboard.graficoGradual} />
+                            </div>
                         </div>
-                    </div>
-                    <div className={styles.graficosGerais}>
-                        <div className={styles.graficosGerais_legenda}>
-                            <GraficoRadialReprovados dados={dadosDashboard.graficoMotivosReprovacao} titulo={""} />
-                        </div>
-                        <div className={styles.graficosGerais_desempenho}>
-                            <GraficoBarraGradual dados={dadosDashboard.graficoGradual} />
-                        </div>
-                    </div>
-                </>
-           )}
-           {dashboardFilter && dashboardFilter != 'geral' && (
-                <>
-                    <div className={styles.candidatesTable} onScroll={handleScroll}>
-                        <table className={styles.table}>
-                            <thead>
-                                <tr>
-                                    <th>CANDIDATO</th>
-                                    <th>AVALIAÇÃO</th>
-                                    <th>DATA</th>
-                                    <th>STATUS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {isLoading ? (
+                    </>
+                ) : (
+                    <>
+                        <div className={styles.candidatesTable} onScroll={handleScroll}>
+                            <table className={styles.table}>
+                                <thead>
                                     <tr>
-                                        <td colSpan={4} style={{ 
-                                            borderBottom: 'none', 
-                                            padding: 0
-                                        }}>
-                                            <div className={styles.loadingContainer}>
-                                                <img 
-                                                    src="/assets/stellantis_logo.png" 
-                                                    alt="Carregando..." 
-                                                    className={styles.pulsingLogo} 
-                                                />
-                                            </div>
-                                        </td>
+                                        <th>CANDIDATO</th>
+                                        <th>AVALIAÇÃO</th>
+                                        <th>DATA</th>
+                                        <th>STATUS</th>
                                     </tr>
-                                ) : candidatosFiltrados && candidatosFiltrados.length > 0 ? (
-                                    candidatosFiltrados.map((candidato, index) => (
-                                        <tr key={index}>
-                                            <td>{candidato.nome}</td>
-                                            <td>{candidato.avaliacao}</td>
-                                            <td>{candidato.data}</td>
-                                            <td>
-                                                <span
-                                                    className={`${styles.badge} ${
-                                                        candidato.resultado !== 0 ? styles.aprovado : styles.reprovado
-                                                    }`}
-                                                >
-                                                    {candidato.resultado !== 0 ? "APROVADO" : "REPROVADO"}
-                                                </span>
+                                </thead>
+                                <tbody>
+                                    {isLoading ? (
+                                        <tr>
+                                            <td colSpan={4} style={{ 
+                                                borderBottom: 'none', 
+                                                padding: 0
+                                            }}>
+                                                <div className={styles.loadingContainer}>
+                                                    <img 
+                                                        src="/assets/stellantis_logo.png" 
+                                                        alt="Carregando..." 
+                                                        className={styles.pulsingLogo} 
+                                                    />
+                                                </div>
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={4} className={styles.noRegisters}>
-                                            Nenhum candidato encontrado.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                        {!hasMore && <p className={styles.noRegisters}>Fim dos registros.</p>}
-                    </div>
-                </>
-           )}
-           
+                                    ) : candidatosFiltrados && candidatosFiltrados.length > 0 ? (
+                                        candidatosFiltrados.map((candidato, index) => (
+                                            <tr key={index}>
+                                                <td>{candidato.nome}</td>
+                                                <td>{candidato.avaliacao}</td>
+                                                <td>{candidato.data}</td>
+                                                <td>
+                                                    <span
+                                                        className={`${styles.badge} ${
+                                                            candidato.resultado !== 0 ? styles.aprovado : styles.reprovado
+                                                        }`}
+                                                    >
+                                                        {candidato.resultado !== 0 ? "APROVADO" : "REPROVADO"}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={4} className={styles.noRegisters}>
+                                                Nenhum candidato encontrado.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                            {!hasMore && <p className={styles.noRegisters}>Fim dos registros.</p>}
+                        </div>
+                    </>
+                )}
+            </div> 
         </div>
     )
 }
