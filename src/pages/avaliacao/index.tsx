@@ -11,9 +11,10 @@ export default function Avaliacao() {
   const router=useRouter()
   const [avaliacoes,setAvaliacoes]=useState<tAvaliacao[]>([])
   const [avaliacaoSelecionada,setAvaliacaoSelecionada]=useState<number>(0)
+  const [nomeAvaliador,setNomeAvaliador]=useState<string>('')
 
   useEffect(()=>{
-
+    setNomeAvaliador(localStorage.getItem('s_nome_pessoa')??'')
   },[])
 
   const goto=(path:string)=>{
@@ -22,7 +23,7 @@ export default function Avaliacao() {
 
   return (
     <div>
-        <Topo titulo="Avaliação"/>
+        <Topo titulo="Avaliação" nomeAvaliador={nomeAvaliador}/>
     </div>
   );
 }
