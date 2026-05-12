@@ -80,22 +80,29 @@ export default function Analytics(props:AnalyticsProps) {
         return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
     }
 
-    const listarPorSemana=(ad: AnalyticsData[])=>{
-        const semanas:any={}
-        ad.forEach((item)=>{
-            const data=new Date(item.data_evento)
-            const ano=data.getFullYear()
-            const semana=getWeekNumber(data)
-            const chave=`${ano}-S${semana}`
-            if(semanas[chave]){
-                semanas[chave].total_avaliados+=Number(item.total_avaliados)
-                semanas[chave].total_aprovados+=Number(item.total_aprovados)
-                semanas[chave].total_reprovados+=Number(item.total_reprovados)
-            }else{
-                semanas[chave]={
-                    total_avaliados:item.total_avaliados,
-                    total_aprovados:item.total_aprovados,
-                    total_reprovados:item.total_reprovados
+    const listarPorSemana = (ad: AnalyticsData[]) => {
+        const semanas: { [key: string]: DadosSemana } = {}
+        
+        ad.forEach((item) => {
+            const data = new Date(item.data_evento)
+            const ano = data.getFullYear()
+            const semana = getWeekNumber(data)
+            const chave = `${ano}-S${semana}`
+    
+            // Converter para número uma única vez para evitar repetição
+            const avaliados = Number(item.total_avaliados)
+            const aprovados = Number(item.total_aprovados)
+            const reprovados = Number(item.total_reprovados)
+    
+            if (semanas[chave]) {
+                semanas[chave].total_avaliados += avaliados
+                semanas[chave].total_aprovados += aprovados
+                semanas[chave].total_reprovados += reprovados
+            } else {
+                semanas[chave] = {
+                    total_avaliados: avaliados,
+                    total_aprovados: aprovados,
+                    total_reprovados: reprovados
                 }
             }
         })

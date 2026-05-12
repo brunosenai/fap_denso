@@ -105,6 +105,14 @@
     gap:10px;
 }
 
+.analytics_conteudo_corpo_area_field_spaceBetween div{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 25%;
+}
+
 .analytics_conteudo_corpo_area_field_spaceBetween_3{
     display: flex;
     flex-direction: row;
