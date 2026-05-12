@@ -3,6 +3,7 @@ import Image from "next/image"
 import PopupConfirmation from "../Popup/PopupConfirmation"
 import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 import InfoAvaliacao from "../InfoAvaliacao/InfoAvaliacao"
+import Analytics from "../InfoAvaliacao/Analytics"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
 import { tAvaliacao, tInfoAva } from "@/utils/Types"
@@ -23,6 +24,7 @@ export default function TelaCadastro() {
     const [popupConfirmation, setPopupConfirmation] = useState<boolean>(false)
     const [popupMessage, setPopupMessage] = useState<boolean>(false)
     const [showInfoAvaliacao, setShowInfoAvaliacao] = useState<boolean>(false)
+    const [showAnalytics, setShowAnalytics] = useState<boolean>(false)
     
     const [isTablet, setIsTablet] = useState<boolean>(false)
     // CORREÇÃO 2: Flag para evitar Erros de Hidratação entre o Servidor e o Cliente
@@ -360,6 +362,7 @@ export default function TelaCadastro() {
             {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
             {popupConfirmation && <PopupConfirmation titulo="Excluir" mensagem="Esta avaliação será excluída!" pergunta="Confirma exclusão da avaliação?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
             {showInfoAvaliacao && <InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
+            {showAnalytics && <Analytics comandoFechar={setShowAnalytics}/>}
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
@@ -406,6 +409,11 @@ export default function TelaCadastro() {
                                 </div>                                                                                           
                             </div>
                             <div className={styles.telaCadastro_area_filtro_c3}>
+                                <div className={styles.btnPesquisa} onClick={()=>setShowAnalytics(true)} title="Analytics">
+                                    <Image src='/assets/icons/analytics_w.svg' alt='Analytics' width={20} height={20}/>
+                                </div>   
+                            </div>                            
+                            <div className={styles.telaCadastro_area_filtro_c4}>
                                 <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Gerar relatórios e enviar por email">
                                     <Image src='/assets/icons/report_w.svg' alt='Gerar relatórios' width={20} height={20}/>
                                     <Image src='/assets/icons/mail_w.svg' alt='Enviar relatórios por email' width={20} height={20}/>

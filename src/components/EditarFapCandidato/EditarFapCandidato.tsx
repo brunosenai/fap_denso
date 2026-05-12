@@ -6,6 +6,7 @@ export interface EditarFapCandidatoProps {
     comandoFechar: (f:boolean) => void;
     comandoSalvar: (q13:string,q14:string,q15:string,q16:string) => void;
     fapCandidato:tFap|undefined;
+    nomeCandidato:string
 }
 
 export default function EditarFapCandidato(props:EditarFapCandidatoProps) {
@@ -28,6 +29,9 @@ export default function EditarFapCandidato(props:EditarFapCandidatoProps) {
                     Editar Comentários da Fap
                 </div>
                 <div className={styles.editarFapCand_conteudo_corpo}>
+                    <div className={styles.editarFapCand_conteudo_field}>
+                        <div>Nome Candidato: {props.nomeCandidato}</div>
+                    </div>
                     <div className={styles.editarFapCand_conteudo_field}>
                         <div>Segurança</div>
                         <input type="text" title="Segurança" value={q13} onChange={(evt)=>setQ13(evt.target.value)}/>

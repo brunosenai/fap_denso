@@ -63,7 +63,7 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
 
     return (
         <>
-            {showEditarFapCandidato&&<EditarFapCandidato comandoFechar={setShowEditarFapCandidato} fapCandidato={fapCandidato} comandoSalvar={comandoSalvarFapCandidato}/>}
+            {showEditarFapCandidato&&<EditarFapCandidato comandoFechar={setShowEditarFapCandidato} nomeCandidato={props.infoAva?.infoCandidatos[0].s_nome_candidato||""} fapCandidato={fapCandidato} comandoSalvar={comandoSalvarFapCandidato}/>}
             <div className={styles.infoAva}>
                 <div className={styles.infoAva_conteudo}>
                     <div className={styles.infoAva_conteudo_titulo}style={{ position: 'relative' }}>

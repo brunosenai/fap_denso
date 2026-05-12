@@ -20,9 +20,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             n_id_pessoa,
             n_id_avaliacao,
             historico,
+            dtini,
+            dtfim
         } = req.query
 
-        if(action == "getAvaliacoesHojeEmDiante"){
+        if(action == "getAvaliacoesEntreDatas"){
+            console.log("dtini:", dtini, "dtfim:", dtfim);
+            try {
+                let di=''
+                let df=''
+                if(!dtini) {
+                    di='1970-01-01';
+                }
+                if(!dtfim) {
+                    df='9999-12-31';
+                }
+                const [rows] = await pool.query<RowDataPacket[]>(`
+                    SELECT 
+                        CAST(a.dt_data_avaliacao AS DATE) AS data_evento,
+                        COUNT(f.n_id_avaliacao) AS total_avaliados,
+                        SUM(CASE WHEN f.n_resultado_fap = 1 THEN 1 ELSE 0 END) AS total_aprovados,
+                        SUM(CASE WHEN f.n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados
+                    FROM fap f
+                    INNER JOIN avaliacao a ON a.n_id_avaliacao = f.n_id_avaliacao
+                    WHERE a.dt_data_avaliacao BETWEEN ? AND ? 
+                    AND f.n_candidatopresente_fap = 1
+                    GROUP BY CAST(a.dt_data_avaliacao AS DATE)
+                    ORDER BY data_evento;
+                `,[di,df])
+                res.status(200).json(rows)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if(action == "getAvaliacoesHojeEmDiante"){
             try {
                 const [rows] = await pool.query<RowDataPacket[]>(`
                     SELECT
