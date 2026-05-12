@@ -51,7 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const [rows_user] = await pool.query<RowDataPacket[]>(`
                         SELECT
                             n_id_pessoa,
-                            n_id_tipoPessoa
+                            n_id_tipoPessoa,
+                            s_nome_pessoa
                         FROM
                             pessoa
                         WHERE

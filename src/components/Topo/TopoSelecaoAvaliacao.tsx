@@ -11,7 +11,7 @@ interface TopoSelecaoAvaliacaoProps{
     setMostrarTelaTrazerCandidato:(b:boolean)=>void
     setMostrarTelaMovimentacaoAvancada:(b:boolean)=>void
     finalizarAvaliacao:()=>void
-
+    nomeAvaliador:string
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -25,7 +25,10 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                 </div>
             </div>
             <div className={styles.topoSelecaoCandidato}>
-                <div className={styles.titulo}>seleção de avaliação</div>
+                <div className={styles.areaTitulo}>
+                    <div className={styles.titulo}>seleção de avaliação</div>
+                    <div className={styles.avaliador}>{props.nomeAvaliador}</div>
+                </div>
                 <div className={styles.selects}>
                     <div className={styles.fieldSelect_c1}>
                         <label className={styles.label} htmlFor="selecao">Selecione a avaliação</label>

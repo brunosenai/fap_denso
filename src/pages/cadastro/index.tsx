@@ -14,8 +14,10 @@ import TelaDashboard from "@/components/TelaDashboard/TelaDashboard";
 export default function Home() {
   const router=useRouter()
   const [menuSelected,setMenuSelected]=useState<number>(1)
+  const [nomeAvaliador,setNomeAvaliador]=useState<string>('')
 
-  useEffect(()=>{      
+  useEffect(()=>{   
+    setNomeAvaliador(localStorage.getItem('s_nome_pessoa')||'')   
     const menuSelectedStorage=localStorage.getItem('menuCadastroSelected')||'1'
     setMenuSelected(parseInt(menuSelectedStorage))
   },[])
@@ -30,7 +32,7 @@ export default function Home() {
         <link rel="icon" href="/assets/icons/favicon.ico?v=2" />
       </Head>
       <div className={styles.page}>
-        <Topo />
+        <Topo nomeAvaliador={nomeAvaliador}/>
         <div className={styles.cadastro}>
           <MenuCadastro setMenuSelected={setMenuSelected}/>
           {

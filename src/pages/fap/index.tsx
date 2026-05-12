@@ -21,6 +21,7 @@ export default function Fap() {
   const [load, setLoad] = useState(false);
   const [popup, setPopup] = useState([false, false, false, false, false, false, false]);
   const [popupConfirm, setPopupConfirm] = useState(false);
+  const [nomeAvaliador, setNomeAvaliador] = useState<string>('')
   
   // 🛡️ BLINDAGEM: Garante que o AutoSave não sobrepõe o cache vazio na primeira renderização
   const [dadosCarregados, setDadosCarregados] = useState<boolean>(false);
@@ -34,6 +35,7 @@ export default function Fap() {
   })
 
   useEffect(() => { 
+    setNomeAvaliador(localStorage.getItem('s_nome_pessoa') || ''); // Carrega o nome do avaliador do localStorage
     buscarDados();
   }, []);
 
@@ -342,7 +344,7 @@ export default function Fap() {
         <link rel="icon" href="/assets/icons/favicon.ico?v=2" />
       </Head>
       <div className={styles.page}>
-        <TopoFap/>
+        <TopoFap nomeAvaliador={nomeAvaliador}/>
 
         <div className={styles.main}>
           <div className={styles.areaAbasCandidatos}>

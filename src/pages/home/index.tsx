@@ -25,8 +25,10 @@ export default function Home() {
   const [load, setLoad] = useState<boolean>(false)
   const [mostrarTelaTrazerCandidato, setMostrarTelaTrazerCandidato] = useState<boolean>(false)
   const [mostrarTelaMovimentacaoAvancada, setMostrarTelaMovimentacaoAvancada] = useState<boolean>(false)
+  const [nomeAvaliador, setNomeAvaliador] = useState<string>('')
 
   useEffect(() => {
+    setNomeAvaliador(localStorage.getItem('s_nome_pessoa') || ''); // Carrega o nome do avaliador do localStorage
     n_id_pessoa = localStorage.getItem('n_id_pessoa') ? Number(localStorage.getItem('n_id_pessoa')) : -1;
     setIsTablet(verifyIsTablet());
     getAvaliacoes();
@@ -336,6 +338,7 @@ export default function Home() {
             setMostrarTelaMovimentacaoAvancada={setMostrarTelaMovimentacaoAvancada} 
             finalizarAvaliacao={finalizarAvaliacao}
             qtdAvaliadores={qtdAvaliadores} 
+            nomeAvaliador={nomeAvaliador}
           />
           
           <div className={styles.formCandidatos}>

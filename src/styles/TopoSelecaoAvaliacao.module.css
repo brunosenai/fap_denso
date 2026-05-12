@@ -33,9 +33,24 @@
     padding: 0px 50px;
 }
 
+.areaTitulo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: -50px;
+}
+
 .titulo{
     font-size: large;
     font-weight: bold;
+    color: #7CF2FF !important;
+    text-transform: uppercase;
+}
+
+.avaliador{
+    font-size: small;
     color: #7CF2FF !important;
     text-transform: uppercase;
 }

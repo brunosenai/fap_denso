@@ -12,7 +12,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 10rem;
+    /* gap: 10rem; */
     padding: 0 2rem;
 }
 
@@ -47,29 +47,9 @@
     font-size: x-small;
     text-transform: uppercase;
 }
-/* 
-@media(orientation: landscape){
-    .logoStellantis{
-        width: 300px;
-        height: auto;
-    }
-    
-    .topoCentro40{
-        margin-top: 1rem;
-        width: 80px;
-        height: auto;
-    }
 
-    .logoutIcon{
-        display: none;
-        position: absolute;
-        right: 80;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        gap: 2px;
-        padding-top: 10px;
-        color: #fff !important;
-    }
-} */
+.avaliador{
+    font-size: small;
+    color: #7CF2FF !important;
+    text-transform: uppercase;
+}

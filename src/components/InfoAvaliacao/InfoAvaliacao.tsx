@@ -16,9 +16,10 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
     const [fapCandidato,setFapCandidato]=useState<tFap>()
     const [idCandidato,setIdCandidato]=useState<number>(-1)
     const [idAvaliacao,setIdAvaliacao]=useState<number>(-1)
+    const [nomeCandSel,setNomeCandSel]=useState<string>("")
     const [load,setLoad]=useState(true)
 
-    const getFapCandidato=async(idAvaliacao:number,idCandidato:number)=>{
+    const getFapCandidato=async(idAvaliacao:number,idCandidato:number,nomeCandidato:string)=>{
         if(props.infoAva?.infoAvaliacao[0].n_status_avaliacao!=1)
             return
         setIdAvaliacao(idAvaliacao)
@@ -28,6 +29,7 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
+            setNomeCandSel(nomeCandidato)
             setFapCandidato(res)
             setLoad(false)
             setShowEditarFapCandidato(true)
@@ -63,7 +65,7 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
 
     return (
         <>
-            {showEditarFapCandidato&&<EditarFapCandidato comandoFechar={setShowEditarFapCandidato} nomeCandidato={props.infoAva?.infoCandidatos[0].s_nome_candidato||""} fapCandidato={fapCandidato} comandoSalvar={comandoSalvarFapCandidato}/>}
+            {showEditarFapCandidato&&<EditarFapCandidato comandoFechar={setShowEditarFapCandidato} nomeCandidato={nomeCandSel} fapCandidato={fapCandidato} comandoSalvar={comandoSalvarFapCandidato}/>}
             <div className={styles.infoAva}>
                 <div className={styles.infoAva_conteudo}>
                     <div className={styles.infoAva_conteudo_titulo}style={{ position: 'relative' }}>
@@ -100,7 +102,7 @@ export default function InfoAvaliacao(props:InfoAvaliacaoProps) {
                                         <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c2}><span>Nome: </span>&nbsp;{c.s_nome_candidato}</div>
                                         <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c3}><span>Status: </span>&nbsp;<span className={`${props.infoAva?.infoAvaliacao[0].n_status_avaliacao==0?styles.corNaoAvaliado:c.n_resultado_fap == 0?styles.corReprovado:styles.corAprovado}`}>{props.infoAva?.infoAvaliacao[0].n_status_avaliacao==0?'Não Avaliado':c.n_resultado_fap == 1?'Aprovado':'Reprovado'}</span></div>
                                         <div className={styles.infoAva_conteudo_corpo_area_field_spaceBetween_3_c4}>
-                                            <Image src={`${props.infoAva?.infoAvaliacao[0].n_status_avaliacao&&props.infoAva?.infoAvaliacao[0].n_status_avaliacao===1?'/assets/icons/edit_document.svg':'/assets/icons/edit_off.svg'}`} alt='Editar Avaliação' width={20} height={-1} onClick={()=>getFapCandidato(props.infoAva?props.infoAva.infoAvaliacao[0].n_id_avaliacao:-1,c.n_id_candidato)}/>
+                                            <Image src={`${props.infoAva?.infoAvaliacao[0].n_status_avaliacao&&props.infoAva?.infoAvaliacao[0].n_status_avaliacao===1?'/assets/icons/edit_document.svg':'/assets/icons/edit_off.svg'}`} alt='Editar Avaliação' width={20} height={-1} onClick={()=>getFapCandidato(props.infoAva?props.infoAva.infoAvaliacao[0].n_id_avaliacao:-1,c.n_id_candidato, c.s_nome_candidato)}/>
                                         </div>
                                     </div>                                
                                 ))}

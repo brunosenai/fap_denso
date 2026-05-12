@@ -5,9 +5,10 @@ import router from "next/router";
 
 interface TopoProps {
     titulo?: string;
+    nomeAvaliador:string
 }
 
-export default function Topo({ titulo = "" }: TopoProps){
+export default function Topo({ titulo = "", nomeAvaliador = "" }: TopoProps){
     const [userType, setUserType] = useState<number>(-1)
 
     useEffect(()=>{
@@ -40,6 +41,7 @@ export default function Topo({ titulo = "" }: TopoProps){
         localStorage.removeItem('modo');
         localStorage.removeItem('n_id_avaliacao');
         localStorage.removeItem('candidatos');
+        localStorage.removeItem('s_nome_pessoa');
         localStorage.clear
         router.replace('/');
     }
@@ -52,6 +54,7 @@ export default function Topo({ titulo = "" }: TopoProps){
         <div className={styles.topo}>
             <div className={styles.topoImages}>
                 <Image className={styles.logoStellantis} src={'/assets/logo-stellantis-branco.png'} alt={'Logo Stellantis'} width={230} height={-1} />
+                <div className={styles.avaliador}>{nomeAvaliador}</div>
                 <div className={styles.areaDireira}>
                     <Image className={styles.topoCentro40} src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={60} height={-1} />
                     {userType!=2&&
