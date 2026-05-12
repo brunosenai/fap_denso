@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM fap f
                     INNER JOIN avaliacao a ON a.n_id_avaliacao = f.n_id_avaliacao
                     WHERE a.dt_data_avaliacao BETWEEN ? AND ? 
-                    AND f.n_candidatopresente_fap = 1
+                    AND f.n_candidatopresente_fap = 1 AND f.n_status_fap <> 0 
                     GROUP BY CAST(a.dt_data_avaliacao AS DATE)
                     ORDER BY data_evento;
                 `,[di,df])

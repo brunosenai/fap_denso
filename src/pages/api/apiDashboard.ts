@@ -97,18 +97,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM (
                         SELECT 
                             f.*,
-                            ROW_NUMBER() OVER (PARTITION BY f.n_id_candidato ORDER BY f.dt_date_fap DESC) as ordem,
                             CASE WHEN (f.n_nota_fap < 13) AND (f.n_q6_fap = 1 AND f.n_q7_fap = 1) THEN 1 ELSE 0 END AS apenas_gradual,
                             CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap >= 13) THEN 1 ELSE 0 END AS apenas_dicotomica,
                             CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap < 13) THEN 1 ELSE 0 END AS ambas
                         FROM 
                             fap f
                         WHERE 
-                            f.n_status_fap = 1 ${filtroSql} -- AQUI ENTRA O FILTRO DINÂMICO
+                            f.n_status_fap <> 0 AND f.n_candidatopresente_fap = 1 ${filtroSql}
                     ) AS sub
-                    WHERE sub.ordem = 1
                 ) AS resumo_interno
-            ) AS resumo_final;
+            ) AS resumo_final;  
         `, params);
 
 

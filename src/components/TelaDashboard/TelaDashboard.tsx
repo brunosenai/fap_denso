@@ -169,7 +169,7 @@ export default function TelaDashboard(){
                     </div>
                     <div className={styles.sidebarContent}>
                         <label>Ver candidatos da avaliação</label>
-                        <select value={avaliacao} onChange={(e) => setAvaliacao(e.target.value)}>
+                        <select title="avaliações" value={avaliacao} onChange={(e) => setAvaliacao(e.target.value)}>
                             <option value="todas">Todas</option>
                             {avaliacoes && avaliacoes.map((item: any) => (
                                 <option key={item.n_id_avaliacao} value={item.n_id_avaliacao}>
