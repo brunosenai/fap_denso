@@ -27,14 +27,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if(action == "getAvaliacoesEntreDatas"){
             console.log("dtini:", dtini, "dtfim:", dtfim);
             try {
-                let di=''
-                let df=''
+                let di=dtini
+                let df=dtfim
                 if(!dtini) {
                     di='1970-01-01';
                 }
                 if(!dtfim) {
                     df='9999-12-31';
                 }
+                console.log("dtini:", di, "dtfim:", df);
                 const [rows] = await pool.query<RowDataPacket[]>(`
                     SELECT 
                         CAST(a.dt_data_avaliacao AS DATE) AS data_evento,
@@ -43,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         SUM(CASE WHEN f.n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados
                     FROM fap f
                     INNER JOIN avaliacao a ON a.n_id_avaliacao = f.n_id_avaliacao
-                    WHERE a.dt_data_avaliacao BETWEEN ? AND ? 
+                    WHERE DATE(a.dt_data_avaliacao) BETWEEN ? AND ? 
                     AND f.n_candidatopresente_fap = 1 AND f.n_status_fap <> 0 
                     GROUP BY CAST(a.dt_data_avaliacao AS DATE)
                     ORDER BY data_evento;
