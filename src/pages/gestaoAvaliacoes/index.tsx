@@ -21,9 +21,11 @@ export default function GestaoAvaliacoes() {
     const [filtroNome, setFiltroNome] = useState("");
     const [load,setLoad]=useState(false);
     const [showCandidatos,setShowCandidatos]=useState(false);
+    const [nomeAvaliador,setNomeAvaliador]=useState<string>('')
 
     useEffect(() => {
         setLoad(true);
+        setNomeAvaliador(localStorage.getItem('s_nome_pessoa')??'')
         const idAvaliador=localStorage.getItem("n_id_pessoa")
         const endpoint=`/api/apiAvaliacao?action=getAvaliacoesPorAvaliador&n_id_pessoa=${idAvaliador}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
@@ -84,7 +86,7 @@ export default function GestaoAvaliacoes() {
         <div className={styles.page}>
             {load&&<Load/>}
             {showCandidatos&&<PopupListaCandidatos comandoFechar={()=>{setShowCandidatos(false)}} listaCandidatos={candidatos} dadosAvaliacao={avaliacao} comandoAbrirAvaliacao={comandoAbrirAvaliacao}/>}
-            <Topo titulo="Gestão de Valiações"/>
+            <Topo titulo="Gestão de Valiações" nomeAvaliador={nomeAvaliador}/>
             <main className={styles.main}>
                 <div className={styles.dadosAvaliador}>
                     <div className={styles.dadosAvaliador_col}>

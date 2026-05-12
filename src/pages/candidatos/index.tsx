@@ -3,16 +3,17 @@ import styles from "@/styles/Candidatos.module.css"
 import { tcandidatoCard } from "@/utils/Types"
 import Image from "next/image"
 import CardCandidatos from "@/components/CardCandidatos/CardCandidatos"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function Candidatos(){
     const [candidatos,setCandidatos]=useState<tcandidatoCard[]>([])
     const [nome,setNome]=useState<string>('')
     const [email,setEmail]=useState<string>('')
+    const [nomeAvaliador,setNomeAvaliador]=useState<string>('')
 
-    const iniciar=()=>{
-
-    }
+    useEffect(()=>{
+        setNomeAvaliador(localStorage.getItem('s_nome_pessoa')??'')
+    },[])
 
     const addCandidato=()=>{
         if(nome!=='' && email!==''){
@@ -31,7 +32,7 @@ export default function Candidatos(){
 
     return(
         <div className='page'>
-            <Topo />
+            <Topo nomeAvaliador={nomeAvaliador}/>
             <main className='main'>
                 <div className={styles.form}>
                     <h1 className={styles.titulo}>Adicionar Candidatos</h1>
@@ -57,7 +58,7 @@ export default function Candidatos(){
                         </div>
                     </div>
                     <div className={styles.fieldFormBotton}>
-                        <button className='btnPadrao' onClick={()=>iniciar()}>Iniciar</button>
+                        <button className='btnPadrao' onClick={()=>{}}>Iniciar</button>
                     </div>
                 </div>
             </main>
