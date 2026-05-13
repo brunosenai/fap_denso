@@ -20,7 +20,10 @@ CREATE TABLE `candidato` (
   `n_id_candidato` int PRIMARY KEY AUTO_INCREMENT,
   `s_nome_candidato` varchar(255),
   `s_cpf_candidato` varchar(255) UNIQUE,
-  `s_email_candidato` varchar(255)
+  `s_email_candidato` varchar(255),
+  `dt_nasc_candidato` date,
+  `s_sexo_candidato` varchar(255),
+  `n_grauInstrucao_candidado` int DEFAULT 0
 );
 
 CREATE TABLE `fap` (
@@ -89,17 +92,17 @@ VALUES
   (1, 'Senai Centro 4.0', '2030-12-09T00:00:00', 0),
   (2, 'Senai CTTI', '2030-12-09T00:00:00', 0),
   (3, 'Senai EL', '2030-12-09T00:00:00', 0);
-INSERT INTO `candidato` (`n_id_candidato`, `s_nome_candidato`, `s_cpf_candidato`, `s_email_candidato`)
+INSERT INTO `candidato` (`n_id_candidato`, `s_nome_candidato`, `s_cpf_candidato`, `s_email_candidato`, `dt_nasc_candidato`, `s_sexo_candidato`, `n_grauInstrucao_candidado`)
 VALUES
-  (1, 'Rambo', '11111111111', 'rambo@fap.com.br'),
-  (2, 'Vam Dame', '22222222222', 'vam@fap.com.br'),
-  (3, 'Chuck Norris', '33333333333', 'chuck@fap.com.br'),
-  (4, 'Duke', '44444444444', 'duke@fap.com.br'),
-  (5, 'Dart Vader', '55555555555', 'dart@fap.com.br'),
-  (6, 'Luke Skywalker', '66666666666', 'luke@fap.com.br'),
-  (7, 'Batman', '12345678900', 'batman@fap.com.br'),
-  (8, 'Spiderman', '14725836900', 'spider@fap.com.br'),
-  (9, 'ET', '75315965421', 'et@fap.com.br');
+  (1, 'Rambo', '11111111111', 'rambo@fap.com.br', '1978-03-07', 'm', 8),
+  (2, 'Vam Dame', '22222222222', 'vam@fap.com.br', '1978-03-07', 'm', 8),
+  (3, 'Chuck Norris', '33333333333', 'chuck@fap.com.br', '1978-03-07', 'm', 8),
+  (4, 'Duke', '44444444444', 'duke@fap.com.br', '1978-03-07', 'm', 8),
+  (5, 'Dart Vader', '55555555555', 'dart@fap.com.br', '1978-03-07', 'm', 8),
+  (6, 'Luke Skywalker', '66666666666', 'luke@fap.com.br', '1978-03-07', 'm', 8),
+  (7, 'Batman', '12345678900', 'batman@fap.com.br', '1978-03-07', 'm', 8),
+  (8, 'Spiderman', '14725836900', 'spider@fap.com.br', '1978-03-07', 'm', 8),
+  (9, 'ET', '75315965421', 'et@fap.com.br', '1978-03-07', 'm', 8);
 INSERT INTO `fap` (`n_id_avaliacao`, `n_id_candidato`, `n_id_pessoa`, `n_candidatopresente_fap`)
 VALUES
   (1, 1, 1, 1),

@@ -13,6 +13,9 @@ export default function TelaCadastroCandidatos() {
     const [nome, setNome] = useState<string>("")
     const [cpf, setCpf] = useState<string>("")
     const [email, setEmail] = useState<string>("")
+    const [sexo, setSexo] = useState<string>("")
+    const [dtNasc, setDtNasc] = useState<string>("")
+    const [escolaridade, setEscolaridade] = useState<string>("")
 
     const [candidatos, setCandidatos] = useState<tCandidatoFap[]>([])
     const [candidatosFiltrados, setCandidatosFiltrados] = useState<tCandidatoFap[]>([])
@@ -308,6 +311,42 @@ export default function TelaCadastroCandidatos() {
                                 <input type="text" id={`email`} value={email} onChange={(e) => setEmail(e.target.value)} />
                             </div>
                         </div>
+                        <div className={styles.telaCadastro_form_ladoAlado}>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`sexo`}>Sexo<span className={styles.obrigatorio}>*</span></label>
+                                <select 
+                                    id={`sexo`} 
+                                    value={sexo} 
+                                    onChange={(e) => setSexo(e.target.value)}
+                                >
+                                    <option value={''}>Selecione a escolaridade</option>
+                                    <option value={'m'}>Masculino</option>
+                                    <option value={'f'}>Feminino</option>
+                                </select>
+                            </div>
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`dtNasc`}>Data Nascimento</label>
+                                <input type="date" id={`dtNasc`} value={dtNasc} onChange={(e) => setDtNasc(e.target.value)} />
+                            </div>                            
+                            <div className={styles.fieldForm}>
+                                <label htmlFor={`escolaridade`}>Escolaridade</label>
+                                <select 
+                                    id={`escolaridade`} 
+                                    value={escolaridade} 
+                                    onChange={(e) => setEscolaridade(e.target.value)}
+                                >
+                                    <option value={''}>Selecione a escolaridade</option>
+                                    <option value={'1'}>Analfabeto</option>
+                                    <option value={'2'}>Fundamental Incompleto</option>
+                                    <option value={'3'}>Fundamental Completo</option>
+                                    <option value={'4'}>Médio Incompleto</option>
+                                    <option value={'5'}>Médio Completo</option>
+                                    <option value={'6'}>Superior Incompleto</option>
+                                    <option value={'7'}>Superior Completo</option>
+                                    <option value={'8'}>Pós Graduação</option>
+                                </select>
+                            </div>
+                        </div>                        
                         <div className={styles.fieldForm_center}>
                             <button className={styles.btnPadrao} onClick={() => cadastrarCandidato()}>cadastrar novo</button>
                         </div>
