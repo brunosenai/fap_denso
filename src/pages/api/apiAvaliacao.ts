@@ -24,7 +24,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             dtfim
         } = req.query
 
-        if(action == "getAvaliacoesEntreDatas"){
+        if (action === "getListaPresenca") {
+            try {
+                // Transforma a string "1,2,3" num array de números [1, 2, 3]
+                const arrIds = String(req.query.ids).split(',').map(id => Number(id.trim()));
+
+                const [rows] = await pool.query<RowDataPacket[]>(`
+                    SELECT 
+                        a.n_id_avaliacao, 
+                        a.s_nome_avaliacao, 
+                        a.dt_data_avaliacao,
+                        c.n_id_candidato, 
+                        c.s_nome_candidato, 
+                        c.s_cpf_candidato, 
+                        c.s_email_candidato
+                    FROM avaliacao a
+                    INNER JOIN fap f ON f.n_id_avaliacao = a.n_id_avaliacao
+                    INNER JOIN candidato c ON c.n_id_candidato = f.n_id_candidato
+                    WHERE a.n_id_avaliacao IN (?)
+                    ORDER BY a.dt_data_avaliacao ASC, a.s_nome_avaliacao ASC, c.s_nome_candidato ASC;
+                `, [arrIds]);
+
+                res.status(200).json(rows);
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ message: "Internal Server Error: erro 500" });
+            }
+        }else if(action == "getAvaliacoesEntreDatas"){
             console.log("dtini:", dtini, "dtfim:", dtfim);
             try {
                 let di=dtini

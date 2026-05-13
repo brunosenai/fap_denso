@@ -254,21 +254,42 @@ export default function TelaCadastro() {
 
     const comandoNao = () => { setPopupConfirmation(false) }
 
+    // const obterCheckboxSelecionados = () => {
+    //     const cb = document.querySelectorAll<HTMLInputElement>("input[type='checkbox']:checked");
+    //     const tcb = Array.from(cb)
+    //     if (tcb.length == 0) return []
+    //     const tcbfix = tcb[0].id == 'checkboxTodos_header' ? tcb.slice(1) : tcb
+    //     return tcbfix
+    // }
+
     const obterCheckboxSelecionados = () => {
         const cb = document.querySelectorAll<HTMLInputElement>("input[type='checkbox']:checked");
-        const tcb = Array.from(cb)
-        if (tcb.length == 0) return []
-        const tcbfix = tcb[0].id == 'checkboxTodos_header' ? tcb.slice(1) : tcb
-        return tcbfix
+        // Filtra para remover os checkboxes que NÃO SÃO de avaliações (cabeçalho e histórico)
+        return Array.from(cb).filter(c => c.id !== 'checkboxTodos_header' && c.id !== 'checkboxTodos');
     }
 
     const obterTodosCheckbox = () => {
         const cb = document.querySelectorAll<HTMLInputElement>("input[type='checkbox']");
-        const tcb = Array.from(cb)
-        if (tcb.length == 0) return [] // Segurança extra
-        const tcbfix = tcb[0].id == 'checkboxTodos_header' ? tcb.slice(1) : tcb
-        return tcbfix
+        // Mesma blindagem aqui
+        return Array.from(cb).filter(c => c.id !== 'checkboxTodos_header' && c.id !== 'checkboxTodos');
     }
+
+    const obterIdsAvaliacoesSelecionadas = () => {
+        const cbSelecionados = obterCheckboxSelecionados()
+        const idsSelecionados = cbSelecionados
+            .map((cb) => parseInt(cb.id))
+            .filter((id) => !isNaN(id)); // Garante que nenhum 'NaN' passa para a API!
+            
+        return idsSelecionados
+    }    
+
+    // const obterTodosCheckbox = () => {
+    //     const cb = document.querySelectorAll<HTMLInputElement>("input[type='checkbox']");
+    //     const tcb = Array.from(cb)
+    //     if (tcb.length == 0) return [] // Segurança extra
+    //     const tcbfix = tcb[0].id == 'checkboxTodos_header' ? tcb.slice(1) : tcb
+    //     return tcbfix
+    // }
 
     const selecionarTodos = (cb: HTMLInputElement) => {
         const todosCb = obterTodosCheckbox()
@@ -277,13 +298,13 @@ export default function TelaCadastro() {
         })
     }
 
-    const obterIdsAvaliacoesSelecionadas = () => {
-        const cbSelecionados = obterCheckboxSelecionados()
-        const idsSelecionados = cbSelecionados.map((cb) => {
-            return parseInt(cb.id)
-        })
-        return idsSelecionados
-    }
+    // const obterIdsAvaliacoesSelecionadas = () => {
+    //     const cbSelecionados = obterCheckboxSelecionados()
+    //     const idsSelecionados = cbSelecionados.map((cb) => {
+    //         return parseInt(cb.id)
+    //     })
+    //     return idsSelecionados
+    // }
 
     const gerarEnviarRelatoriosEmail = async () => {
         const ids = obterIdsAvaliacoesSelecionadas();
@@ -356,6 +377,31 @@ export default function TelaCadastro() {
         obterAvaliacoes(evt)
     }
 
+    const imprimirListasPresenca = (id: number) => {
+        let idsParaImprimir: number[] = [];
+        if (id === 0) {
+            // Imprimir todas as listas selecionadas nos checkboxes
+            idsParaImprimir = obterIdsAvaliacoesSelecionadas();
+            if (idsParaImprimir.length === 0) {
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Aviso",
+                    mensagem: "Selecione pelo menos uma avaliação para imprimir a lista de presença.",
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
+                return;
+            }
+        } else if (id > 0) {
+            // Imprimir lista de presença de apenas uma avaliação específica (clique direto no botão da linha, se existir)
+            idsParaImprimir = [id];
+        }
+
+        // Pega os IDs, junta com vírgula e abre a nova página de impressão
+        const queryIds = idsParaImprimir.join(',');
+        const imptList=window.open(`/ImprimirListaPresenca?ids=${queryIds}`, '_blank');
+    }
+
     return (
         <>
             {load && <Load/>}
@@ -412,7 +458,12 @@ export default function TelaCadastro() {
                                 <div className={styles.btnPesquisa} onClick={()=>setShowAnalytics(true)} title="Analytics">
                                     <Image src='/assets/icons/analytics_w.svg' alt='Analytics' width={20} height={20}/>
                                 </div>   
-                            </div>                            
+                            </div>
+                            <div className={styles.telaCadastro_area_filtro_c3}>
+                                <div className={styles.btnPesquisa} onClick={()=>imprimirListasPresenca(0)} title="Imprimir Todas Listas de Presenças selecionadas">
+                                    <Image src='/assets/icons/print_w.svg' alt='Imprimir Todas Listas de Presenças selecionadas' width={20} height={20}/>
+                                </div>   
+                            </div>                                                    
                             <div className={styles.telaCadastro_area_filtro_c4}>
                                 <div className={styles.btnPesquisa} onClick={()=>gerarEnviarRelatoriosEmail()} title="Gerar relatórios e enviar por email">
                                     <Image src='/assets/icons/report_w.svg' alt='Gerar relatórios' width={20} height={20}/>
@@ -429,6 +480,7 @@ export default function TelaCadastro() {
                             <div className={`${styles.c_titulo} ${styles.c4} ${styles.c_center}`}>
                                 <div>st</div>
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={20}/>
+                                <Image src='/assets/icons/print_w.svg' alt='Informações Avaliação' width={20} height={20}/>
                                 <Image src='/assets/icons/info_w.svg' alt='Informações Avaliação' width={20} height={20}/>
                             </div>
                             
@@ -453,6 +505,7 @@ export default function TelaCadastro() {
                                             avaliacao.n_status_avaliacao==1?'Avaliação realizada, porém relatórios ainda não foram gerados e enviados':'Relatórios gerados e enviados'
                                         } width={20} height={20} className={styles.iconEditar}/>
                                         <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
+                                        <Image src='/assets/icons/print.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>imprimirListasPresenca(avaliacao.n_id_avaliacao)}/>
                                         <Image src='/assets/icons/info.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>getInfoAvaliacao(avaliacao.n_id_avaliacao)}/>
                                     </div>
                                 </div>
