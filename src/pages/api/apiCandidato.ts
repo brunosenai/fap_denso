@@ -175,12 +175,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
     } else if (req.method === 'POST') {
-        const { s_nome_candidato, s_cpf_candidato, s_email_candidato } = req.body;
+        const {
+            s_nome_candidato,
+            s_cpf_candidato,
+            s_email_candidato,
+            s_sexo_candidato,
+            s_dt_nasc_candidato,
+            s_escolaridade_candidato
+        } = req.body;
         try {
             await pool.query<ResultSetHeader>(`
-                INSERT INTO candidato (s_nome_candidato,s_cpf_candidato,s_email_candidato)
+                INSERT INTO candidato (s_nome_candidato,s_cpf_candidato,s_email_candidato,s_sexo_candidato,s_dt_nasc_candidato,s_escolaridade_candidato)
                 VALUES (?,?,?);
-            `, [s_nome_candidato, s_cpf_candidato, s_email_candidato])
+            `, [s_nome_candidato, s_cpf_candidato, s_email_candidato,s_sexo_candidato, s_dt_nasc_candidato, s_escolaridade_candidato]);
             
             return res.status(200).json({ message: 'Candidato cadastrado com sucesso!' });
         } catch (error) {

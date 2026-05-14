@@ -64,11 +64,11 @@ export default function PopupImportarDados(props: popupProps) {
 
     const handleFileUpload = (evento: React.ChangeEvent<HTMLInputElement>) => {
         const file = evento.target.files?.[0];
+
         if (!file) {
             setDadosCSV([]);
             return;
         }
-
         const reader = new FileReader();
         reader.onload = (e) => {
             const texto = e.target?.result as string;
@@ -80,7 +80,7 @@ export default function PopupImportarDados(props: popupProps) {
             // =========================================================================
             // 1. VALIDAÇÃO DE CABEÇALHO
             // =========================================================================
-            const cabecalhoEsperado = ["Nome", "CPF", "Email", "Data", "hora", "Título Fap"];
+            const cabecalhoEsperado = ["nome", "cpf", "email", "sexo", "nascimento", "instrucao", "data", "hora", "titulo fap"];
             // Pega a primeira linha, divide por ;, limpa espaços e ignora maiúsculas/minúsculas para validar
             const cabecalhoArquivo = linhas[0].split(';').map(col => col.trim().toLowerCase());
             
@@ -121,14 +121,17 @@ export default function PopupImportarDados(props: popupProps) {
                 if (!linha) continue;
 
                 const colunas = linha.split(';');
-                if (colunas.length >= 3 && colunas[0].trim() !== '') {
-                    
-                    const nome = colunas[0].trim();
-                    const cpf = colunas[1].replace(/\D/g, ''); 
-                    const email = colunas[2].trim();
-                    let dataCSV = colunas[3]?.trim() || "";
-                    let horaCSV = colunas[4]?.trim() || "";
-                    const titulo_avaliacao = colunas[5]?.trim() || null;
+
+                if (colunas.length >= 3 && colunas[0]?.trim() !== '') {
+                    const nome = colunas[0]?.trim() || "";
+                    const cpf = colunas[1]?.replace(/\D/g, '') || ""; 
+                    const email = colunas[2]?.trim() || "";
+                    const sexo = colunas[3]?.trim() || "";
+                    let nascimento = colunas[4]?.trim() || "";
+                    const grauInstrucao = colunas[5]?.trim() || "";
+                    let dataCSV = colunas[6]?.trim() || "";
+                    let horaCSV = colunas[7]?.trim() || "";
+                    const titulo_avaliacao = colunas[8]?.trim() || null;
 
                     // =========================================================================
                     // 2. VERIFICAÇÃO DE DUPLICIDADE (CPF e E-mail no mesmo arquivo)
@@ -143,13 +146,26 @@ export default function PopupImportarDados(props: popupProps) {
                     // =========================================================================
                     // 3. FORMATAÇÃO AUTOMÁTICA SILENCIOSA (Datas e Horas)
                     // =========================================================================
-                    // Se for DD/MM/YYYY converte para YYYY-MM-DD
+                    
+                    // Tratamento da Data de Nascimento
+                    if (nascimento) {
+                        const matchDataCompleta = nascimento.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                        if (matchDataCompleta) {
+                            nascimento = `${matchDataCompleta[3]}-${matchDataCompleta[2]}-${matchDataCompleta[1]}`;
+                        } else {
+                            const matchDataCurta = nascimento.match(/^(\d{2})\/(\d{2})\/(\d{2})$/);
+                            if (matchDataCurta) {
+                                nascimento = `19${matchDataCurta[3]}-${matchDataCurta[2]}-${matchDataCurta[1]}`; // Assumindo sec XX para nascimentos antigos, ajuste para 20 se preferir
+                            }
+                        }
+                    }
+
+                    // Tratamento da Data da Avaliação
                     if (dataCSV) {
                         const matchDataCompleta = dataCSV.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
                         if (matchDataCompleta) {
                             dataCSV = `${matchDataCompleta[3]}-${matchDataCompleta[2]}-${matchDataCompleta[1]}`;
                         } else {
-                            // Se for DD/MM/YY converte para 20YY-MM-DD
                             const matchDataCurta = dataCSV.match(/^(\d{2})\/(\d{2})\/(\d{2})$/);
                             if (matchDataCurta) {
                                 dataCSV = `20${matchDataCurta[3]}-${matchDataCurta[2]}-${matchDataCurta[1]}`;
@@ -179,6 +195,9 @@ export default function PopupImportarDados(props: popupProps) {
                         nome,
                         cpf,
                         email,
+                        sexo,
+                        nascimento,
+                        grauInstrucao,
                         data: dataCSV || null,
                         hora: horaCSV || null,
                         titulo_avaliacao
@@ -217,7 +236,9 @@ export default function PopupImportarDados(props: popupProps) {
 
             setDadosCSV(dadosLimpos); 
         };
-        reader.readAsText(file);
+        
+        // CRÍTICO: Lê o CSV usando o encoding padrão do Excel no Brasil para não quebrar acentos!
+        reader.readAsText(file, 'ISO-8859-1');
     };
 
     const iniciarImportacao = () => {

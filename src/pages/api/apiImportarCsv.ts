@@ -31,8 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // =========================================================================
             // O CPF é único. Usamos INSERT IGNORE para não duplicar.
             await pool.query<ResultSetHeader>(
-                `INSERT IGNORE INTO candidato (s_nome_candidato, s_cpf_candidato, s_email_candidato) VALUES (?, ?, ?)`,
-                [c.nome, c.cpf, c.email]
+                `INSERT IGNORE INTO candidato (s_nome_candidato, s_cpf_candidato, s_email_candidato, s_sexo_candidato, dt_nasc_candidato, n_grauInstrucao_candidado) VALUES (?, ?, ?, ?, ?, ?)`,
+                [c.nome, c.cpf, c.email, c.sexo, c.nascimento, c.grauInstrucao]
             );
 
             // Buscamos o ID do candidato existente ou recém-criado pelo CPF

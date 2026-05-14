@@ -82,6 +82,7 @@ export default function TelaCadastroCandidatos() {
         fetch(endpoint)
         .then(res => res.json())
         .then(res => {
+            console.log(res)
             // Se a API retornar a nova estrutura paginada
             if (res.dados && Array.isArray(res.dados)) {
                 setCandidatos(res.dados)
@@ -115,18 +116,23 @@ export default function TelaCadastroCandidatos() {
             setPopupMessage(true)
             return
         }
-        
+
+        const dados={
+            s_nome_candidato: nome,
+            s_cpf_candidato: cpf.replace(/\D/g, ""),
+            s_email_candidato: email,
+            s_sexo_candidato: sexo,
+            s_dt_nasc_candidato: dtNasc,
+            s_escolaridade_candidato: escolaridade,
+            apiKey: process.env.NEXT_PUBLIC_API_KEY
+        }
+
         setLoad(true)
         const endpoint = `/api/apiCandidato`
         fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                s_nome_candidato: nome,
-                s_cpf_candidato: cpf.replace(/\D/g, ""),
-                s_email_candidato: email,
-                apiKey: process.env.NEXT_PUBLIC_API_KEY
-            })
+            body: JSON.stringify(dados)
         })
         .then(res => {
             if (res.status != 200) {

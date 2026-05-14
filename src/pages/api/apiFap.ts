@@ -14,7 +14,6 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
     let apiKey=''
     if(req.method === 'GET'){
         apiKey = req.query.apiKey as string
@@ -50,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({ message: "Internal Server Error: erro 500" });
             }
-        } else if (action == "getListaCandidatos") {
+        }else if (action == "getListaCandidatos") {
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     SELECT
@@ -68,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({ message: "Internal Server Error: erro 500" });
             }
-        } else if (action == "getInfoFapCandidato") {
+        }else if (action == "getInfoFapCandidato") {
             try {
                 const [rows_fap] = await pool.query<RowDataPacket[]>(`
                     SELECT
@@ -87,7 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({ message: "Internal Server Error: erro 500" });
             }
-        } else if (action == "getAllCandidatosFap_cad" || action == "getAllCandidatosFap") {
+        }else if (action == "getAllCandidatosFap_cad" || action == "getAllCandidatosFap") {
             try {
                 // LÓGICA DE PAGINAÇÃO
                 const pagina = Number(req.query.pagina) || 1;
