@@ -24,7 +24,109 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             dtfim
         } = req.query
 
-        if (action === "getListaPresenca") {
+        if (action === "getAnalyticsEntreDatas") {
+            try {
+                let di=dtini
+                let df=dtfim
+                if(!dtini) {
+                    di='1970-01-01';
+                }
+                if(!dtfim) {
+                    df='9999-12-31';
+                }
+                const [rows] = await pool.query<RowDataPacket[]>(`
+WITH DadosAvaliacao AS (
+                        SELECT 
+                            f.n_resultado_fap,
+                            -- Otimização: Já converte o sexo para 'm' ou 'f' logo na raiz para não repetir o código em baixo
+                            LOWER(SUBSTRING(c.s_sexo_candidato, 1, 1)) AS sexo,
+                            a.dt_data_avaliacao,
+                            TIMESTAMPDIFF(YEAR, c.dt_nasc_candidato, a.dt_data_avaliacao) AS idade
+                        FROM fap f
+                        INNER JOIN avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
+                        INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
+                        WHERE 
+                            DATE(a.dt_data_avaliacao) BETWEEN ? AND ? 
+                            AND f.n_candidatopresente_fap = 1 
+                    )
+                    SELECT 
+                        -- ==============================================================================
+                        -- 1. TAXA DE SUCESSO (Dos Homens e Mulheres avaliados, quantos % passaram?)
+                        -- ==============================================================================
+                        ROUND(
+                            IFNULL(
+                                SUM(CASE WHEN sexo = 'm' AND n_resultado_fap = 1 THEN 1 ELSE 0 END) * 100.0 / 
+                                NULLIF(SUM(CASE WHEN sexo = 'm' THEN 1 ELSE 0 END), 0)
+                            , 0)
+                        , 1) AS taxa_sucesso_masculina,
+                        
+                        ROUND(
+                            IFNULL(
+                                SUM(CASE WHEN sexo = 'f' AND n_resultado_fap = 1 THEN 1 ELSE 0 END) * 100.0 / 
+                                NULLIF(SUM(CASE WHEN sexo = 'f' THEN 1 ELSE 0 END), 0)
+                            , 0)
+                        , 1) AS taxa_sucesso_feminina,
+                        
+                        -- ==============================================================================
+                        -- 2. COMPOSIÇÃO DOS APROVADOS (Do grupo de aprovados, quantos % são H e quantos M?)
+                        -- *A soma destes dois vai dar 100%*
+                        -- ==============================================================================
+                        ROUND(
+                            IFNULL(
+                                SUM(CASE WHEN sexo = 'm' AND n_resultado_fap = 1 THEN 1 ELSE 0 END) * 100.0 / 
+                                NULLIF(SUM(CASE WHEN n_resultado_fap = 1 THEN 1 ELSE 0 END), 0)
+                            , 0)
+                        , 1) AS composicao_aprovados_masculina,
+
+                        ROUND(
+                            IFNULL(
+                                SUM(CASE WHEN sexo = 'f' AND n_resultado_fap = 1 THEN 1 ELSE 0 END) * 100.0 / 
+                                NULLIF(SUM(CASE WHEN n_resultado_fap = 1 THEN 1 ELSE 0 END), 0)
+                            , 0)
+                        , 1) AS composicao_aprovados_feminina,
+                        
+                        -- ==============================================================================
+                        -- 3. PERFIL VENCEDOR (Dia e Idade)
+                        -- ==============================================================================
+                        (SELECT 
+                            CASE DAYOFWEEK(dt_data_avaliacao)
+                                WHEN 1 THEN 'Domingo'
+                                WHEN 2 THEN 'Segunda-feira'
+                                WHEN 3 THEN 'Terça-feira'
+                                WHEN 4 THEN 'Quarta-feira'
+                                WHEN 5 THEN 'Quinta-feira'
+                                WHEN 6 THEN 'Sexta-feira'
+                                WHEN 7 THEN 'Sábado'
+                            END AS dia
+                         FROM DadosAvaliacao
+                         WHERE dt_data_avaliacao IS NOT NULL AND n_resultado_fap = 1
+                         GROUP BY dia
+                         ORDER BY COUNT(*) DESC 
+                         LIMIT 1) AS melhor_dia_semana,
+                         
+                        (SELECT 
+                            CASE 
+                                WHEN idade < 18 THEN 'Menor de 18 anos'
+                                WHEN idade BETWEEN 18 AND 25 THEN '18 a 25 anos'
+                                WHEN idade BETWEEN 26 AND 35 THEN '26 a 35 anos'
+                                WHEN idade BETWEEN 36 AND 45 THEN '36 a 45 anos'
+                                WHEN idade BETWEEN 46 AND 55 THEN '46 a 55 anos'
+                                ELSE 'Mais de 55 anos'
+                            END AS faixa
+                         FROM DadosAvaliacao
+                         WHERE idade IS NOT NULL AND n_resultado_fap = 1
+                         GROUP BY faixa
+                         ORDER BY COUNT(*) DESC 
+                         LIMIT 1) AS melhor_faixa_etaria
+                         
+                    FROM DadosAvaliacao;
+                `,[di,df])
+                res.status(200).json(rows)
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
+        }else if (action === "getListaPresenca") {
             try {
                 // Transforma a string "1,2,3" num array de números [1, 2, 3]
                 const arrIds = String(req.query.ids).split(',').map(id => Number(id.trim()));
@@ -51,7 +153,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 res.status(500).json({ message: "Internal Server Error: erro 500" });
             }
         }else if(action == "getAvaliacoesEntreDatas"){
-            console.log("dtini:", dtini, "dtfim:", dtfim);
             try {
                 let di=dtini
                 let df=dtfim
@@ -61,7 +162,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if(!dtfim) {
                     df='9999-12-31';
                 }
-                console.log("dtini:", di, "dtfim:", df);
                 const [rows] = await pool.query<RowDataPacket[]>(`
                     SELECT 
                         CAST(a.dt_data_avaliacao AS DATE) AS data_evento,

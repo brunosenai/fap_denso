@@ -29,14 +29,41 @@ export default function Analytics(props:AnalyticsProps) {
     const [totalAprovados,setTotalAprovados]=useState(0)
     const [totalReprovados,setTotalReprovados]=useState(0)
     const [lisagemSemanas, setListagemSemanas] = useState<{[key: string]: DadosSemana}>({});
+    const [aprovacoesMasculinas,setAprovacoesMasculinas]=useState(0)
+    const [aprovacoesFemininas,setAprovacoesFemininas]=useState(0)
+    const [aprovadosMasculinos,setAprovadosMasculinos]=useState(0)
+    const [aprovadosFemininos,setAprovadosFemininos]=useState(0)
+    const [diaSemanaMaisAprova,setDiaSemanaMaisAprova]=useState('-')
+    const [faixaEtariaMaiorAprova,setFaixaEtariaMaiorAprova]=useState('-')
+
+    const getAnalytics = async (dtini: string, dtfim: string) => {
+        try {
+            const endpoint = `/api/apiAvaliacao?action=getAnalyticsEntreDatas&dtini=${dtini}&dtfim=${dtfim}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+            const res = await fetch(endpoint);
+            const data = await res.json();
+    
+            // Como a query retorna sempre 1 linha, pegamos o índice [0]
+            if (data && data.length > 0) {
+                console.log(data)
+                setAprovacoesMasculinas(data[0].composicao_aprovados_feminina || 0);
+                setAprovacoesFemininas(data[0].composicao_aprovados_masculina || 0);
+                setAprovadosFemininos(data[0].taxa_sucesso_feminina || 0);
+                setAprovadosMasculinos(data[0].taxa_sucesso_masculina || 0);
+                setDiaSemanaMaisAprova(data[0].melhor_dia_semana || "N/A");
+                setFaixaEtariaMaiorAprova(data[0].melhor_faixa_etaria || "N/A");
+            }
+        } catch (err) {
+            console.error("Erro ao buscar analytics avançado:", err);
+        }
+    }
 
     const getAvaliacoes=async(dtini:string,dtfim:string)=>{
         setLoad(true)
+        getAnalytics(dtini,dtfim)
         const endpoint=`/api/apiAvaliacao?action=getAvaliacoesEntreDatas&dtini=${dtini}&dtfim=${dtfim}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res=>res.json())
         .then(res=>{
-            console.log(res)
             setAnalyticsData(res)
             setTotalCandidatos(totalCandidatosAvalidados(res))
             setTotalAprovados(totalCandidatosAprovados(res))
@@ -144,16 +171,31 @@ export default function Analytics(props:AnalyticsProps) {
                             </div>
                         </div>
                         <div className={styles.analytics_conteudo_corpo_area}>
+                            <h1>Analytics</h1>
+                            <div className={styles.analytics_conteudo_corpo_area_linhas}>
+                                <div className={styles.analytics_conteudo_corpo_area_field_spaceBetween_analytics}>
+                                    <div><span>Aprovações masculinas: {aprovacoesMasculinas}%</span></div>
+                                    <div><span>Aprovações femininas: {aprovacoesFemininas}%</span></div>
+                                    <div><span>Composição Aprovação masculino: {aprovadosMasculinos}%</span></div>
+                                    <div><span>Composição Aprovação feminina: {aprovadosFemininos}%</span></div>
+                                </div>
+                                <div className={styles.analytics_conteudo_corpo_area_field_spaceBetween_analytics}>
+                                    <div><span>Dia da semana que mais aprova: {diaSemanaMaisAprova}</span></div>
+                                    <div><span>Faixa Etária com maior aprovação: {faixaEtariaMaiorAprova}</span></div>
+                                </div>                                
+                            </div>
+                        </div>                        
+                        <div className={styles.analytics_conteudo_corpo_area2}>
                             <h1>Listagem por semanas</h1>
                             <div className={styles.analytics_conteudo_corpo_area_linhas}>
-                            {Object.keys(lisagemSemanas).map((semana) => (
-                                <div key={semana} className={styles.analytics_conteudo_corpo_area_field_spaceBetween}>
-                                    <div style={{fontWeight: 'bold'}}>{semana}</div>
-                                    <div>Total: {lisagemSemanas[semana].total_avaliados}</div>
-                                    <div>Aprovados: {lisagemSemanas[semana].total_aprovados}</div>
-                                    <div>Reprovados: {lisagemSemanas[semana].total_reprovados}</div>
-                                </div>
-                            ))}
+                                {Object.keys(lisagemSemanas).map((semana) => (
+                                    <div key={semana} className={styles.analytics_conteudo_corpo_area_field_spaceBetween}>
+                                        <div style={{fontWeight: 'bold'}}>{semana}</div>
+                                        <div>Total: {lisagemSemanas[semana].total_avaliados}</div>
+                                        <div>Aprovados: {lisagemSemanas[semana].total_aprovados}</div>
+                                        <div>Reprovados: {lisagemSemanas[semana].total_reprovados}</div>
+                                    </div>
+                                ))}
                             </div>
                         </div>                        
                     </div>

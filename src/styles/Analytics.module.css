@@ -18,6 +18,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     width: 70%;
+    max-height: 90%;
     border-radius: 10px;
     overflow: hidden;
 }
@@ -35,20 +36,26 @@
     padding: 10px;
 }
 
-.analytics_conteudo_corpo{
+.analytics_conteudo_corpo {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start; /* Melhor usar flex-start do que space-between aqui */
     align-items: center;
     font-size: large;
     background-color: #fff;
     color: #222 !important;
     width: 100%;
     padding: 20px;
-    gap:10px;
+    gap: 10px;
+    
+    /* === A MÁGICA DA ROLAGEM PARTE 1 === */
+    /* Faz o corpo ocupar o espaço restante, mas impede que ele vaze do modal */
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
-.analytics_conteudo_corpo_area{
+.analytics_conteudo_corpo_area {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -61,6 +68,25 @@
     border-radius: 10px;
 }
 
+.analytics_conteudo_corpo_area2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-size: medium;
+    background-color: #ddd;
+    color: #222 !important;
+    width: 100%;
+    padding: 20px;
+    border-radius: 10px;
+    
+    /* === A MÁGICA DA ROLAGEM PARTE 2 === */
+    /* Permite que esta área específica encolha quando a lista for gigante */
+    flex-shrink: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
 .analytics_conteudo_corpo_area_colunas{
     display: flex;
     flex-direction: row;
@@ -69,13 +95,20 @@
     width: 100%;
 }
 
-.analytics_conteudo_corpo_area_linhas{
+.analytics_conteudo_corpo_area_linhas {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
-    gap:10px;
+    gap: 10px;
+    scrollbar-gutter: stable;
+    
+    /* O que faz a rolagem acontecer de fato: */
+    overflow-y: auto; 
+    flex: 1;
+    min-height: 0px;
+    padding-right: 5px; /* <-- Adicionado para dar respiro à barra de rolagem */
 }
 
 .analytics_conteudo_corpo_area_col{
@@ -112,6 +145,25 @@
     align-items: flex-start;
     width: 25%;
 }
+
+.analytics_conteudo_corpo_area_field_spaceBetween_analytics{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap:10px;
+}
+
+.analytics_conteudo_corpo_area_field_spaceBetween_analytics div{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    font-size: small;
+}
+
 
 .analytics_conteudo_corpo_area_field_spaceBetween_3{
     display: flex;
@@ -176,9 +228,10 @@
     font-weight: normal !important;
 }
 
-.analytics_conteudo_corpo_area h1{
+.analytics_conteudo_corpo_area h1, .analytics_conteudo_corpo_area2 h1{
     font-weight: bold;
-    font-size: x-large;
+    font-size: large;
+    color:#006;
     margin-bottom: 10px;
 }
 
