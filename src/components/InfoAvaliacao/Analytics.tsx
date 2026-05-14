@@ -45,8 +45,8 @@ export default function Analytics(props:AnalyticsProps) {
             // Como a query retorna sempre 1 linha, pegamos o índice [0]
             if (data && data.length > 0) {
                 console.log(data)
-                setAprovacoesMasculinas(data[0].composicao_aprovados_feminina || 0);
-                setAprovacoesFemininas(data[0].composicao_aprovados_masculina || 0);
+                setAprovacoesMasculinas(data[0].composicao_aprovados_masculina || 0);
+                setAprovacoesFemininas(data[0].composicao_aprovados_feminina || 0);
                 setAprovadosFemininos(data[0].taxa_sucesso_feminina || 0);
                 setAprovadosMasculinos(data[0].taxa_sucesso_masculina || 0);
                 setDiaSemanaMaisAprova(data[0].melhor_dia_semana || "N/A");
