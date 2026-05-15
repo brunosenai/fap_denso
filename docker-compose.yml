@@ -47,9 +47,6 @@ services:
       - SMTP_USER=brunopinhocampos@gmail.com
       - SMTP_PASS=elzeinaynkaqwzqi
       - EMAIL_DESTINO_EMPRESA=bpinho@fiemg.com.br
-    volumes:
-      - relatorios_data:/app/public/relatorios
 
 volumes:
   db_data:
-  relatorios_data:
