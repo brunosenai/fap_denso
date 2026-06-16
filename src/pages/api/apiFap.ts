@@ -88,21 +88,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }else if (action == "getAllCandidatosFap_cad" || action == "getAllCandidatosFap") {
             try {
-                // LÓGICA DE PAGINAÇÃO
+                // LÓGICA DE PAGINAÇÃO E BUSCA
                 const pagina = Number(req.query.pagina) || 1;
+                const busca = req.query.busca ? String(req.query.busca) : ""; // <-- Captura o termo de busca
                 const limite = 50;
                 const offset = (pagina - 1) * limite;
 
+                // Monta a condição WHERE dinamicamente
+                let whereBuscaCount = busca ? ` WHERE c.s_nome_candidato LIKE '%${busca}%'` : "";
+                let whereBuscaData = busca ? ` WHERE c.s_nome_candidato LIKE '%${busca}%'` : "";
+
                 // 1. Descobrir o total de registros (Para calcular o total de páginas)
                 const countQuery = action == "getAllCandidatosFap" 
-                    ? `SELECT COUNT(DISTINCT c.n_id_candidato) as total FROM candidato c INNER JOIN fap f ON c.n_id_candidato = f.n_id_candidato`
-                    : `SELECT COUNT(DISTINCT c.n_id_candidato) as total FROM candidato c`;
+                    ? `SELECT COUNT(DISTINCT c.n_id_candidato) as total FROM candidato c INNER JOIN fap f ON c.n_id_candidato = f.n_id_candidato ${whereBuscaCount}`
+                    : `SELECT COUNT(DISTINCT c.n_id_candidato) as total FROM candidato c ${whereBuscaCount}`;
                 
                 const [countResult] = await pool.query<RowDataPacket[]>(countQuery);
                 const totalRegistros = countResult[0].total;
                 const totalPaginas = Math.ceil(totalRegistros / limite);
 
-                // 2. Buscar apenas os 50 registros da página atual
+                // 2. Buscar apenas os registros (aplicando limite e filtro)
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     SELECT 
                         c.n_id_candidato,
@@ -113,12 +118,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         candidato c
                     ${action == "getAllCandidatosFap" ? "INNER JOIN" : "LEFT JOIN"} 
                         fap f ON c.n_id_candidato = f.n_id_candidato
+                    ${whereBuscaData}
                     GROUP BY 
                         c.n_id_candidato
                     ORDER BY 
                         c.n_id_candidato DESC
                     LIMIT ? OFFSET ?;
-                    `, [limite, offset] // <-- Parâmetros mágicos do MySQL para paginação
+                    `, [limite, offset] 
                 );
 
                 // 3. Retornar um Objeto com os Dados e as Páginas

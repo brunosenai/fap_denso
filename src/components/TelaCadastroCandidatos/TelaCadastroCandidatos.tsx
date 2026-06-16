@@ -40,24 +40,23 @@ export default function TelaCadastroCandidatos() {
 
     useEffect(() => {
         setIsTablet(verifyIsTablet())
-        obterCandidatos(1) // Inicia na página 1
+        // A primeira carga agora também é garantida pelo useEffect do debounce abaixo, 
+        // mas mantemos aqui por segurança de inicialização.
+        obterCandidatos(1) 
     }, [])
 
     // =========================================================================
-    // FILTRO DINÂMICO LOCAL (Filtra a página atual)
+    // FILTRO DINÂMICO NO SERVIDOR (Debounce)
     // =========================================================================
     useEffect(() => {
-        if (!Array.isArray(candidatos)) return;
+        const timeoutId = setTimeout(() => {
+            // Toda vez que digitar no filtro, volta para a página 1 da pesquisa
+            obterCandidatos(1, filtroCandidatos);
+        }, 500);
 
-        if (filtroCandidatos.trim() === "") {
-            setCandidatosFiltrados(candidatos)
-        } else {
-            const resFiltro = candidatos.filter(a =>
-                a.s_nome_candidato.toLowerCase().includes(filtroCandidatos.toLowerCase())
-            )
-            setCandidatosFiltrados(resFiltro)
-        }
-    }, [filtroCandidatos, candidatos])
+        return () => clearTimeout(timeoutId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filtroCandidatos])
 
     // =========================================================================
     // MÁSCARA DE CPF
@@ -74,28 +73,30 @@ export default function TelaCadastroCandidatos() {
     }
 
     // =========================================================================
-    // BUSCA COM PAGINAÇÃO
+    // BUSCA COM PAGINAÇÃO E FILTRO
     // =========================================================================
-    const obterCandidatos = async (pagina: number = 1) => {
+    const obterCandidatos = async (pagina: number = 1, termoBusca: string = filtroCandidatos) => {
         setLoad(true)
-        const endpoint = `/api/apiFap?action=getAllCandidatosFap_cad&pagina=${pagina}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+        // Passa o termo de busca na URL
+        const endpoint = `/api/apiFap?action=getAllCandidatosFap_cad&pagina=${pagina}&busca=${encodeURIComponent(termoBusca)}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
         fetch(endpoint)
         .then(res => res.json())
         .then(res => {
-            console.log(res)
-            // Se a API retornar a nova estrutura paginada
             if (res.dados && Array.isArray(res.dados)) {
                 setCandidatos(res.dados)
+                setCandidatosFiltrados(res.dados) // A API já traz filtrado!
                 setPaginaAtual(res.paginaAtual)
                 setTotalPaginas(res.totalPaginas)
             } 
-            // Fallback caso a API ainda retorne a lista antiga (sem paginação)
+            // Fallback caso a API retorne a lista antiga
             else if (Array.isArray(res)) {
                 setCandidatos(res)
+                setCandidatosFiltrados(res)
                 setPaginaAtual(1)
                 setTotalPaginas(1)
             } else {
                 setCandidatos([])
+                setCandidatosFiltrados([])
             }
             setLoad(false)
         })
@@ -249,7 +250,7 @@ export default function TelaCadastroCandidatos() {
     const limparFiltros = () => {
         setFiltroAvaliacoes("")
         setFiltroCandidatos("")
-        obterCandidatos(1) // Reseta para a primeira página
+        obterCandidatos(1, "") // Reseta para a primeira página e limpa a busca
     }
 
     const pesquisarCandidatoPelaAvaliacao = async () => {
@@ -264,11 +265,13 @@ export default function TelaCadastroCandidatos() {
             const res = await response.json()
             if (Array.isArray(res)) {
                 setCandidatos(res)
+                setCandidatosFiltrados(res)
                 // Como esta rota específica não está paginada, resetamos visualmente os botões
                 setPaginaAtual(1);
                 setTotalPaginas(1);
             } else {
                 setCandidatos([])
+                setCandidatosFiltrados([])
             }
         } catch (error) {
             console.error("Erro ao pesquisar candidatos pela avaliação:", error);
