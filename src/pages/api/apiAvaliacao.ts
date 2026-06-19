@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     df='9999-12-31';
                 }
                 const [rows] = await pool.query<RowDataPacket[]>(`
-WITH DadosAvaliacao AS (
+                    WITH DadosAvaliacao AS (
                         SELECT 
                             f.n_resultado_fap,
                             -- Otimização: Já converte o sexo para 'm' ou 'f' logo na raiz para não repetir o código em baixo
@@ -308,31 +308,28 @@ WITH DadosAvaliacao AS (
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
         }
-    }else if(req.method === 'DELETE'){
+    } else if(req.method === 'DELETE'){
         const { id_avaliacao } = req.body;
 
         try {
-            const [rows] = await pool.query<RowDataPacket[]>(`
-                SELECT
-                    n_id_avaliacao
-                FROM
+            // 1. PRIMEIRO: Exclui todos os formulários (FAP) vinculados a esta avaliação
+            await pool.query(`
+                DELETE FROM
                     fap
                 WHERE
                     n_id_avaliacao = ?;
             `, [id_avaliacao]);
-            if(rows.length > 0){
-                return res.status(400).json({ 
-                    message: 'Não é possível excluir a avaliação, pois existem FAPs vinculados a ela.',
-                });
-            }
+
+            // 2. SEGUNDO: Exclui a avaliação principal
             await pool.query(`
                 DELETE FROM
                     avaliacao
                 WHERE 
                     n_id_avaliacao = ?;
             `, [id_avaliacao]);
+
             return res.status(200).json({ 
-                message: 'Avaliação excluída com sucesso!',
+                message: 'Avaliação e todos os formulários vinculados foram excluídos com sucesso!',
             });
         } catch (error) {
             console.error(error);

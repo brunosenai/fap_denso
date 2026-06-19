@@ -406,7 +406,7 @@ export default function TelaCadastro() {
         <>
             {load && <Load/>}
             {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
-            {popupConfirmation && <PopupConfirmation titulo="Excluir" mensagem="Esta avaliação será excluída!" pergunta="Confirma exclusão da avaliação?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
+            {popupConfirmation && <PopupConfirmation titulo="Excluir" mensagem="Esta avaliação e TODOS os candidatos (FAP) vinculados a ela serão excluídos!" pergunta="Confirma a exclusão de todos estes dados?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
             {showInfoAvaliacao && <InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
             {showAnalytics && <Analytics comandoFechar={setShowAnalytics}/>}
             <div className={styles.telaCadastro}>
