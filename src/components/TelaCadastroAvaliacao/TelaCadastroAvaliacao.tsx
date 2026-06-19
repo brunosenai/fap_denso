@@ -504,7 +504,11 @@ export default function TelaCadastro() {
                                             avaliacao.n_status_avaliacao==0?'Avaliação ainda não foi realizada':
                                             avaliacao.n_status_avaliacao==1?'Avaliação realizada, porém relatórios ainda não foram gerados e enviados':'Relatórios gerados e enviados'
                                         } width={20} height={20} className={styles.iconEditar}/>
-                                        <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
+                                        {avaliacao.n_status_avaliacao === 0 ? (
+                                            <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
+                                        ) : (
+                                            <Image src='/assets/icons/delete.svg' alt='Não é possível excluir' width={20} height={20} style={{ opacity: 0.2, cursor: 'not-allowed' }} title="Apenas avaliações não realizadas podem ser excluídas"/>
+                                        )}
                                         <Image src='/assets/icons/print.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>imprimirListasPresenca(avaliacao.n_id_avaliacao)}/>
                                         <Image src='/assets/icons/info.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>getInfoAvaliacao(avaliacao.n_id_avaliacao)}/>
                                     </div>

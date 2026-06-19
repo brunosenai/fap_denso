@@ -312,20 +312,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { id_avaliacao } = req.body;
 
         try {
-            // 1. PRIMEIRO: Exclui todos os formulários (FAP) vinculados a esta avaliação
-            await pool.query(`
-                DELETE FROM
-                    fap
-                WHERE
-                    n_id_avaliacao = ?;
+            // 1. TRAVA DE SEGURANÇA: Verifica o status atual da avaliação
+            const [rowsStatus] = await pool.query<RowDataPacket[]>(`
+                SELECT n_status_avaliacao 
+                FROM avaliacao 
+                WHERE n_id_avaliacao = ?;
             `, [id_avaliacao]);
 
-            // 2. SEGUNDO: Exclui a avaliação principal
+            // Se a avaliação não for encontrada ou o status for diferente de 0, bloqueia!
+            if (rowsStatus.length === 0) {
+                return res.status(404).json({ message: 'Avaliação não encontrada.' });
+            }
+            if (rowsStatus[0].n_status_avaliacao !== 0) {
+                return res.status(400).json({ 
+                    message: 'Operação bloqueada: Apenas avaliações com status "Não Realizada" (0) podem ser excluídas.' 
+                });
+            }
+
+            // 2. EXCLUSÃO CASCATA: Primeiro os formulários (FAP) vinculados
             await pool.query(`
-                DELETE FROM
-                    avaliacao
-                WHERE 
-                    n_id_avaliacao = ?;
+                DELETE FROM fap WHERE n_id_avaliacao = ?;
+            `, [id_avaliacao]);
+
+            // 3. EXCLUSÃO FINAL: A avaliação principal
+            await pool.query(`
+                DELETE FROM avaliacao WHERE n_id_avaliacao = ?;
             `, [id_avaliacao]);
 
             return res.status(200).json({ 
