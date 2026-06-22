@@ -117,7 +117,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                          WHERE idade IS NOT NULL AND n_resultado_fap = 1
                          GROUP BY faixa
                          ORDER BY COUNT(*) DESC 
-                         LIMIT 1) AS melhor_faixa_etaria
+                         LIMIT 1) AS melhor_faixa_etaria,
+                         
+                        ROUND(
+                            IFNULL(
+                                AVG(CASE WHEN n_resultado_fap = 1 THEN idade END)
+                            , 0)
+                        , 1) AS media_idade_aprovados
+                         
                          
                     FROM DadosAvaliacao;
                 `,[di,df])
@@ -166,6 +173,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     SELECT 
                         CAST(a.dt_data_avaliacao AS DATE) AS data_evento,
                         COUNT(f.n_id_avaliacao) AS total_avaliados,
+                        COUNT(DISTINCT a.n_id_avaliacao) AS qtd_avaliacoes,
                         SUM(CASE WHEN f.n_resultado_fap = 1 THEN 1 ELSE 0 END) AS total_aprovados,
                         SUM(CASE WHEN f.n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados
                     FROM fap f

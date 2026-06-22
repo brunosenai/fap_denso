@@ -12,6 +12,7 @@ interface AnalyticsData {
     total_avaliados:number
     total_aprovados:number
     total_reprovados:number
+    qtd_avaliacoes:number
 }
 
 interface DadosSemana {
@@ -35,6 +36,9 @@ export default function Analytics(props:AnalyticsProps) {
     const [aprovadosFemininos,setAprovadosFemininos]=useState(0)
     const [diaSemanaMaisAprova,setDiaSemanaMaisAprova]=useState('-')
     const [faixaEtariaMaiorAprova,setFaixaEtariaMaiorAprova]=useState('-')
+    const [isTodoPeriodo, setIsTodoPeriodo] = useState(false)
+    const [totalAvaliacoes, setTotalAvaliacoes] = useState(0)
+    const [mediaIdadeAprovados, setMediaIdadeAprovados] = useState(0)
 
     const getAnalytics = async (dtini: string, dtfim: string) => {
         try {
@@ -51,6 +55,7 @@ export default function Analytics(props:AnalyticsProps) {
                 setAprovadosMasculinos(data[0].taxa_sucesso_masculina || 0);
                 setDiaSemanaMaisAprova(data[0].melhor_dia_semana || "N/A");
                 setFaixaEtariaMaiorAprova(data[0].melhor_faixa_etaria || "N/A");
+                setMediaIdadeAprovados(data[0].media_idade_aprovados || 0);
             }
         } catch (err) {
             console.error("Erro ao buscar analytics avançado:", err);
@@ -68,6 +73,7 @@ export default function Analytics(props:AnalyticsProps) {
             setTotalCandidatos(totalCandidatosAvalidados(res))
             setTotalAprovados(totalCandidatosAprovados(res))
             setTotalReprovados(totalCandidatosReprovados(res))
+            setTotalAvaliacoes(totalQuantidadeAvaliacoes(res))
             setListagemSemanas(listarPorSemana(res))
             console.log(listarPorSemana(res))
             setLoad(false)
@@ -81,6 +87,14 @@ export default function Analytics(props:AnalyticsProps) {
         let total=0
         ad.forEach((item)=>{
             total+=Number(item.total_avaliados)
+        })
+        return total
+    }
+
+    const totalQuantidadeAvaliacoes=(ad: AnalyticsData[])=>{
+        let total=0
+        ad.forEach((item)=>{
+            total+=Number(item.qtd_avaliacoes)
         })
         return total
     }
@@ -136,6 +150,14 @@ export default function Analytics(props:AnalyticsProps) {
         return semanas
     }
 
+    const handleFiltrar = () => {
+        if(isTodoPeriodo) {
+            getAvaliacoes('', '');
+        } else {
+            getAvaliacoes(dtini, dtfim);
+        }
+    }
+
     return (
         <>
             <div className={styles.analytics}>
@@ -149,13 +171,17 @@ export default function Analytics(props:AnalyticsProps) {
                             <div className={styles.analytics_conteudo_corpo_area_col}>
                                 <div className={styles.analytics_conteudo_corpo_area_field}>
                                     <label>De:</label>
-                                    <input className={styles.input} type="date" title="Data de início" name="data_inicio" id="data_inicio" onChange={(e)=>{setDtini(e.target.value)}}/>
+                                    <input className={styles.input} type="date" title="Data de início" name="data_inicio" id="data_inicio" onChange={(e)=>{setDtini(e.target.value)}} disabled={isTodoPeriodo}/>
                                 </div>
                                 <div className={styles.analytics_conteudo_corpo_area_field}>
                                     <label>Até:</label>
-                                    <input className={styles.input} type="date" title="Data de fim" name="data_fim" id="data_fim"  onChange={(e)=>{setDtfim(e.target.value)}}/>
+                                    <input className={styles.input} type="date" title="Data de fim" name="data_fim" id="data_fim"  onChange={(e)=>{setDtfim(e.target.value)}} disabled={isTodoPeriodo}/>
                                 </div>   
-                                <button className={styles.btnFiltro} title="Filtrar" onClick={()=>{getAvaliacoes(dtini,dtfim)}}>
+                                <div className={styles.analytics_conteudo_corpo_area_field} style={{flexDirection: 'row', alignItems: 'center', gap: '5px', width: 'auto', whiteSpace: 'nowrap'}}>
+                                    <input type="checkbox" id="todoPeriodo" checked={isTodoPeriodo} onChange={(e) => setIsTodoPeriodo(e.target.checked)} />
+                                    <label htmlFor="todoPeriodo" style={{cursor: 'pointer', marginBottom: 0}}>Todo período</label>
+                                </div>
+                                <button className={styles.btnFiltro} title="Filtrar" onClick={handleFiltrar}>
                                     <Image src='/assets/icons/filter_w.svg' alt='Pesquisar Avaliação' width={20} height={20}/>
                                 </button>
                             </div>
@@ -164,7 +190,8 @@ export default function Analytics(props:AnalyticsProps) {
                             <h1>Candidatos Avaliados</h1>
                             <div className={styles.analytics_conteudo_corpo_area_linhas}>
                                 <div className={styles.analytics_conteudo_corpo_area_field_spaceBetween}>
-                                    <div><span>Total: {totalCandidatos}</span></div>
+                                    <div><span>Qtd. Avaliações: {totalAvaliacoes}</span></div>
+                                    <div><span>Total Candidatos: {totalCandidatos}</span></div>
                                     <div><span>Aprovados: {totalAprovados}</span></div>
                                     <div><span>Reprovados: {totalReprovados}</span></div>
                                 </div>
@@ -174,15 +201,17 @@ export default function Analytics(props:AnalyticsProps) {
                             <h1>Analytics</h1>
                             <div className={styles.analytics_conteudo_corpo_area_linhas}>
                                 <div className={styles.analytics_conteudo_corpo_area_field_spaceBetween_analytics}>
-                                    <div><span>Aprovações masculinas: {aprovacoesMasculinas}%</span></div>
-                                    <div><span>Aprovações femininas: {aprovacoesFemininas}%</span></div>
-                                    <div><span>Composição Aprovação masculino: {aprovadosMasculinos}%</span></div>
-                                    <div><span>Composição Aprovação feminina: {aprovadosFemininos}%</span></div>
+                                    <div><span title="Do total de candidatos aprovados, percentual que é do sexo masculino">Composição de homens aprovados: {aprovacoesMasculinas}%</span></div>
+                                    <div><span title="Do total de candidatos aprovados, percentual que é do sexo feminino">Composição de mulheres aprovadas: {aprovacoesFemininas}%</span></div>
+                                    <div><span title="Dos candidatos homens que foram avaliados, percentual que foi aprovado">Taxa de sucesso masculina: {aprovadosMasculinos}%</span></div>
+                                    <div><span title="Das candidatas mulheres que foram avaliadas, percentual que foi aprovado">Taxa de sucesso feminina: {aprovadosFemininos}%</span></div>
                                 </div>
                                 <div className={styles.analytics_conteudo_corpo_area_field_spaceBetween_analytics}>
-                                    <div><span>Dia da semana que mais aprova: {diaSemanaMaisAprova}</span></div>
-                                    <div><span>Faixa Etária com maior aprovação: {faixaEtariaMaiorAprova}</span></div>
-                                </div>                                
+                                    <div><span title="Dia da semana com o maior número de candidatos aprovados">Dia da semana que mais aprova: {diaSemanaMaisAprova}</span></div>
+                                    <div><span title="Faixa etária com o maior número de candidatos aprovados">Faixa Etária com maior aprovação: {faixaEtariaMaiorAprova}</span></div>
+                                    <div><span title="Média de idade de todos os candidatos que foram aprovados">Média de idade dos aprovados: {mediaIdadeAprovados} anos</span></div>
+                                    <div></div>
+                                </div>  
                             </div>
                         </div>                        
                         <div className={styles.analytics_conteudo_corpo_area2}>
