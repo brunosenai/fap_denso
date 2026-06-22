@@ -40,12 +40,29 @@ export default function TelaCadastro() {
     })
     const [idAvaliacaoExcluir, setIdAvaliacaoExcluir] = useState<number>(0)
     const [infoAva, setInfoAva] = useState<tInfoAva>()
+    const [totalRealizadas, setTotalRealizadas] = useState<number>(0)
 
     useEffect(() => {
         setIsMounted(true) // Confirma que o HTML já está no browser
         setIsTablet(verifyIsTablet())
         obterAvaliacoes(mostrarHistorico)
+        obterTotalRealizadas()
     }, [])
+
+    const obterTotalRealizadas = () => {
+        try {
+            const endpoint = `/api/apiAvaliacao?action=getTotalAvaliacoesRealizadas&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+            fetch(endpoint)
+            .then(res => res.json())
+            .then(res => {
+                if (res && res.total !== undefined) {
+                    setTotalRealizadas(res.total)
+                }
+            })
+        } catch(err) {
+            console.log(err)
+        }
+    }
 
     const obterAvaliacoes = (historico: boolean) => {
         setLoad(true)
@@ -63,6 +80,7 @@ export default function TelaCadastro() {
                     setAvaliacoes([])
                     setAvaliacoesFiltradas([])
                 }
+                obterTotalRealizadas()
                 setLoad(false)
             })
         } catch(err) {
@@ -436,7 +454,12 @@ export default function TelaCadastro() {
                     <div className={styles.telaCadastro_lista}>
                         <div className={styles.telaCadastro_lista_comandos}>
                             <div className={styles.telaCadastro_lista_comandos_field}>
-                                Mostrar Avaliações já realizadas
+                                <div>
+                                    Mostrar Avaliações já realizadas
+                                    <div style={{ fontSize: '13px', fontWeight: 'normal', marginTop: '2px', color: '#555' }}>
+                                        Total já realizadas: {totalRealizadas}
+                                    </div>
+                                </div>
                                 <input type="checkbox" id={`checkboxTodos`} onChange={(e)=>{controleMostrarHistorico(e.target.checked)}} />
                             </div>
                         </div>

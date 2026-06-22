@@ -307,6 +307,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({message:"Internal Server Error: erro 500"})
             }
+        }else if(action == "getTotalAvaliacoesRealizadas"){
+            try {
+                const [rows] = await pool.query<RowDataPacket[]>(`
+                    SELECT COUNT(*) as total 
+                    FROM avaliacao 
+                    WHERE dt_data_avaliacao < CURDATE() OR n_status_avaliacao > 1
+                `);
+                res.status(200).json({ total: rows[0].total });
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({message:"Internal Server Error: erro 500"})
+            }
         }
     } else if(req.method === 'DELETE'){
         const { id_avaliacao } = req.body;
