@@ -39,6 +39,7 @@ export default function Login() {
       const data = await response.json();
       localStorage.setItem('n_id_pessoa', data.data.n_id_pessoa)
       localStorage.setItem('s_nome_pessoa', data.data.s_nome_pessoa)
+      localStorage.setItem('s_email_pessoa', data.data.s_email_pessoa)
       if(data.data.n_id_tipoPessoa==1){
         router.replace('/selecaomodulo/adm');
       }else if(data.data.n_id_tipoPessoa==2){

@@ -116,7 +116,7 @@
     justify-self: start;
     flex-direction: column;
 
-    input, select{
+    input:not([type="radio"]), select{
         height: 30px;
         width: 100%;
         border-radius: 4px;
@@ -428,4 +428,51 @@
     transform: scale(0.95);
     opacity: 0.7;
   }
+}
+
+.radioGroup {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.customRadio {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    margin: 0;
+}
+
+.customRadio:checked {
+    background-color: #fff;
+    border-color: #000;
+}
+
+.customRadio:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--azulStellantis);
 }

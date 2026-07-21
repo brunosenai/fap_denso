@@ -1,6 +1,7 @@
 import styles from "@/styles/Dashboard.module.css"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import * as XLSX from "xlsx";
 import {formatDateToText} from  "@/utils/Utils"
 import router, { useRouter } from "next/router"
 import CardTopo from "./CardTopo"
@@ -23,13 +24,17 @@ export default function TelaDashboard(){
     const [ showFilter, setShowFilter]=useState<boolean>(false)
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [emailLogado, setEmailLogado] = useState<string>('');
+    const [filtroSgtSge, setFiltroSgtSge] = useState<string>('Ambas');
+
     useEffect(() => {
         obterAvaliacoes();
+        setEmailLogado(localStorage.getItem('s_email_pessoa') || '');
     }, []);
 
     useEffect(() => {
         obterCandidatosFiltrados(true);
-    }, [dashboardFilter, dataInicio, dataFim, avaliacao]);
+    }, [dashboardFilter, dataInicio, dataFim, avaliacao, filtroSgtSge]);
 
     useEffect(() => {
         if (page > 1) {
@@ -58,14 +63,14 @@ export default function TelaDashboard(){
     const obterCandidatosFiltrados = async (isNewFilter = false) => {
         setIsLoading(true); 
         const currentPage = isNewFilter ? 1 : page;
-        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
 
         try {
             const res = await fetch(endpoint);
             const data = await res.json();
             
             setDadosDashboard(data); 
-
+            console.log(data)
             if (isNewFilter) {
                 setCandidatosFiltrados(data.tabelaCandidatos);
                 setPage(1);
@@ -96,27 +101,53 @@ export default function TelaDashboard(){
     };
 
     const exportarPlanilha = async () => {
-        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
         
         try {
             const res = await fetch(endpoint);
             const data = await res.json();
             const candidatos = data.tabelaCandidatos;
 
-            let csvContent = "Nome;Avaliacao;CPF;email;Data;Resultado\n";
-            candidatos.forEach((c: any) => {
-                csvContent += `${c.nome};${c.avaliacao};${c.cpf};${c.email};${c.data};${c.resultado !== 0 ? "APROVADO" : "REPROVADO"}\n`;
-            });
+            const formatarParaXLSX = (candArray: any[]) => {
+                return candArray.map(c => ({
+                    Nome: c.nome,
+                    Avaliacao: c.avaliacao,
+                    CPF: c.cpf,
+                    Email: c.email,
+                    Data: c.data,
+                    Resultado: c.resultado !== 0 ? "APROVADO" : "REPROVADO"
+                }));
+            };
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `exportacao_candidatos_${new Date().toLocaleDateString()}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const wb = XLSX.utils.book_new();
+
+            if (filtroSgtSge === "SGT" || filtroSgtSge === "SGE") {
+                const sheetName = filtroSgtSge;
+                const ws = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatos));
+                XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            } else {
+                const candidatosSGT = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/'); 
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt <= new Date('2026-07-21T23:59:59');
+                });
+                const candidatosSGE = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/');
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt > new Date('2026-07-21T23:59:59');
+                });
+
+                const wsSGT = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatosSGT));
+                XLSX.utils.book_append_sheet(wb, wsSGT, "SGT");
+
+                const wsSGE = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatosSGE));
+                XLSX.utils.book_append_sheet(wb, wsSGE, "SGE");
+            }
+
+            XLSX.writeFile(wb, `exportacao_candidatos_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`);
+            
         } catch (error) {
             console.error("Erro ao exportar:", error);
             alert("Erro ao gerar planilha");
@@ -128,7 +159,8 @@ export default function TelaDashboard(){
         setAvaliacao('todas');      
         setDataInicio('');          
         setDataFim('');         
-        setPage(1);               
+        setPage(1);
+        setFiltroSgtSge('Ambas');               
     };
 
     if (!dadosDashboard) {
@@ -181,6 +213,26 @@ export default function TelaDashboard(){
                         <input type="date" name="" title="dtini" id="dtini" value={dataInicio} onChange={(e)=>{setDataInicio(e.target.value)}} /> 
                             <p>Até</p>
                         <input type="date" name="" title="dtfim" id="dtfim" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
+
+                        {['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado) && (
+                            <div style={{ marginTop: '10px', width: '100%', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                <label style={{ marginBottom: '10px' }}>Com cadastro feito no:</label>
+                                <div className={styles.radioGroup}>
+                                    <label className={styles.radioLabel}>
+                                        <input className={styles.customRadio} type="radio" name="sgtSge" value="SGT" checked={filtroSgtSge === 'SGT'} onChange={() => setFiltroSgtSge('SGT')} />
+                                        SGT
+                                    </label>
+                                    <label className={styles.radioLabel}>
+                                        <input className={styles.customRadio} type="radio" name="sgtSge" value="SGE" checked={filtroSgtSge === 'SGE'} onChange={() => setFiltroSgtSge('SGE')} />
+                                        SGE
+                                    </label>
+                                    <label className={styles.radioLabel}>
+                                        <input className={styles.customRadio} type="radio" name="sgtSge" value="Ambas" checked={filtroSgtSge === 'Ambas'} onChange={() => setFiltroSgtSge('Ambas')} />
+                                        Ambas
+                                    </label>
+                                </div>
+                            </div>
+                        )}
 
                         <div className={styles.sidebarActions}>
                             <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>

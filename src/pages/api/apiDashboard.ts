@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ message: 'Acesso não autorizado: API Key inválida ou ausente.' });
     }
 
-    const { filter, dataInicio, dataFim, page = 1, avaliacao, isExport = false} = req.query;
+    const { filter, dataInicio, dataFim, page = 1, avaliacao, isExport = false, filtroSgtSge} = req.query;
 
     try{
         let filtroSql = "";
@@ -37,6 +37,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (avaliacao && avaliacao !== 'todas') {
             filtroSql += " AND f.n_id_avaliacao = ?";
             params.push(avaliacao);
+        }
+
+        if (filtroSgtSge === 'SGT') {
+            filtroSql += " AND f.dt_date_fap <= '2026-07-21 23:59:59'";
+        } else if (filtroSgtSge === 'SGE') {
+            filtroSql += " AND f.dt_date_fap >= '2026-07-22 00:00:00'";
         }
 
         const [rows] = await pool.query<RowDataPacket[]>(`
