@@ -124,12 +124,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 c.s_cpf_candidato AS cpf,
                 c.s_email_candidato AS email,
                 a.s_nome_avaliacao AS avaliacao,
+                p.s_nome_pessoa AS avaliador,
                 DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y %H:%i') AS data,
                 f.n_resultado_fap AS resultado,
                 f.s_relatorio_fap AS relatorio
             FROM fap f
             INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
             INNER JOIN avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
+            INNER JOIN pessoa p ON f.n_id_pessoa = p.n_id_pessoa
             WHERE f.n_status_fap = 1 ${filtroSql}
             ORDER BY f.dt_date_fap DESC
             LIMIT ? OFFSET ?

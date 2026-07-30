@@ -10,6 +10,8 @@ import GraficoBarraDicotomica from "./Charts/GraficoBarraDicotomica"
 import GraficoBarraGradual from "./Charts/GraficoBarraGradual"
 import { tCandidatoFap } from "@/utils/Types"
 import GraficoRadialReprovados from "./Charts/GraficoRadialReprovados"
+import { pdf } from '@react-pdf/renderer';
+import { RelatorioAvaliadores } from '../Pdf/RelatorioAvaliadores';
 
 export default function TelaDashboard(){
     const [dadosDashboard,setDadosDashboard]=useState<any>('')
@@ -100,6 +102,77 @@ export default function TelaDashboard(){
         }
     };
 
+    const exportarPdfHoras = async () => {
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+        try {
+            const res = await fetch(endpoint);
+            const data = await res.json();
+            const candidatos = data.tabelaCandidatos;
+
+            const contarAvaliadores = (candArray: any[]) => {
+                const map = new Map<string, number>();
+                candArray.forEach((c: any) => {
+                    if (!c.avaliador) return;
+                    map.set(c.avaliador, (map.get(c.avaliador) || 0) + 1);
+                });
+                return Array.from(map.entries())
+                    .map(([nome, quantidade]) => ({ nome, quantidade }))
+                    .sort((a, b) => b.quantidade - a.quantidade);
+            };
+
+            let titulo = "RELATÓRIO DE HORAS";
+            if (filtroSgtSge === "SGT") titulo = "RELATÓRIO DE HORAS (TECNOLOGIA)";
+            else if (filtroSgtSge === "SGE") titulo = "RELATÓRIO DE HORAS (EDUCAÇÃO)";
+
+            const pInicio = dataInicio ? dataInicio.split('-').reverse().join('/') : "Início";
+            const pFim = dataFim ? dataFim.split('-').reverse().join('/') : "Hoje";
+            const periodoDescritivo = `Este documento foi emitido na data ${new Date().toLocaleDateString('pt-BR')} e é referente ao período de ${pInicio} até ${pFim}.`;
+
+            let dadosSGT, dadosSGE;
+
+            if (filtroSgtSge === "SGT") {
+                dadosSGT = contarAvaliadores(candidatos);
+            } else if (filtroSgtSge === "SGE") {
+                dadosSGE = contarAvaliadores(candidatos);
+            } else {
+                const candidatosSGT = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/'); 
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt <= new Date('2026-07-21T23:59:59');
+                });
+                const candidatosSGE = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/');
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt > new Date('2026-07-21T23:59:59');
+                });
+                dadosSGT = contarAvaliadores(candidatosSGT);
+                dadosSGE = contarAvaliadores(candidatosSGE);
+            }
+
+            const blob = await pdf(
+                <RelatorioAvaliadores 
+                    titulo={titulo} 
+                    periodoDescritivo={periodoDescritivo} 
+                    dadosSGT={dadosSGT} 
+                    dadosSGE={dadosSGE} 
+                />
+            ).toBlob();
+            
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Relatorio_Horas_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Erro ao gerar PDF:", error);
+            alert("Erro ao gerar PDF");
+        }
+    };
+
     const exportarPlanilha = async () => {
         const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
         
@@ -121,7 +194,12 @@ export default function TelaDashboard(){
 
             const wb = XLSX.utils.book_new();
 
-            if (filtroSgtSge === "SGT" || filtroSgtSge === "SGE") {
+            const temPermissao = ['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado);
+
+            if (!temPermissao) {
+                const ws = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatos));
+                XLSX.utils.book_append_sheet(wb, ws, "Geral");
+            } else if (filtroSgtSge === "SGT" || filtroSgtSge === "SGE") {
                 const sheetName = filtroSgtSge;
                 const ws = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatos));
                 XLSX.utils.book_append_sheet(wb, ws, sheetName);
@@ -235,8 +313,13 @@ export default function TelaDashboard(){
                         )}
 
                         <div className={styles.sidebarActions}>
-                            <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>
-                            <button onClick={exportarPlanilha} className={styles.exportButton}>Exportar CSV</button>
+                            <div className={styles.sidebarActionsRow}>
+                                <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>
+                                <button onClick={exportarPlanilha} className={styles.exportButton}>Exportar CSV</button>
+                            </div>
+                            {['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado) && (
+                                <button onClick={exportarPdfHoras} className={`${styles.exportButton} ${styles.btnExportPdfHoras}`}>Exportar PDF Horas</button>
+                            )}
                         </div>
                     </div>
             </div>

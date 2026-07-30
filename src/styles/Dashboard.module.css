@@ -201,6 +201,27 @@
     gap: 15px;
 }
 
+.sidebarActions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebarActionsRow {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.sidebarActionsRow button {
+    flex: 1;
+}
+
+.btnExportPdfHoras {
+    width: 100%;
+    background-color: #ff5252 !important;
+}
+
 .overlay {
     position: absolute;
     top: 0;
