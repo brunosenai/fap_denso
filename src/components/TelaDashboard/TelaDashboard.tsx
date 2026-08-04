@@ -103,11 +103,53 @@ export default function TelaDashboard(){
     };
 
     const exportarPdfHoras = async () => {
+        if (!dataInicio || !dataFim) {
+            alert("Por favor, selecione um período (data inicial e final) para exportar o relatório de horas.");
+            return;
+        }
+
         const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
         try {
             const res = await fetch(endpoint);
             const data = await res.json();
             const candidatos = data.tabelaCandidatos;
+
+            const gerarResumoPorDia = (candArray: any[]) => {
+                const map = new Map<string, { data: string, minTime: string, maxTime: string, count: number, _times: string[] }>();
+                
+                candArray.forEach((c) => {
+                    if (!c.data) return;
+                    // c.data is in format "DD/MM/YYYY HH:mm"
+                    const [dateStr, timeStr] = c.data.split(' ');
+                    if (!dateStr || !timeStr) return;
+                    
+                    if (!map.has(dateStr)) {
+                        map.set(dateStr, { data: dateStr, minTime: timeStr, maxTime: timeStr, count: 1, _times: [timeStr] });
+                    } else {
+                        const entry = map.get(dateStr)!;
+                        entry.count += 1;
+                        entry._times.push(timeStr);
+                    }
+                });
+            
+                const result = Array.from(map.values()).map(entry => {
+                    const sortedTimes = entry._times.sort();
+                    return {
+                        data: entry.data,
+                        primeiraTurma: sortedTimes[0],
+                        ultimaTurma: sortedTimes[sortedTimes.length - 1],
+                        candidatos: entry.count
+                    };
+                });
+            
+                result.sort((a, b) => {
+                    const [d1, m1, y1] = a.data.split('/');
+                    const [d2, m2, y2] = b.data.split('/');
+                    return new Date(`${y1}-${m1}-${d1}`).getTime() - new Date(`${y2}-${m2}-${d2}`).getTime();
+                });
+            
+                return result;
+            };
 
             const contarAvaliadores = (candArray: any[]) => {
                 const map = new Map<string, number>();
@@ -157,6 +199,7 @@ export default function TelaDashboard(){
                     periodoDescritivo={periodoDescritivo} 
                     dadosSGT={dadosSGT} 
                     dadosSGE={dadosSGE} 
+                    resumoDiario={gerarResumoPorDia(candidatos)}
                 />
             ).toBlob();
             
