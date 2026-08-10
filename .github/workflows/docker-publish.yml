@@ -1,9 +1,7 @@
 name: Build and Publish Docker Image
 
 on:
-  push:
-    branches: [ "master" ]
-  workflow_dispatch: # Permite rodar manualmente no painel do GitHub
+  workflow_dispatch: # Permite rodar apenas manualmente no painel do GitHub
 
 jobs:
   build-and-push:
