@@ -1,6 +1,7 @@
 import styles from "@/styles/Dashboard.module.css"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import * as XLSX from "xlsx";
 import {formatDateToText} from  "@/utils/Utils"
 import router, { useRouter } from "next/router"
 import CardTopo from "./CardTopo"
@@ -9,6 +10,8 @@ import GraficoBarraDicotomica from "./Charts/GraficoBarraDicotomica"
 import GraficoBarraGradual from "./Charts/GraficoBarraGradual"
 import { tCandidatoFap } from "@/utils/Types"
 import GraficoRadialReprovados from "./Charts/GraficoRadialReprovados"
+import { pdf } from '@react-pdf/renderer';
+import { RelatorioAvaliadores } from '../Pdf/RelatorioAvaliadores';
 
 export default function TelaDashboard(){
     const [dadosDashboard,setDadosDashboard]=useState<any>('')
@@ -23,13 +26,17 @@ export default function TelaDashboard(){
     const [ showFilter, setShowFilter]=useState<boolean>(false)
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [emailLogado, setEmailLogado] = useState<string>('');
+    const [filtroSgtSge, setFiltroSgtSge] = useState<string>('Ambas');
+
     useEffect(() => {
         obterAvaliacoes();
+        setEmailLogado(localStorage.getItem('s_email_pessoa') || '');
     }, []);
 
     useEffect(() => {
         obterCandidatosFiltrados(true);
-    }, [dashboardFilter, dataInicio, dataFim, avaliacao]);
+    }, [dashboardFilter, dataInicio, dataFim, avaliacao, filtroSgtSge]);
 
     useEffect(() => {
         if (page > 1) {
@@ -58,14 +65,14 @@ export default function TelaDashboard(){
     const obterCandidatosFiltrados = async (isNewFilter = false) => {
         setIsLoading(true); 
         const currentPage = isNewFilter ? 1 : page;
-        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&page=${currentPage}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
 
         try {
             const res = await fetch(endpoint);
             const data = await res.json();
             
             setDadosDashboard(data); 
-
+            console.log(data)
             if (isNewFilter) {
                 setCandidatosFiltrados(data.tabelaCandidatos);
                 setPage(1);
@@ -95,28 +102,173 @@ export default function TelaDashboard(){
         }
     };
 
+    const exportarPdfHoras = async () => {
+        if (!dataInicio || !dataFim) {
+            alert("Por favor, selecione um período (data inicial e final) para exportar o relatório de horas.");
+            return;
+        }
+
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+        try {
+            const res = await fetch(endpoint);
+            const data = await res.json();
+            const candidatos = data.tabelaCandidatos;
+
+            const gerarResumoPorDia = (candArray: any[]) => {
+                const map = new Map<string, { data: string, minTime: string, maxTime: string, count: number, _times: string[] }>();
+                
+                candArray.forEach((c) => {
+                    if (!c.data) return;
+                    // c.data is in format "DD/MM/YYYY HH:mm"
+                    const [dateStr, timeStr] = c.data.split(' ');
+                    if (!dateStr || !timeStr) return;
+                    
+                    if (!map.has(dateStr)) {
+                        map.set(dateStr, { data: dateStr, minTime: timeStr, maxTime: timeStr, count: 1, _times: [timeStr] });
+                    } else {
+                        const entry = map.get(dateStr)!;
+                        entry.count += 1;
+                        entry._times.push(timeStr);
+                    }
+                });
+            
+                const result = Array.from(map.values()).map(entry => {
+                    const sortedTimes = entry._times.sort();
+                    return {
+                        data: entry.data,
+                        primeiraTurma: sortedTimes[0],
+                        ultimaTurma: sortedTimes[sortedTimes.length - 1],
+                        candidatos: entry.count
+                    };
+                });
+            
+                result.sort((a, b) => {
+                    const [d1, m1, y1] = a.data.split('/');
+                    const [d2, m2, y2] = b.data.split('/');
+                    return new Date(`${y1}-${m1}-${d1}`).getTime() - new Date(`${y2}-${m2}-${d2}`).getTime();
+                });
+            
+                return result;
+            };
+
+            const contarAvaliadores = (candArray: any[]) => {
+                const map = new Map<string, number>();
+                candArray.forEach((c: any) => {
+                    if (!c.avaliador) return;
+                    map.set(c.avaliador, (map.get(c.avaliador) || 0) + 1);
+                });
+                return Array.from(map.entries())
+                    .map(([nome, quantidade]) => ({ nome, quantidade }))
+                    .sort((a, b) => b.quantidade - a.quantidade);
+            };
+
+            let titulo = "RELATÓRIO DE HORAS";
+            if (filtroSgtSge === "SGT") titulo = "RELATÓRIO DE HORAS (TECNOLOGIA)";
+            else if (filtroSgtSge === "SGE") titulo = "RELATÓRIO DE HORAS (EDUCAÇÃO)";
+
+            const pInicio = dataInicio ? dataInicio.split('-').reverse().join('/') : "Início";
+            const pFim = dataFim ? dataFim.split('-').reverse().join('/') : "Hoje";
+            const periodoDescritivo = `Este documento foi emitido na data ${new Date().toLocaleDateString('pt-BR')} e é referente ao período de ${pInicio} até ${pFim}.`;
+
+            let dadosSGT, dadosSGE;
+
+            if (filtroSgtSge === "SGT") {
+                dadosSGT = contarAvaliadores(candidatos);
+            } else if (filtroSgtSge === "SGE") {
+                dadosSGE = contarAvaliadores(candidatos);
+            } else {
+                const candidatosSGT = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/'); 
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt <= new Date('2026-07-21T23:59:59');
+                });
+                const candidatosSGE = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/');
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt > new Date('2026-07-21T23:59:59');
+                });
+                dadosSGT = contarAvaliadores(candidatosSGT);
+                dadosSGE = contarAvaliadores(candidatosSGE);
+            }
+
+            const blob = await pdf(
+                <RelatorioAvaliadores 
+                    titulo={titulo} 
+                    periodoDescritivo={periodoDescritivo} 
+                    dadosSGT={dadosSGT} 
+                    dadosSGE={dadosSGE} 
+                    resumoDiario={gerarResumoPorDia(candidatos)}
+                />
+            ).toBlob();
+            
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Relatorio_Horas_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Erro ao gerar PDF:", error);
+            alert("Erro ao gerar PDF");
+        }
+    };
+
     const exportarPlanilha = async () => {
-        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+        const endpoint = `/api/apiDashboard?filter=${dashboardFilter}&dataInicio=${dataInicio}&dataFim=${dataFim}&avaliacao=${avaliacao}&filtroSgtSge=${filtroSgtSge}&isExport=true&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
         
         try {
             const res = await fetch(endpoint);
             const data = await res.json();
             const candidatos = data.tabelaCandidatos;
 
-            let csvContent = "Nome;Avaliacao;CPF;email;Data;Resultado\n";
-            candidatos.forEach((c: any) => {
-                csvContent += `${c.nome};${c.avaliacao};${c.cpf};${c.email};${c.data};${c.resultado !== 0 ? "APROVADO" : "REPROVADO"}\n`;
-            });
+            const formatarParaXLSX = (candArray: any[]) => {
+                return candArray.map(c => ({
+                    Nome: c.nome,
+                    Avaliacao: c.avaliacao,
+                    CPF: c.cpf,
+                    Email: c.email,
+                    Data: c.data,
+                    Resultado: c.resultado !== 0 ? "APROVADO" : "REPROVADO"
+                }));
+            };
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `exportacao_candidatos_${new Date().toLocaleDateString()}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const wb = XLSX.utils.book_new();
+
+            const temPermissao = ['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado);
+
+            if (!temPermissao) {
+                const ws = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatos));
+                XLSX.utils.book_append_sheet(wb, ws, "Geral");
+            } else if (filtroSgtSge === "SGT" || filtroSgtSge === "SGE") {
+                const sheetName = filtroSgtSge;
+                const ws = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatos));
+                XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            } else {
+                const candidatosSGT = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/'); 
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt <= new Date('2026-07-21T23:59:59');
+                });
+                const candidatosSGE = candidatos.filter((c:any) => {
+                    if(!c.data) return false;
+                    const partes = c.data.split(' ')[0].split('/');
+                    const dt = new Date(`${partes[2]}-${partes[1]}-${partes[0]}T00:00:00`);
+                    return dt > new Date('2026-07-21T23:59:59');
+                });
+
+                const wsSGT = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatosSGT));
+                XLSX.utils.book_append_sheet(wb, wsSGT, "SGT");
+
+                const wsSGE = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatosSGE));
+                XLSX.utils.book_append_sheet(wb, wsSGE, "SGE");
+            }
+
+            XLSX.writeFile(wb, `exportacao_candidatos_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`);
+            
         } catch (error) {
             console.error("Erro ao exportar:", error);
             alert("Erro ao gerar planilha");
@@ -128,7 +280,8 @@ export default function TelaDashboard(){
         setAvaliacao('todas');      
         setDataInicio('');          
         setDataFim('');         
-        setPage(1);               
+        setPage(1);
+        setFiltroSgtSge('Ambas');               
     };
 
     if (!dadosDashboard) {
@@ -182,9 +335,34 @@ export default function TelaDashboard(){
                             <p>Até</p>
                         <input type="date" name="" title="dtfim" id="dtfim" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
 
+                        {['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado) && (
+                            <div style={{ marginTop: '10px', width: '100%', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                <label style={{ marginBottom: '10px' }}>Com cadastro feito no:</label>
+                                <div className={styles.radioGroup}>
+                                    <label className={styles.radioLabel}>
+                                        <input className={styles.customRadio} type="radio" name="sgtSge" value="SGT" checked={filtroSgtSge === 'SGT'} onChange={() => setFiltroSgtSge('SGT')} />
+                                        SGT
+                                    </label>
+                                    <label className={styles.radioLabel}>
+                                        <input className={styles.customRadio} type="radio" name="sgtSge" value="SGE" checked={filtroSgtSge === 'SGE'} onChange={() => setFiltroSgtSge('SGE')} />
+                                        SGE
+                                    </label>
+                                    <label className={styles.radioLabel}>
+                                        <input className={styles.customRadio} type="radio" name="sgtSge" value="Ambas" checked={filtroSgtSge === 'Ambas'} onChange={() => setFiltroSgtSge('Ambas')} />
+                                        Ambas
+                                    </label>
+                                </div>
+                            </div>
+                        )}
+
                         <div className={styles.sidebarActions}>
-                            <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>
-                            <button onClick={exportarPlanilha} className={styles.exportButton}>Exportar CSV</button>
+                            <div className={styles.sidebarActionsRow}>
+                                <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>
+                                <button onClick={exportarPlanilha} className={styles.exportButton}>Exportar CSV</button>
+                            </div>
+                            {['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado) && (
+                                <button onClick={exportarPdfHoras} className={`${styles.exportButton} ${styles.btnExportPdfHoras}`}>Exportar PDF Horas</button>
+                            )}
                         </div>
                     </div>
             </div>

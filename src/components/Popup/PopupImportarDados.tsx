@@ -111,6 +111,7 @@ export default function PopupImportarDados(props: popupProps) {
             
             let erroFormato = false;
             let erroDuplicidade = false;
+            const cpfsInvalidos: {nome: string, cpf: string}[] = [];
 
             // Memória para checar duplicidades
             const cpfsLidos = new Set();
@@ -134,8 +135,12 @@ export default function PopupImportarDados(props: popupProps) {
                     const titulo_avaliacao = colunas[8]?.trim() || null;
 
                     // =========================================================================
-                    // 2. VERIFICAÇÃO DE DUPLICIDADE (CPF e E-mail no mesmo arquivo)
+                    // 2. VERIFICAÇÃO DE DUPLICIDADE E TAMANHO DO CPF
                     // =========================================================================
+                    if (cpf.length !== 11) {
+                        cpfsInvalidos.push({nome, cpf});
+                    }
+
                     if (cpfsLidos.has(cpf) || emailsLidos.has(email)) {
                         erroDuplicidade = true;
                         break;
@@ -208,6 +213,52 @@ export default function PopupImportarDados(props: popupProps) {
             // =========================================================================
             // ALERTAS DE PARADA
             // =========================================================================
+            if (cpfsInvalidos.length > 0) {
+                setDadosCSV([]);
+                
+                const MensagemErroCPFs = () => {
+                    const [expandido, setExpandido] = useState(false);
+                    const quantidadeMostrar = 10;
+                    
+                    return (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <span>Foram encontrados CPFs com tamanho diferente de 11 dígitos. O Excel pode ter apagado o zero inicial. Corrija o arquivo e tente novamente. Problemas encontrados:</span>
+                            {!expandido ? (
+                                <div>
+                                    {cpfsInvalidos.slice(0, quantidadeMostrar).map(item => `${item.nome} (CPF: ${item.cpf || "vazio"})`).join(", ")}
+                                    {cpfsInvalidos.length > quantidadeMostrar && (
+                                        <span 
+                                            style={{ textDecoration: 'underline', cursor: 'pointer', color: '#0056b3', marginLeft: '5px', fontWeight: 'bold' }} 
+                                            onClick={() => setExpandido(true)}
+                                        >
+                                            e mais {cpfsInvalidos.length - quantidadeMostrar} registro(s)
+                                        </span>
+                                    )}
+                                </div>
+                            ) : (
+                                <div style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid #ccc', padding: '10px', borderRadius: '5px', textAlign: 'left' }}>
+                                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                                        {cpfsInvalidos.map((item, idx) => (
+                                            <li key={idx}>{item.nome} (CPF: {item.cpf || "vazio"})</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    );
+                };
+
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "CPFs Inválidos",
+                    mensagem: <MensagemErroCPFs />,
+                    comandoOK: () => setPopupMessage(false)
+                });
+                setPopupMessage(true);
+                evento.target.value = '';
+                return;
+            }
+
             if (erroDuplicidade) {
                 setDadosCSV([]);
                 setDadosPopupMessage({

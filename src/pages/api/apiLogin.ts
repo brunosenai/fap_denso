@@ -52,7 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         SELECT
                             n_id_pessoa,
                             n_id_tipoPessoa,
-                            s_nome_pessoa
+                            s_nome_pessoa,
+                            s_email_pessoa
                         FROM
                             pessoa
                         WHERE
