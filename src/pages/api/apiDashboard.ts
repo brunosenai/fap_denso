@@ -137,9 +137,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             LIMIT ? OFFSET ?
         `, [...params, limitSql, offsetSql]);
 
+        const totalAvaliados = Number(rows[0]?.total_avaliados || 0);
+        const totalAprovados = Number(rows[0]?.total_aprovados || 0);
+        const totalReprovados = Number(rows[0]?.total_reprovados || 0);
+        const taxaAprovacao = Number(rows[0]?.taxa_aprovacao || 0);
+
         const dadosGraficoGeral = [
-            { value: rows[0].total_aprovados, name: 'Aprovados' },
-            { value: rows[0].total_reprovados, name: 'Reprovados' }
+            { value: totalAprovados, name: 'Aprovados' },
+            { value: totalReprovados, name: 'Reprovados' }
         ];
 
         const dadosDicotomicos = {
@@ -148,41 +153,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 'Tratamento adequado de Não\nConformidade (Stop & Call)'
             ],
             acertos: [
-                rows[0].acertos_q6, 
-                rows[0].acertos_q7
+                Number(rows[0]?.acertos_q6 || 0), 
+                Number(rows[0]?.acertos_q7 || 0)
             ],
             erros: [
-                rows[0].erros_q6, 
-                rows[0].erros_q7
+                Number(rows[0]?.erros_q6 || 0), 
+                Number(rows[0]?.erros_q7 || 0)
             ]
         };
 
         const dadosGradual = {
             eixoX: ['DISCIPLINA OPERACIONAL', 'MONTAGEM CORRETA', 'ORGANIZAÇÃO DO POSTO', 'ACOMPANHAMENTO', 'RESILIÊNCIA'],
-            nota1: [rows[0].q8_p1, rows[0].q9_p1, rows[0].q10_p1, rows[0].q11_p1, rows[0].q12_p1],
-            nota2: [rows[0].q8_p2, rows[0].q9_p2, rows[0].q10_p2, rows[0].q11_p2, rows[0].q12_p2],
-            nota3: [rows[0].q8_p3, rows[0].q9_p3, rows[0].q10_p3, rows[0].q11_p3, rows[0].q12_p3],
-            nota4: [rows[0].q8_p4, rows[0].q9_p4, rows[0].q10_p4, rows[0].q11_p4, rows[0].q12_p4]
+            nota1: [Number(rows[0]?.q8_p1 || 0), Number(rows[0]?.q9_p1 || 0), Number(rows[0]?.q10_p1 || 0), Number(rows[0]?.q11_p1 || 0), Number(rows[0]?.q12_p1 || 0)],
+            nota2: [Number(rows[0]?.q8_p2 || 0), Number(rows[0]?.q9_p2 || 0), Number(rows[0]?.q10_p2 || 0), Number(rows[0]?.q11_p2 || 0), Number(rows[0]?.q12_p2 || 0)],
+            nota3: [Number(rows[0]?.q8_p3 || 0), Number(rows[0]?.q9_p3 || 0), Number(rows[0]?.q10_p3 || 0), Number(rows[0]?.q11_p3 || 0), Number(rows[0]?.q12_p3 || 0)],
+            nota4: [Number(rows[0]?.q8_p4 || 0), Number(rows[0]?.q9_p4 || 0), Number(rows[0]?.q10_p4 || 0), Number(rows[0]?.q11_p4 || 0), Number(rows[0]?.q12_p4 || 0)]
         };
 
         const dadosMotivosReprovacao = [
-            { value: rows[0].reprovado_apenas_gradual || 0, name: 'Reprovação Gradual' },
-            { value: rows[0].reprovado_apenas_dicotomica || 0, name: 'Reprovação Dicotômica' },
-            { value: rows[0].reprovado_pelas_duas || 0, name: 'Reprovação em Ambas' }
+            { value: Number(rows[0]?.reprovado_apenas_gradual || 0), name: 'Reprovação Gradual' },
+            { value: Number(rows[0]?.reprovado_apenas_dicotomica || 0), name: 'Reprovação Dicotômica' },
+            { value: Number(rows[0]?.reprovado_pelas_duas || 0), name: 'Reprovação em Ambas' }
         ].filter(item => item.value > 0);
 
         return res.status(200).json({
             cards: {
-                totalAvaliados: rows[0].total_avaliados || 0,
-                totalAprovados: rows[0].total_aprovados || 0,
-                totalReprovados: rows[0].total_reprovados || 0,
-                taxaAprovacao: Number(rows[0].taxa_aprovacao || 0).toFixed(2) + "%",
-                taxaReprovacao: (100 - (rows[0].taxa_aprovacao || 0)).toFixed(2) + "%"
+                totalAvaliados: totalAvaliados,
+                totalAprovados: totalAprovados,
+                totalReprovados: totalReprovados,
+                taxaAprovacao: taxaAprovacao.toFixed(2) + "%",
+                taxaReprovacao: (100 - taxaAprovacao).toFixed(2) + "%"
             },
             graficoPizzaGeral: dadosGraficoGeral,
             graficoDicotomico: dadosDicotomicos,
             graficoGradual: dadosGradual,
-            tabelaCandidatos: listaCandidatos,
+            tabelaCandidatos: listaCandidatos || [],
             graficoMotivosReprovacao: dadosMotivosReprovacao
         });
     }catch(error){
