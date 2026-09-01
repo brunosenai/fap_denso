@@ -93,14 +93,14 @@ INSERT INTO `pessoa` (`n_id_pessoa`, `n_id_tipoPessoa`, `s_nome_pessoa`, `s_cpf_
 VALUES
   (1, 3, 'Bruno', '03529127663', '31', 'bpinho@fiemg.com.br', '123'),
   (2, 1, 'Giovane Raposo do Carmo', '10054469627', '31992852608', 'giovane.raposo@fiemg.com.br', '123'),
-  (3, 2, 'Pablo Stellantis', '1', '31', 'pablo.xismendes@stellantis.com', '123'),
-  (4, 2, 'Maria Stellantis Externo', '2', '31', 'maria.tassi@external.stellantis.com', '123'),
-  (5, 2, 'Joelma Stellantis Externo', '3', '31', 'joelma.vilela@external.stellantis.com', '123'),
-  (6, 2, 'Bruna Stellantis Externo', '4', '31', 'bruna.delima@external.stellantis.com', '123');
+  (3, 2, 'Pablo Denso', '1', '31', 'pablo.xismendes@denso.com', '123'),
+  (4, 2, 'Maria Denso Externo', '2', '31', 'maria.tassi@external.denso.com', '123'),
+  (5, 2, 'Joelma Denso Externo', '3', '31', 'joelma.vilela@external.denso.com', '123'),
+  (6, 2, 'Bruna Denso Externo', '4', '31', 'bruna.delima@external.denso.com', '123');
   
 INSERT INTO `config` (`s_emailDestino_config`)
 VALUES
-  ('bpinho@fiemg.com.br;pablo.xismendes@stellantis.com;maria.tassi@external.stellantis.com;joelma.vilela@external.stellantis.com;bruna.delima@external.stellantis.com');
+  ('bpinho@fiemg.com.br;pablo.xismendes@denso.com;maria.tassi@external.denso.com;joelma.vilela@external.denso.com;bruna.delima@external.denso.com');
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;

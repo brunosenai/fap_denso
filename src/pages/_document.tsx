@@ -8,7 +8,7 @@ export default function Document() {
         <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png?v=2" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png?v=2" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#243783" />
+        <meta name="theme-color" content="#E3000F" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="FAP App" />

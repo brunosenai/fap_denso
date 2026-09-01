@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     font-family: var(--font-geist-sans);
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     overflow: hidden; 
     gap:50px;
 }
@@ -72,7 +72,7 @@
     height: 30px;
     border: none;
     outline: none;
-    background-color: var(--azulStellantis)!important;
+    background-color: var(--vermelhoDenso)!important;
     font-size: medium;
     padding: 0px 10px;
 }
@@ -91,8 +91,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;  
-    background-color: var(--azulDestaque);
-    color: var(--azulStellantis);
+    background-color: var(--vermelhoDestaque);
+    color: var(--vermelhoDenso);
     border: none;
     border-radius: 4px;
     width: 200px;
@@ -103,12 +103,12 @@
 }
 
 .fieldFormButton p{
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     cursor: pointer;
     margin-top: 10px;
 }
 
-.logoStellantis_tablet {
+.logoDenso_tablet {
     width: 665px !important; 
     height: auto;
 }
@@ -118,7 +118,7 @@
     height: auto;
 }
 
-.logoStellantis_pc {
+.logoDenso_pc {
     width: 500px !important; 
     height: auto;
 }

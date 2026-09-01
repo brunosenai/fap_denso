@@ -1,12 +1,12 @@
 @echo off
-title FAP - Stellantis
+title FAP - Denso
 color 0A
 
 :: Garante que o script rode na pasta onde ele esta localizado
 cd /d "%~dp0"
 
 echo ===================================================
-echo       INICIANDO O SISTEMA FAP - STELLANTIS
+echo       INICIANDO O SISTEMA FAP - DENSO
 echo ===================================================
 echo.
 

@@ -185,8 +185,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } = req.body;
         try {
             await pool.query<ResultSetHeader>(`
-                INSERT INTO candidato (s_nome_candidato,s_cpf_candidato,s_email_candidato,s_sexo_candidato,s_dt_nasc_candidato,s_escolaridade_candidato)
-                VALUES (?,?,?);
+                INSERT INTO candidato (s_nome_candidato,s_cpf_candidato,s_email_candidato,s_sexo_candidato,dt_nasc_candidato,n_grauInstrucao_candidado)
+                VALUES (?,?,?,?,?,?);
             `, [s_nome_candidato, s_cpf_candidato, s_email_candidato,s_sexo_candidato, s_dt_nasc_candidato, s_escolaridade_candidato]);
             
             return res.status(200).json({ message: 'Candidato cadastrado com sucesso!' });

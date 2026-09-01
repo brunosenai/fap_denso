@@ -2,6 +2,7 @@ import Image from "next/image"
 import styles from "@/styles/Topo.module.css"
 import { useEffect,useState } from "react";
 import router from "next/router";
+import { DensoLogo } from "@/components/DensoLogo";
 
 interface TopoProps {
     titulo?: string;
@@ -53,22 +54,22 @@ export default function Topo({ titulo = "", nomeAvaliador = "" }: TopoProps){
     return(
         <div className={styles.topo}>
             <div className={styles.topoImages}>
-                <Image className={styles.logoStellantis} src={'/assets/logo-stellantis-branco.png'} alt={'Logo Stellantis'} width={230} height={-1} />
+                <DensoLogo fillColor="white" className={styles.logoDenso} width={230} />
                 <div className={styles.avaliador}>{nomeAvaliador}</div>
                 <div className={styles.areaDireira}>
-                    <Image className={styles.topoCentro40} src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={60} height={-1} />
+                    <Image className={styles.topoCentro40} src={'/assets/logo-centro-branco.png'} alt={'Logo Denso'} width={60} height={-1} />
                     {userType!=2&&
                         <div className={styles.logoutIcon}>
-                            <Image  src={'/assets/icons/arrow_back_w.svg'} alt={'Logo Stellantis'} onClick={()=>router.back()} width={30} height={-1} />
+                            <Image  src={'/assets/icons/arrow_back_w.svg'} alt={'Logo Denso'} onClick={()=>router.back()} width={30} height={-1} />
                             voltar
                         </div>                
                     }
                     <div className={styles.logoutIcon}>
-                        <Image  src={'/assets/icons/settings_w.svg'} alt={'Logo Stellantis'} onClick={()=>config()} width={30} height={-1} />
+                        <Image  src={'/assets/icons/settings_w.svg'} alt={'Logo Denso'} onClick={()=>config()} width={30} height={-1} />
                         Config
                     </div>
                     <div className={styles.logoutIcon}>
-                        <Image  src={'/assets/icons/logout_w.svg'} alt={'Logo Stellantis'} onClick={()=>sair()} width={30} height={-1} />
+                        <Image  src={'/assets/icons/logout_w.svg'} alt={'Logo Denso'} onClick={()=>sair()} width={30} height={-1} />
                         SAIR
                     </div>
                 </div>

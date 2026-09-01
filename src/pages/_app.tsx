@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
         {/* Regra do Next.js: Viewport TEM que ficar aqui no _app */}
         <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
         <title>FAP App Centro 4.0</title>
-        <meta name="description" content="Aplicativo FAP Stellantis" />
+        <meta name="description" content="Aplicativo FAP Denso" />
       </Head>
       
       <main className={exo2.className}>

@@ -6,7 +6,7 @@
     width: 100%;
     max-height: var(--alturaMaxTopoSelecaoAvaliacao);
     min-height: var(--alturaMaxTopoSelecaoAvaliacao);
-    background-image: linear-gradient(to bottom, #243783, #253059);
+    background-image: linear-gradient(to bottom, #E3000F, #99000A);
     overflow: hidden;
 }
 
@@ -45,13 +45,13 @@
 .titulo{
     font-size: large;
     font-weight: bold;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     text-transform: uppercase;
 }
 
 .avaliador{
     font-size: small;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     text-transform: uppercase;
 }
 
@@ -99,7 +99,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;  
-    background-color: var(--azulDestaque);
+    background-color: var(--vermelhoDestaque);
     color: #000;
     border: none;
     border-radius: 4px;

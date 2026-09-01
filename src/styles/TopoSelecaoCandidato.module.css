@@ -5,7 +5,7 @@
     justify-content: flex-start;
     width: 100%;
     max-height: var(--alturaTopo_telaSelecaoCandidato);
-    background-image: linear-gradient(to bottom, #243783, #253059);
+    background-image: linear-gradient(to bottom, #E3000F, #99000A);
 }
 
 .topoLogos{
@@ -29,7 +29,7 @@
 .titulo{
     font-size: 40px;
     font-weight: bold;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     text-transform: uppercase;
 }
 

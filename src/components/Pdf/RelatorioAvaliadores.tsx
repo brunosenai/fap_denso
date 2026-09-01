@@ -3,17 +3,17 @@ import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/render
 
 const styles = StyleSheet.create({
   page: { flexDirection: 'column', backgroundColor: '#FFFFFF', padding: 0, fontFamily: 'Helvetica' },
-  headerTop: { backgroundColor: '#243783', height: 75, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 },
+  headerTop: { backgroundColor: '#E3000F', height: 75, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 },
   logo: { height: 38, width: 115, objectFit: 'contain' },
   body: { paddingHorizontal: 40, paddingTop: 30, paddingBottom: 20 },
-  mainTitle: { fontSize: 18, color: '#243783', fontWeight: 'bold', textAlign: 'center', marginBottom: 10, textTransform: 'uppercase' },
+  mainTitle: { fontSize: 18, color: '#E3000F', fontWeight: 'bold', textAlign: 'center', marginBottom: 10, textTransform: 'uppercase' },
   periodText: { fontSize: 11, color: '#555', textAlign: 'center', marginBottom: 25 },
-  sectionTitle: { fontSize: 14, color: '#243783', fontWeight: 'bold', marginTop: 15, marginBottom: 10, borderBottomWidth: 1, borderBottomColor: '#CCC', paddingBottom: 5 },
-  tableHeader: { flexDirection: 'row', backgroundColor: '#F4F6FB', borderBottomWidth: 1, borderBottomColor: '#CCC', paddingVertical: 8, paddingHorizontal: 10, marginTop: 10 },
+  sectionTitle: { fontSize: 14, color: '#E3000F', fontWeight: 'bold', marginTop: 15, marginBottom: 10, borderBottomWidth: 1, borderBottomColor: '#CCC', paddingBottom: 5 },
+  tableHeader: { flexDirection: 'row', backgroundColor: '#FFF0F0', borderBottomWidth: 1, borderBottomColor: '#CCC', paddingVertical: 8, paddingHorizontal: 10, marginTop: 10 },
   tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#EEE', paddingVertical: 8, paddingHorizontal: 10 },
   colAvaliador: { width: '70%', fontSize: 11, color: '#333' },
   colQuantidade: { width: '30%', fontSize: 11, color: '#333', textAlign: 'center', fontWeight: 'bold' },
-  headerText: { fontSize: 11, color: '#243783', fontWeight: 'bold' },
+  headerText: { fontSize: 11, color: '#E3000F', fontWeight: 'bold' },
   emptyState: { fontSize: 11, color: '#888', fontStyle: 'italic', padding: 15, textAlign: 'center' },
   colData: { width: '25%', fontSize: 11, color: '#333' },
   colHora: { width: '25%', fontSize: 11, color: '#333', textAlign: 'center' },
@@ -45,7 +45,7 @@ export const RelatorioAvaliadores = ({ titulo, periodoDescritivo, dadosSGT, dado
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerTop}>
-          <Image src="/assets/logo.png" style={styles.logo} />
+          <Image src="/assets/denso_logo.png" style={styles.logo} />
         </View>
 
         <View style={styles.body}>

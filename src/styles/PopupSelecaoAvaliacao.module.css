@@ -30,7 +30,7 @@
     align-items: center;
     font-size: large;
     font-weight: bold;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     color: #fff !important;
     width: 100%;
     padding: 10px;
@@ -169,7 +169,7 @@
 }
 
 .lista_dado_selecionado {
-    background-color: var(--azulStellantis) !important;
+    background-color: var(--vermelhoDenso) !important;
     color: #fff !important;
 }
 
@@ -216,7 +216,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     color: #fff;
     width: 150px;
     height: 40px;
@@ -230,7 +230,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;  
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     color: #fff;
     border: none;
     border-radius: 4px;

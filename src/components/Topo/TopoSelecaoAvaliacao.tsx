@@ -1,6 +1,7 @@
 import Image from "next/image"
 import styles from "@/styles/TopoSelecaoAvaliacao.module.css"
 import { tAvaliacao } from "@/utils/Types";
+import { DensoLogo } from "@/components/DensoLogo";
 
 interface TopoSelecaoAvaliacaoProps{
     setAvaliacao:(avaliacao:number)=>void
@@ -18,9 +19,9 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
     return(
         <div className={styles.topo}>
             <div className={styles.topoLogos}>
-                <Image src={'/assets/logo-stellantis-branco.png'} alt={'Logo Stellantis'} width={200} height={-1} />
+                <DensoLogo fillColor="white" width={200} />
                 <div>
-                    <Image src={'/assets/logo-centro-branco.png'} alt={'Logo Stellantis'} width={75} height={-1} />
+                    <Image src={'/assets/logo-centro-branco.png'} alt={'Logo Denso'} width={75} height={-1} />
                     {/* <Image src={'/assets/icons/fullscreen_w.svg'} alt={'Fullscreen'} width={50} height={-1} /> */}
                 </div>
             </div>

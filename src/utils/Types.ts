@@ -89,6 +89,7 @@ export type tFap={
     s_q16_fap:string
     s_relatorio_fap:string
     n_candidatopresente_fap:number
+    j_respostas?:string
 }
 
 export type tPessoa={
@@ -111,6 +112,30 @@ export type tInfoAva={
 
 export type tConfig={
     s_emailDestino_config:string
+    j_config_fap?:string
+}
+
+export type tPosto = {
+    id: number;
+    nome: string;
+    habilitado: boolean;
+}
+
+export type tQuestao = {
+    id: number;
+    titulo: string;
+    mediacao: string;
+    evidencias: string;
+    tipo: "sn" | "num"; 
+    peso: number;
+    eliminatoria: boolean;
+    habilitada: boolean;
+}
+
+export type tConfigFap = {
+    notaDeCorte: number;
+    postos: tPosto[];
+    questoes: tQuestao[];
 }
 
 export type tConfigPopupMessage={

@@ -6,7 +6,7 @@
     width: 100%;
     max-height: var(--alturaTopo_fap);
     min-height: var(--alturaTopo_fap);
-    background-image: linear-gradient(to bottom, #243783, #253059);
+    background-image: linear-gradient(to bottom, #E3000F, #99000A);
     overflow: hidden;
 }
 
@@ -30,7 +30,7 @@
 .titulo{
     font-size: x-large;
     font-weight: bold;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     text-transform: uppercase;
     margin-left: -200px;
     margin-right: -80px;
@@ -38,7 +38,7 @@
 
 .avaliador{
     font-size: small;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     text-transform: uppercase;
     margin-left: -200px;
     margin-right: -80px;    

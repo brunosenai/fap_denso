@@ -6,22 +6,22 @@ import { tCandidato, tFap } from "@/utils/Types";
 const styles = StyleSheet.create({
   page: { flexDirection: 'column', backgroundColor: '#FFFFFF', padding: 0, fontFamily: 'Helvetica' },
   
-  headerTop: { backgroundColor: '#243783', height: 75, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 },
+  headerTop: { backgroundColor: '#E3000F', height: 75, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 40 },
   logo: { height: 38, width: 115, objectFit: 'contain' },
   
   // Margens normais restauradas
   body: { paddingHorizontal: 30, paddingTop: 15, paddingBottom: 20 },
   
-  mainTitle: { fontSize: 16, color: '#243783', fontWeight: 'bold', textAlign: 'center', marginBottom: 15, textTransform: 'uppercase' },
-  sectionTitle: { fontSize: 11, color: '#243783', fontWeight: 'bold', marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
+  mainTitle: { fontSize: 16, color: '#E3000F', fontWeight: 'bold', textAlign: 'center', marginBottom: 15, textTransform: 'uppercase' },
+  sectionTitle: { fontSize: 11, color: '#E3000F', fontWeight: 'bold', marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
   
   row: { flexDirection: 'row', marginBottom: 3, alignItems: 'center' },
   label: { fontSize: 10, fontWeight: 'bold', color: '#333' },
   value: { fontSize: 10, color: '#333', marginLeft: 4 },
   
   resultContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 },
-  boxLeft: { width: '65%', backgroundColor: '#F4F6FB', padding: 12, borderRadius: 5 },
-  boxRight: { width: '32%', backgroundColor: '#F4F6FB', padding: 12, borderRadius: 5, alignItems: 'center', justifyContent: 'center' },
+  boxLeft: { width: '65%', backgroundColor: '#FFF0F0', padding: 12, borderRadius: 5 },
+  boxRight: { width: '32%', backgroundColor: '#FFF0F0', padding: 12, borderRadius: 5, alignItems: 'center', justifyContent: 'center' },
   statusTextAprovado: { color: '#00C853', fontSize: 12, fontWeight: 'bold', marginTop: 2 },
   statusTextReprovado: { color: '#FF5252', fontSize: 12, fontWeight: 'bold', marginTop: 2 },
   
@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
   tableHeader: { flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#CCC', paddingBottom: 3, marginBottom: 6 },
   tableHeaderText: { fontSize: 9, color: '#666', fontWeight: 'bold' },
   
-  obsBox: { backgroundColor: '#F4F6FB', padding: 12, borderRadius: 5, marginTop: 8 },
-  obsTitle: { fontSize: 11, color: '#243783', fontWeight: 'bold', textAlign: 'center', marginBottom: 6 },
+  obsBox: { backgroundColor: '#FFF0F0', padding: 12, borderRadius: 5, marginTop: 8 },
+  obsTitle: { fontSize: 11, color: '#E3000F', fontWeight: 'bold', textAlign: 'center', marginBottom: 6 },
   
   // Novo estilo para as observações (Rótulo e valor na mesma linha para poupar espaço vertical)
   obsLine: { flexDirection: 'row', marginBottom: 4 },
@@ -97,7 +97,7 @@ export const RelatorioFap = ({ candidato, fapCandidato }: PropsPDF) => {
             style={styles.logo} 
           /> 
           <Image 
-            src={`${typeof window !== 'undefined' ? window.location.origin : ''}/assets/logo-stellantis-branco.png`} 
+            src={`${typeof window !== 'undefined' ? window.location.origin : ''}/assets/denso_logo.png`} 
             style={styles.logo} 
           />
         </View>

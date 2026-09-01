@@ -16,7 +16,7 @@
     width: 100%;
     align-items: center;
     justify-content: flex-start;
-    background-color: #E0F5FF;
+    background-color: #FFE5E5;
     min-height: 0; 
     overflow-y: auto; 
 }
@@ -37,11 +37,11 @@
     justify-content: flex-start;
     padding: 10px 10px;
     width: 100%;
-    background-color: var(--azulDestaque);
+    background-color: var(--vermelhoDestaque);
     border-radius: 10px 10px 0px 0px;
     cursor: pointer;
     font-weight: bold;
-    color: #253059 !important;
+    color: #99000A !important;
     text-wrap: nowrap;
     overflow: hidden;
     font-size: small;
@@ -76,7 +76,7 @@
 }
 
 .fieldForm_checkbox:checked {
-    background-color: #253059 !important;
+    background-color: #99000A !important;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.5' stroke-linecap='butt' stroke-linejoin='miter'%3E%3Cpolyline points='18 8 10 16 6 12'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
@@ -91,7 +91,7 @@
     align-self: flex-end;
     width: 100%;
     height:var(--alturaRodapeHome);
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     color: #fff !important;
     flex-shrink: 0;
     z-index: 10000;
@@ -124,7 +124,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background-color: var(--azulDestaque);
+    background-color: var(--vermelhoDestaque);
     border-radius: 10px;
     cursor: pointer;
     font-size: x-large;
@@ -154,7 +154,7 @@
 }
 
 .fieldForm_checkbox_fap:checked {
-    background-color: #253059 !important;
+    background-color: #99000A !important;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.5' stroke-linecap='butt' stroke-linejoin='miter'%3E%3Cpolyline points='18 8 10 16 6 12'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
@@ -281,7 +281,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     border-radius: 10px 10px 0px 0px;
     cursor: pointer;
     width: 200px;

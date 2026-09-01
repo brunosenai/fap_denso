@@ -7,10 +7,10 @@
   --alturaTopo_telaSelecaoCandidato: 244px;
   --alturaTopo_telaSelecaoAvaliacao: 244px;
   --alturaMenuCadastro: 40px;
-  --azulStellantis:#243783;
-  --azulDestaque:#7CF2FF;
+  --vermelhoDenso:#E3000F;
+  --vermelhoDestaque:#FF9999;
   --alturaFieldFormIni:40px;
-  --azulFap:#E0F5FF;
+  --vermelhoFap:#FFE5E5;
   --alturaRodapeCadAva:100px;
   --topoCadAva:200px;
   --alturaFormCadAva:400px;  
@@ -38,7 +38,7 @@
   --alturaTopo_fap:80px;
   --alturaRodapeHome:70px;
   --alturaMaxTopoSelecaoAvaliacao:150px;
-  --alturaTopoPC:63px;
+  --alturaTopoPC:90px;
   --alturaMenuPC:40px;
   --alturaFormNovaAvaliação:285px;
   --alturaFormNovaAvaliador:405px;
@@ -65,7 +65,7 @@
   :root{
     --alturaTopoGeral:100px;
     --alturaTopoPagina:100px;
-    --alturaTopo_fap:320px;
+    --alturaTopo_fap:80px;
     --alturaTopo_telaSelecaoCandidato: 100px;
     --alturaTopo_telaSelecaoAvaliacao: 100px;
     --alturaMenuCadastro: 40px;  
@@ -98,7 +98,7 @@ body {
   margin: 0px;
   padding: 0px;
   color: var(--foreground);
-  background-color: var(--azulStellantis);
+  background-color: var(--vermelhoDenso);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;  
@@ -137,7 +137,7 @@ button, input, select, textarea {
   flex-direction: row;
   align-items: center;
   justify-content: center;  
-  background-color: var(--azulStellantis);
+  background-color: var(--vermelhoDenso);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -153,8 +153,8 @@ button, input, select, textarea {
   flex-direction: row;
   align-items: center;
   justify-content: center;  
-  background-color: #7CF2FF;
-  color: var(--azulStellantis);
+  background-color: #FF9999;
+  color: var(--vermelhoDenso);
   border: none;
   border-radius: 4px;
   width: 200px;

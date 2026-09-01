@@ -6,7 +6,7 @@
     width: 100%;
     flex: 1;
     min-height:0px;
-    background-color: var(--azulFap);
+    background-color: var(--vermelhoFap);
     position: fixed;
 }
 
@@ -137,7 +137,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     color: #fff !important;
     font-weight: bold;
     scrollbar-gutter: stable; 

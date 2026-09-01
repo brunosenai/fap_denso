@@ -6,7 +6,7 @@
     max-height: var(--alturaMenuPC);
     min-height: var(--alturaMenuPC);
     width: 100%;
-    background-color: #253059;
+    background-color: #99000A;
     overflow: hidden;
 }
 
@@ -18,8 +18,8 @@
     height: var(--alturaMenuPC);
     height: var(--alturaMenuPC);
     border-radius: 10px 10px 0px 0px;
-    background-color: #253059;
-    color: var(--azulDestaque);
+    background-color: #99000A;
+    color: var(--vermelhoDestaque);
     width: 100%;
     cursor: pointer;
     text-transform: uppercase;
@@ -27,7 +27,7 @@
 }
 
 .menuCadastroAba_selecionada{
-    background-color: var(--azulFap) !important;
+    background-color: var(--vermelhoFap) !important;
     color: #000 !important;
 }
 

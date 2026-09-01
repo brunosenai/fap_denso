@@ -61,16 +61,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }else if(req.method === 'PUT'){
         const {
             action,
-            s_emailDestino_config
+            s_emailDestino_config,
+            j_config_fap
         } = req.body;
         if(action == "updateConfig"){
             try {
+                // If j_config_fap is provided, update it, otherwise keep the existing one (or update both).
+                // Actually, the frontend will likely send both if we build a unified config screen, or maybe they are saved separately.
+                // Since this endpoint is for config, let's update both.
+                const params = [];
+                let setClause = "s_emailDestino_config=?";
+                params.push(s_emailDestino_config);
+
+                if (j_config_fap !== undefined) {
+                    setClause += ", j_config_fap=?";
+                    params.push(j_config_fap);
+                }
+
                 const [rows] = await pool.query<RowDataPacket[]>(`
                     UPDATE
                         config
                     SET
-                        s_emailDestino_config=?;
-                    `,[s_emailDestino_config]
+                        ${setClause};
+                    `, params
                 )
                 res.status(200).json(rows)
             } catch (error) {

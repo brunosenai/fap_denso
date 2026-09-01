@@ -1,18 +1,31 @@
 import styles from "@/styles/Fap.module.css";
-import { tFap } from "@/utils/Types";
+import { tFap, tConfigFap } from "@/utils/Types";
 import Image from "next/image";
 
 interface FapProps {
   iAba: number;
   fap: tFap;
   setFap: React.Dispatch<React.SetStateAction<tFap[]>>;
+  fapConfig: tConfigFap;
   abaObservacaoAberta: boolean; 
   setAbaObservacaoAberta: React.Dispatch<React.SetStateAction<boolean>>; 
-  abrirPopup: (i: number) => void;
+  abrirPopup: (questaoInfo: any) => void;
 }
 
-export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObservacaoAberta, abrirPopup}: FapProps) {
+export default function Fap({ iAba, fap, setFap, fapConfig, abaObservacaoAberta, setAbaObservacaoAberta, abrirPopup}: FapProps) {
 
+  // Dynamic answers handler
+  const handleDynamicChange = (campo: string, valor: number | string) => {
+    setFap((prevFap) => {
+      const novoFap = [...prevFap];
+      const jResp = novoFap[iAba].j_respostas as any || {};
+      jResp[campo] = valor;
+      novoFap[iAba] = { ...novoFap[iAba], j_respostas: jResp };
+      return novoFap;
+    });
+  };
+
+  // Fixed legacy field handler for backwards compatibility or specific needs
   const handleChange = (campo: keyof tFap, valor: number | string) => {
     setFap((prevFap) => {
       const novoFap = [...prevFap];
@@ -21,247 +34,137 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
     });
   };
 
+  const respostas = (fap.j_respostas as any) || {};
+
   return (
     <div className={styles.fapComponent_container}>
       <div className={styles.fapComponent}>
         
         {/* --- POSTOS PERCORRIDOS --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>Postos percorridos</div>
-          <div className={styles.fapSection_colunas}>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`m1_${iAba}`} checked={Boolean(fap.n_posto1_fap)} onChange={(e) => handleChange("n_posto1_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`m1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Montagem 1</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d1_${iAba}`} checked={Boolean(fap.n_posto2_fap)} onChange={(e) => handleChange("n_posto2_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 4</label>
-              </div>
-            </div>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`m2_${iAba}`} checked={Boolean(fap.n_posto3_fap)} onChange={(e) => handleChange("n_posto3_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`m2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Montagem 2</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d2_${iAba}`} checked={Boolean(fap.n_posto4_fap)} onChange={(e) => handleChange("n_posto4_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 5</label>
-              </div>
-            </div>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`m3_${iAba}`} checked={Boolean(fap.n_posto5_fap)} onChange={(e) => handleChange("n_posto5_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`m3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Montagem 3</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="checkbox" className={styles.fieldForm_checkbox_fap} id={`d3_${iAba}`} checked={Boolean(fap.n_posto6_fap)} onChange={(e) => handleChange("n_posto6_fap", e.target.checked ? 1 : 0)} />
-                <label htmlFor={`d3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Desmontagem 6</label>
-              </div>
-            </div>
-          </div>
-        </div>
+        {fapConfig.postos && fapConfig.postos.filter(p => p.habilitado).length > 0 && (() => {
+          const postosAtivos = fapConfig.postos.filter(p => p.habilitado);
+          const meio = Math.ceil(postosAtivos.length / 2);
+          const primeiraMetade = postosAtivos.slice(0, meio);
+          const segundaMetade = postosAtivos.slice(meio);
 
-        {/* --- Condução segura do ciclo --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            Condução segura do ciclo (C2, C3, C4, C5, C8)
-            <div onClick={()=>{abrirPopup(1)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato utiliza corretamente todos os EPI's obrigatórios e conduz o ciclo de trabalho de maneira segura, demonstrando percepção e ação preventiva frente a eventuais situações de risco ambiental e de segurança ao longo de toda a avaliação?</div>
-          <div className={styles.fapSection_linhas}>
-            <div className={styles.fapSection_lin}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q6_${iAba}`} id={`q6_sim_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q6_fap === 1} onChange={() => handleChange("n_q6_fap", 1)} />
-                <label htmlFor={`q6_sim_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Atende</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q6_${iAba}`} id={`q6_nao_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q6_fap === 0} onChange={() => handleChange("n_q6_fap", 0)} />
-                <label htmlFor={`q6_nao_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Não atende</label>
-              </div>
-            </div>
-          </div>
-        </div>
+          return (
+            <div className={styles.fapSection}>
+              <div className={styles.fapSection_title}>Postos de Trabalho</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', paddingTop: '10px', width: '100%', overflowX: 'auto' }}>
+                
+                {/* Linha 1 */}
+                <div className={styles.fapSection_colunas} style={{ flexWrap: 'nowrap', gap: '25px', width: 'max-content' }}>
+                  {primeiraMetade.map((posto) => (
+                    <div key={posto.id} className={styles.fapSection_col} style={{ width: '200px', alignItems: 'flex-start' }}>
+                      <div className={styles.fapSection_field}>
+                        <input 
+                          type="checkbox" 
+                          className={styles.fieldForm_checkbox_fap} 
+                          id={`posto_${posto.id}_${iAba}`} 
+                          checked={respostas[`posto_${posto.id}`] === 1} 
+                          onChange={(e) => handleDynamicChange(`posto_${posto.id}`, e.target.checked ? 1 : 0)} 
+                        />
+                        <label htmlFor={`posto_${posto.id}_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
+                          {posto.nome}
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-        {/* --- TRATAMENTO ADEQUADO DE NÃO CONFORMIDADE --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            Tratamento adequado de Não Conformidade - Stop & Call (C7, C10)
-            <div onClick={()=>{abrirPopup(2)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>            
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato detectou corretamente eventuais não conformidades ao logo do teste e acionou devidamente o protocolo "Parar e Sinalizar" ou Ignorou desvios, e/ou montou  peças defeituosas, sendo esta condição causada ou não por ele.</div>
-          <div className={styles.fapSection_linhas}>
-            <div className={styles.fapSection_lin}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q7_${iAba}`} id={`q7_sim_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q7_fap === 1} onChange={() => handleChange("n_q7_fap", 1)} />
-                <label htmlFor={`q7_sim_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Atende</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q7_${iAba}`} id={`q7_nao_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q7_fap === 0} onChange={() => handleChange("n_q7_fap", 0)} />
-                <label htmlFor={`q7_nao_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Não atende</label>
+                {/* Linha 2 */}
+                {segundaMetade.length > 0 && (
+                  <div className={styles.fapSection_colunas} style={{ flexWrap: 'nowrap', gap: '25px', width: 'max-content' }}>
+                    {segundaMetade.map((posto) => (
+                      <div key={posto.id} className={styles.fapSection_col} style={{ width: '200px', alignItems: 'flex-start' }}>
+                        <div className={styles.fapSection_field}>
+                          <input 
+                            type="checkbox" 
+                            className={styles.fieldForm_checkbox_fap} 
+                            id={`posto_${posto.id}_${iAba}`} 
+                            checked={respostas[`posto_${posto.id}`] === 1} 
+                            onChange={(e) => handleDynamicChange(`posto_${posto.id}`, e.target.checked ? 1 : 0)} 
+                          />
+                          <label htmlFor={`posto_${posto.id}_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
+                            {posto.nome}
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
               </div>
             </div>
-          </div>
-        </div>
+          );
+        })()}
 
-        {/* --- DISCIPLINA OPERACIONAL --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            DISCIPLINA OPERACIONAL (C1, C9, C10)
-            <div onClick={()=>{abrirPopup(3)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato segue a documentação padrão de montagem/desmontagem com rigor, sem atalhos, sem quebras de sequência e mantendo conduta operacional adequada.</div>
-          <div className={styles.fapSection_colunas}>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q8_${iAba}`} id={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 4} onChange={() => handleChange("n_q8_fap", 4)} />
-                <label htmlFor={`q8_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Executa 100% da sequência SEM hesitação, conduta exemplar.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q8_${iAba}`} id={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 3} onChange={() => handleChange("n_q8_fap", 3)} />
-                <label htmlFor={`q8_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Hesitações LEVES (conferência constante da documentação), SEM quebras de padrão.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q8_${iAba}`} id={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 2} onChange={() => handleChange("n_q8_fap", 2)} />
-                <label htmlFor={`q8_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Quebras de sequências corrigidas APENAS mediante avisos CONSTANTES.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q8_${iAba}`} id={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q8_fap === 1} onChange={() => handleChange("n_q8_fap", 1)} />
-                <label htmlFor={`q8_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Desrespeito total a sequência/Risco operacional.</label>
+        {/* --- QUESTÕES DINÂMICAS --- */}
+        {fapConfig.questoes && fapConfig.questoes.filter(q => q.habilitada).map((questao) => (
+          <div key={questao.id} className={styles.fapSection}>
+            <div className={styles.fapSection_title}>
+              {questao.titulo}
+              <div onClick={() => abrirPopup(questao)}>
+                <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
               </div>
             </div>
-          </div>
-        </div>      
-
-        {/* --- MONTAGEM CORRETA --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            MONTAGEM CORRETA (C4, C5, C6)
-            <div onClick={()=>{abrirPopup(4)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza a correta montagem/desmontagem do subconjunto conforme especificação sem danos e com autochecagem: documentação/físico.</div>
-          <div className={styles.fapSection_colunas}>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q9_${iAba}`} id={`q9_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q9_fap === 4} onChange={() => handleChange("n_q9_fap", 4)} />
-                <label htmlFor={`q9_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Montagem correta COM visível e evidente autochecagem do realizado.</label>
+            {questao.mediacao && (
+              <div className={styles.fapSection_descricao}>
+                Mediação: {questao.mediacao}
               </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q9_${iAba}`} id={`q9_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q9_fap === 3} onChange={() => handleChange("n_q9_fap", 3)} />
-                <label htmlFor={`q9_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Montagem correta SEM visível e evidente autochecagem do realizado.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q9_${iAba}`} id={`q9_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q9_fap === 2} onChange={() => handleChange("n_q9_fap", 2)} />
-                <label htmlFor={`q9_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Montagens incorretas corrigidas na próxima operação.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q9_${iAba}`} id={`q9_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q9_fap === 1} onChange={() => handleChange("n_q9_fap", 1)} />
-                <label htmlFor={`q9_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Montagem incorreta gerando parada de linha (Tempo excessivo para correção ou impossibilidade de sequência de operações).</label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* --- MANUTENÇÃO DO POSTO DE TRABALHO - 5S --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            MANUTENÇÃO DO POSTO DE TRABALHO – 5S (C1, C3, C4)
-            <div onClick={()=>{abrirPopup(5)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato mantém o posto organizado e funcional durante toda a operação, sustentando a posição padronizada da ferramenta, devida alocação das peças observando sua quantidade padronizada de maneira racional.</div>
-          <div className={styles.fapSection_colunas}>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q10_${iAba}`} id={`q10_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q10_fap === 4} onChange={() => handleChange("n_q10_fap", 4)} />
-                <label htmlFor={`q10_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Padrões exemplares, antecipando-se à necessidades.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q10_${iAba}`} id={`q10_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q10_fap === 3} onChange={() => handleChange("n_q10_fap", 3)} />
-                <label htmlFor={`q10_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Correções APÓS erros observados.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q10_${iAba}`} id={`q10_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q10_fap === 2} onChange={() => handleChange("n_q10_fap", 2)} />
-                <label htmlFor={`q10_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Rotinas logísticas NÃO respeitadas em sua integralidade.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q10_${iAba}`} id={`q10_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q10_fap === 1} onChange={() => handleChange("n_q10_fap", 1)} />
-                <label htmlFor={`q10_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Ferramental fora da alocação,  peças que se confundem e rotinas não respeitadas.</label>
+            )}
+            <div className={styles.fapSection_linhas}>
+              <div className={styles.fapSection_lin}>
+                {questao.tipo === 'sn' ? (
+                  <>
+                    <div className={styles.fapSection_field}>
+                      <input 
+                        type="radio" 
+                        name={`q_${questao.id}_${iAba}`} 
+                        id={`q_${questao.id}_sim_${iAba}`} 
+                        className={styles.fieldForm_checkbox_fap} 
+                        checked={respostas[`q_${questao.id}`] === 1} 
+                        onChange={() => handleDynamicChange(`q_${questao.id}`, 1)} 
+                      />
+                      <label htmlFor={`q_${questao.id}_sim_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Atende</label>
+                    </div>
+                    <div className={styles.fapSection_field}>
+                      <input 
+                        type="radio" 
+                        name={`q_${questao.id}_${iAba}`} 
+                        id={`q_${questao.id}_nao_${iAba}`} 
+                        className={styles.fieldForm_checkbox_fap} 
+                        checked={respostas[`q_${questao.id}`] === 0} 
+                        onChange={() => handleDynamicChange(`q_${questao.id}`, 0)} 
+                      />
+                      <label htmlFor={`q_${questao.id}_nao_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Não atende</label>
+                    </div>
+                  </>
+                ) : (
+                  <div className={styles.fapSection_colunas}>
+                    <div className={styles.fapSection_col}>
+                      {[4, 3, 2, 1].map((nota) => (
+                        <div key={nota} className={styles.fapSection_field}>
+                          <input 
+                            type="radio" 
+                            name={`q_${questao.id}_${iAba}`} 
+                            id={`q_${questao.id}_${nota}_${iAba}`} 
+                            className={styles.fieldForm_checkbox_fap} 
+                            checked={respostas[`q_${questao.id}`] === nota} 
+                            onChange={() => handleDynamicChange(`q_${questao.id}`, nota)} 
+                          />
+                          <label htmlFor={`q_${questao.id}_${nota}_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
+                            {nota === 4 ? <b>Avançado</b> : nota === 3 ? <b>Adequado</b> : nota === 2 ? <b>Básico</b> : <b>Abaixo do Básico</b>}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
-
-        {/* --- ACOMPANHAMENTO DO TAKT TIME --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            ACOMPANHAMENTO DO TAKT TIME (C6, C8, C9)
-            <div onClick={()=>{abrirPopup(6)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato realiza ciclos de montagem dentro do takt time, mantendo baixa variabilidade entre ciclos e demonstra boa desenvoltura com o uso de ferramentas manuais.</div>
-          <div className={styles.fapSection_colunas}>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q11_${iAba}`} id={`q11_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q11_fap === 4} onChange={() => handleChange("n_q11_fap", 4)} />
-                <label htmlFor={`q11_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Utiliza o ferramental do segurança e destreza.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q11_${iAba}`} id={`q11_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q11_fap === 3} onChange={() => handleChange("n_q11_fap", 3)} />
-                <label htmlFor={`q11_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Adapta-se à atividade com o passar dos ciclos.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q11_${iAba}`} id={`q11_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q11_fap === 2} onChange={() => handleChange("n_q11_fap", 2)} />
-                <label htmlFor={`q11_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Apresenta dificuldades/limitações na operação do posto (Posicionamento das porcas e/ou uso da ferramenta e/ou cruzamento das mãos)</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q11_${iAba}`} id={`q11_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q11_fap === 1} onChange={() => handleChange("n_q11_fap", 1)} />
-                <label htmlFor={`q11_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Possui dificuldades EVIDENTES (gerais) para acompanhamento dos ciclos.</label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* --- RESILIÊNCIA FÍSICA E MENTAL --- */}
-        <div className={styles.fapSection}>
-          <div className={styles.fapSection_title}>
-            RESILIÊNCIA FÍSICA E MENTAL (C9, C11)
-            <div onClick={()=>{abrirPopup(7)}}>
-              <Image src="/assets/icons/info.svg" alt="Info" width={20} height={20} className={styles.fapSection_title_icon} />
-            </div>
-          </div>
-          <div className={styles.fapSection_descricao}>Mediação: O candidato mantém foco, postura, constância e estabilidade emocional durante toda a atividade, mesmo sob repetitividade, desconforto controlado e micropressões.</div>
-          <div className={styles.fapSection_colunas}>
-            <div className={styles.fapSection_col}>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q12_${iAba}`} id={`q12_4_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q12_fap === 4} onChange={() => handleChange("n_q12_fap", 4)} />
-                <label htmlFor={`q12_4_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Avançado</b> - Adapta-se rápido a mudanças SEM perda de foco.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q12_${iAba}`} id={`q12_3_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q12_fap === 3} onChange={() => handleChange("n_q12_fap", 3)} />
-                <label htmlFor={`q12_3_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Adequado</b> - Adapta-se a mudanças COM perda do foco momentaneamente.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q12_${iAba}`} id={`q12_2_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q12_fap === 2} onChange={() => handleChange("n_q12_fap", 2)} />
-                <label htmlFor={`q12_2_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Básico</b> - Oscilações perceptíveis, mas mantém o engajamento à atividade.</label>
-              </div>
-              <div className={styles.fapSection_field}>
-                <input type="radio" name={`q12_${iAba}`} id={`q12_1_${iAba}`} className={styles.fieldForm_checkbox_fap} checked={fap.n_q12_fap === 1} onChange={() => handleChange("n_q12_fap", 1)} />
-                <label htmlFor={`q12_1_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}><b>Abaixo do Básico</b> - Perde o ritmo, o foco e demonstra resistência.</label>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* OBSERVAÇÕES */}
@@ -281,7 +184,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
                   name={`q13_${iAba}`} 
                   id={`q13_1_${iAba}`} 
                   className={styles.fieldForm_input_fap} 
-                  value={fap.s_q13_fap} 
+                  value={fap.s_q13_fap || ""} 
                   onChange={(e) => handleChange("s_q13_fap", e.target.value)} 
                 />
               </div>
@@ -297,7 +200,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
                   name={`q14_${iAba}`} 
                   id={`q14_1_${iAba}`} 
                   className={styles.fieldForm_input_fap} 
-                  value={fap.s_q14_fap} 
+                  value={fap.s_q14_fap || ""} 
                   onChange={(e) => handleChange("s_q14_fap", e.target.value)} 
                 />
               </div>
@@ -313,7 +216,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
                   name={`q15_${iAba}`} 
                   id={`q15_1_${iAba}`} 
                   className={styles.fieldForm_input_fap} 
-                  value={fap.s_q15_fap} 
+                  value={fap.s_q15_fap || ""} 
                   onChange={(e) => handleChange("s_q15_fap", e.target.value)} 
                 />
               </div>
@@ -329,7 +232,7 @@ export default function Fap({ iAba, fap, setFap, abaObservacaoAberta, setAbaObse
                   name={`q16_${iAba}`} 
                   id={`q16_1_${iAba}`} 
                   className={styles.fieldForm_input_fap} 
-                  value={fap.s_q16_fap} 
+                  value={fap.s_q16_fap || ""} 
                   onChange={(e) => handleChange("s_q16_fap", e.target.value)} 
                 />
               </div>

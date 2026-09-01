@@ -9,7 +9,7 @@
     height: calc(100dvh - var(--alturaTopoGeral) - var(--alturaMenuCadastro));
     gap: 0px;
     flex: 1;
-    background-color: var(--azulFap);
+    background-color: var(--vermelhoFap);
     overflow-y: overlay;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .cardTopo_titulo{
-    color: var(--azulDestaque) !important;
+    color: var(--vermelhoDestaque) !important;
     font-size: 16px;
 }
 
@@ -63,14 +63,14 @@
 }
 
 .cardTopo1:hover, .cardTopo2:hover, .cardTopo3:hover {
-    color: #253059 !important;
-    background-color: var(--azulDestaque);
+    color: #99000A !important;
+    background-color: var(--vermelhoDestaque);
     font-size: 40px;
 }
 
 .cardAtivo{
-    color: #253059 !important;
-    background-color: var(--azulDestaque);
+    color: #99000A !important;
+    background-color: var(--vermelhoDestaque);
     font-size: 40px;
 }
 
@@ -95,7 +95,7 @@
     padding: 10px 10px;
     cursor: pointer;
     border-radius: 0px 8px 8px 0px;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     
     transition: transform 0.3s ease-in-out;
 }
@@ -176,7 +176,7 @@
 
 .sidebarHeader {
     padding: 20px;
-    background-image: linear-gradient(to bottom, #253059, #243783);
+    background-image: linear-gradient(to bottom, #99000A, #E3000F);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -259,7 +259,7 @@
     justify-content: center;
     width: 100%;
     height: var(--alturaRodapeDash);
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
 }
 
 .graficosGerais{
@@ -364,7 +364,7 @@
     position: sticky;
     top: 0;
     background-color: #2D2D2D;
-    color: var(--azulDestaque);
+    color: var(--vermelhoDestaque);
     z-index: 1;
 }
 
@@ -407,7 +407,7 @@
     margin-top: 10px;
     cursor: pointer;
     border-radius: 5px;
-    background-image: linear-gradient(to bottom, #253059, #243783);
+    background-image: linear-gradient(to bottom, #99000A, #E3000F);
     color: white;
     font-size: 14px;
     border: 2px solid transparent;
@@ -495,5 +495,5 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
 }

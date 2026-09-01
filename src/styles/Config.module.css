@@ -18,7 +18,7 @@
     width: 100%;
     padding: 10px;
     gap:10px;
-    background-color: var(--azulFap);
+    background-color: var(--vermelhoFap);
 }
 
 .confiArea {
@@ -102,7 +102,7 @@
 .confiArea_inputImage img{
     padding: 5px;
     border-radius: 0px 5px 5px 0px;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     cursor: pointer;
 }
 
@@ -112,7 +112,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     padding: 10px;
 }
 
@@ -121,12 +121,14 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;  
-    background-color: var(--azulDestaque);
+    background-color: var(--vermelhoDestaque);
     color: #000;
     border: none;
     border-radius: 4px;
-    width: 200px;
-    height: 30px;
+    width: auto;
+    min-width: 200px;
+    padding: 0 20px;
+    height: 40px;
     font-size: medium;
     cursor: pointer;
     text-transform: uppercase;
@@ -137,7 +139,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;  
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     border: none;
     border-radius: 4px;
     max-width: 30px;

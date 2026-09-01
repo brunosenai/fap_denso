@@ -171,7 +171,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const info = await transporter.sendMail({
                     from: `"Sistema FAP" <${process.env.SMTP_USER}>`, 
                     to: emailEmpresa, // <-- Envia para o e-mail fixo da empresa
-                    subject: 'Código de redefinição - FAP Stellantis', 
+                    subject: 'Código de redefinição - FAP Denso', 
                     text: `Olá! Este é seu código de redefinição de senha: ${v_codigo}`, 
                     html: `<p>Olá!</p><p>Este é seu código de redefinição de senha: <b>${v_codigo}</b></p>`, 
                 });

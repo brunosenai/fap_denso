@@ -12,6 +12,7 @@ import { tCandidatoFap } from "@/utils/Types"
 import GraficoRadialReprovados from "./Charts/GraficoRadialReprovados"
 import { pdf } from '@react-pdf/renderer';
 import { RelatorioAvaliadores } from '../Pdf/RelatorioAvaliadores';
+import { DensoLogo } from "@/components/DensoLogo";
 
 export default function TelaDashboard(){
     const [dadosDashboard,setDadosDashboard]=useState<any>('')
@@ -288,7 +289,7 @@ export default function TelaDashboard(){
         return (
             <div className={styles.fullScreenLoading}>
                 <img 
-                    src="/assets/stellantis_logo.png" 
+                    src="/assets/denso_logo.png" 
                     alt="Carregando Dashboard..." 
                     className={styles.pulsingLogo} 
                 />
@@ -411,7 +412,7 @@ export default function TelaDashboard(){
                                             }}>
                                                 <div className={styles.loadingContainer}>
                                                     <img 
-                                                        src="/assets/stellantis_logo.png" 
+                                                        src="/assets/denso_logo.png" 
                                                         alt="Carregando..." 
                                                         className={styles.pulsingLogo} 
                                                     />

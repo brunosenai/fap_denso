@@ -114,7 +114,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: var(--azulDestaque);
+    background-color: var(--vermelhoDestaque);
     color: #000 !important;
     width: 80%;
     padding: 5px;

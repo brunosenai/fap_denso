@@ -321,7 +321,7 @@ export default function PopupImportarDados(props: popupProps) {
                             <input type="file" id="csvUpload" accept=".csv" onChange={handleFileUpload}/>
                             
                             {dadosCSV.length > 0 && (
-                                <span style={{ display: 'block', marginTop: '10px', color: '#243783', fontWeight: 'bold' }}>
+                                <span style={{ display: 'block', marginTop: '10px', color: '#E3000F', fontWeight: 'bold' }}>
                                     {dadosCSV.length} registro(s) pronto(s) para importação.
                                 </span>
                             )}

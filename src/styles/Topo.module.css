@@ -4,7 +4,7 @@
     width: 100%;
     max-height: var(--alturaTopoPC);
     min-height: var(--alturaTopoPC);
-    background-image: linear-gradient(to bottom, #243783, #253059);
+    background-image: linear-gradient(to bottom, #E3000F, #99000A);
 }
 
 .topoImages{
@@ -16,7 +16,7 @@
     padding: 0 2rem;
 }
 
-.logoStellantis{
+.logoDenso{
     margin-top: 0.5rem;
 }
 
@@ -25,7 +25,7 @@
     display: flex;
     justify-content: center;
     margin-top: -25px;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     font-weight: bold;
     font-size: x-large;
 }
@@ -50,6 +50,6 @@
 
 .avaliador{
     font-size: small;
-    color: #7CF2FF !important;
+    color: #FF9999 !important;
     text-transform: uppercase;
 }

@@ -16,7 +16,7 @@
     flex: 1;
     min-height: 0px;
     width: 100%;
-    background-color: var(--azulFap);
+    background-color: var(--vermelhoFap);
 }
 
 /* @media(orientation: landscape) {

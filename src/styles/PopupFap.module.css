@@ -28,7 +28,7 @@
     align-items: center;
     font-size: large;
     font-weight: bold;
-    background-color: var(--azulStellantis);
+    background-color: var(--vermelhoDenso);
     color: #fff !important;
     width: 100%;
     padding: 10px;
@@ -66,8 +66,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--azulDestaque);
-    color: var(--azulStellantis) !important;
+    background-color: var(--vermelhoDestaque);
+    color: var(--vermelhoDenso) !important;
     width: 30px;
     height: 30px;
     cursor: pointer;
