@@ -126,7 +126,9 @@ export default function Fap({ iAba, fap, setFap, fapConfig, abaObservacaoAberta,
                         checked={respostas[`q_${questao.id}`] === 1} 
                         onChange={() => handleDynamicChange(`q_${questao.id}`, 1)} 
                       />
-                      <label htmlFor={`q_${questao.id}_sim_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Atende</label>
+                      <label htmlFor={`q_${questao.id}_sim_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
+                        {questao.opcoes?.find(o => o.valor === 1)?.rotulo || "Atende"}
+                      </label>
                     </div>
                     <div className={styles.fapSection_field}>
                       <input 
@@ -137,27 +139,38 @@ export default function Fap({ iAba, fap, setFap, fapConfig, abaObservacaoAberta,
                         checked={respostas[`q_${questao.id}`] === 0} 
                         onChange={() => handleDynamicChange(`q_${questao.id}`, 0)} 
                       />
-                      <label htmlFor={`q_${questao.id}_nao_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>Não atende</label>
+                      <label htmlFor={`q_${questao.id}_nao_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
+                        {questao.opcoes?.find(o => o.valor === 0)?.rotulo || "Não atende"}
+                      </label>
                     </div>
                   </>
                 ) : (
                   <div className={styles.fapSection_colunas}>
                     <div className={styles.fapSection_col}>
-                      {[4, 3, 2, 1].map((nota) => (
-                        <div key={nota} className={styles.fapSection_field}>
-                          <input 
-                            type="radio" 
-                            name={`q_${questao.id}_${iAba}`} 
-                            id={`q_${questao.id}_${nota}_${iAba}`} 
-                            className={styles.fieldForm_checkbox_fap} 
-                            checked={respostas[`q_${questao.id}`] === nota} 
-                            onChange={() => handleDynamicChange(`q_${questao.id}`, nota)} 
-                          />
-                          <label htmlFor={`q_${questao.id}_${nota}_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
-                            {nota === 4 ? <b>Avançado</b> : nota === 3 ? <b>Adequado</b> : nota === 2 ? <b>Básico</b> : <b>Abaixo do Básico</b>}
-                          </label>
-                        </div>
-                      ))}
+                      {[4, 3, 2, 1].map((nota) => {
+                        const opt = questao.opcoes?.find(o => o.valor === nota);
+                        const defaultTitle = nota === 4 ? "Avançado" : nota === 3 ? "Adequado" : nota === 2 ? "Básico" : "Abaixo do Básico";
+                        const rotulo = opt?.rotulo || defaultTitle;
+                        const dashIdx = rotulo.indexOf(' - ');
+                        const titlePart = dashIdx !== -1 ? rotulo.substring(0, dashIdx) : rotulo;
+                        const descPart = dashIdx !== -1 ? rotulo.substring(dashIdx + 3) : '';
+
+                        return (
+                          <div key={nota} className={styles.fapSection_field}>
+                            <input 
+                              type="radio" 
+                              name={`q_${questao.id}_${iAba}`} 
+                              id={`q_${questao.id}_${nota}_${iAba}`} 
+                              className={styles.fieldForm_checkbox_fap} 
+                              checked={respostas[`q_${questao.id}`] === nota} 
+                              onChange={() => handleDynamicChange(`q_${questao.id}`, nota)} 
+                            />
+                            <label htmlFor={`q_${questao.id}_${nota}_${iAba}`} className={styles.fieldForm_checkbox_fapLabel}>
+                              {dashIdx !== -1 ? <><b>{titlePart}</b> - {descPart}</> : (opt?.rotulo ? rotulo : <b>{defaultTitle}</b>)}
+                            </label>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

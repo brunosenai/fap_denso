@@ -142,6 +142,19 @@ export default function Configuracao() {
         newQuestoes[index] = { ...newQuestoes[index], [field]: value };
         setFapConfig(prev => ({ ...prev, questoes: newQuestoes }));
     }
+    const updateQuestaoOpcao = (qIndex: number, valor: number, rotulo: string) => {
+        const newQuestoes = [...fapConfig.questoes];
+        const questao = newQuestoes[qIndex];
+        let opcoes = questao.opcoes ? [...questao.opcoes] : [];
+        const optIndex = opcoes.findIndex(o => o.valor === valor);
+        if (optIndex >= 0) {
+            opcoes[optIndex] = { valor, rotulo };
+        } else {
+            opcoes.push({ valor, rotulo });
+        }
+        newQuestoes[qIndex] = { ...questao, opcoes };
+        setFapConfig(prev => ({ ...prev, questoes: newQuestoes }));
+    }
     const removeQuestao = (index: number) => {
         const newQuestoes = [...fapConfig.questoes];
         newQuestoes.splice(index, 1);
@@ -275,6 +288,52 @@ export default function Configuracao() {
                                         onChange={(e) => updateQuestao(i, 'evidencias', e.target.value)}
                                         rows={2}
                                     />
+                                </div>
+
+                                <div style={{ width: '100%', marginTop: 5 }}>
+                                    <label style={{ fontWeight: 'bold' }}>Textos Personalizados das Opções de Resposta:</label>
+                                    {q.tipo === 'num' ? (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 5 }}>
+                                            {[4, 3, 2, 1].map((valor) => {
+                                                const defaultText = valor === 4 ? "Avançado - " : valor === 3 ? "Adequado - " : valor === 2 ? "Básico - " : "Abaixo do Básico - ";
+                                                const currentOpcao = q.opcoes?.find(o => o.valor === valor);
+                                                return (
+                                                    <div key={valor} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                                        <span style={{ width: 140, fontSize: 'small', fontWeight: 'bold' }}>
+                                                            {valor === 4 ? "Nota 4 (Avançado):" : valor === 3 ? "Nota 3 (Adequado):" : valor === 2 ? "Nota 2 (Básico):" : "Nota 1 (Abaixo Básico):"}
+                                                        </span>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder={defaultText}
+                                                            value={currentOpcao ? currentOpcao.rotulo : ''} 
+                                                            onChange={(e) => updateQuestaoOpcao(i, valor, e.target.value)}
+                                                            style={{ flex: 1, padding: 5, borderRadius: 5, border: '1px solid #ccc' }}
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 5 }}>
+                                            {[1, 0].map((valor) => {
+                                                const currentOpcao = q.opcoes?.find(o => o.valor === valor);
+                                                return (
+                                                    <div key={valor} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                                        <span style={{ width: 140, fontSize: 'small', fontWeight: 'bold' }}>
+                                                            {valor === 1 ? "Opção Sim (1):" : "Opção Não (0):"}
+                                                        </span>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder={valor === 1 ? "Atende" : "Não atende"}
+                                                            value={currentOpcao ? currentOpcao.rotulo : ''} 
+                                                            onChange={(e) => updateQuestaoOpcao(i, valor, e.target.value)}
+                                                            style={{ flex: 1, padding: 5, borderRadius: 5, border: '1px solid #ccc' }}
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>

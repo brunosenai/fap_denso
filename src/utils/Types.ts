@@ -130,6 +130,7 @@ export type tQuestao = {
     peso: number;
     eliminatoria: boolean;
     habilitada: boolean;
+    opcoes?: { rotulo: string; valor: number }[];
 }
 
 export type tConfigFap = {
