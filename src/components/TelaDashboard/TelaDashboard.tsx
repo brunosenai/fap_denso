@@ -311,7 +311,7 @@ export default function TelaDashboard(){
                 onClick={() => setShowFilter(!showFilter)}
             >
                 <Image 
-                    src={showFilter ? "assets/icons/arrow_back.svg" : "assets/icons/filter_white.svg"} 
+                    src={showFilter ? "/assets/icons/arrow_back.svg" : "/assets/icons/filter_white.svg"} 
                     alt={"Filtros"} 
                     width={20} 
                     height={20} 
