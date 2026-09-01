@@ -34,11 +34,11 @@ export default function GraficoBarraDicotomica({ dados, titulo }: BarraDicotomic
       },
       // Ajuste das margens para os textos laterais não sumirem
       grid: {
-        left: '5%',   // Espaço para os nomes das questões na esquerda
-        right: '5%',  // Espaço para os números na direita
-        bottom: '10%', // Espaço inferior
-        top: '80px',   // Espaço superior para título e legenda
-        containLabel: true // FUNDAMENTAL para textos longos
+        left: '10%',
+        right: '10%',
+        bottom: '10%',
+        top: '80px',
+        containLabel: true
       },
       // Eixo X (Horizontal) recebe os VALORES
       xAxis: {
@@ -50,10 +50,9 @@ export default function GraficoBarraDicotomica({ dados, titulo }: BarraDicotomic
       // Eixo Y (Vertical) recebe as CATEGORIAS (Nomes das questões)
       yAxis: {
         type: 'category',
-        data: [
+        data: dados?.questoes && dados.questoes.length > 0 ? [...dados.questoes].reverse() : [
             'Tratamento adequado de Não\nConformidade (Stop & Call)',
-            'Condução segura do ciclo\n(Uso do EPI)', 
-            
+            'Condução segura do ciclo\n(Uso do EPI)'
         ],
         axisLine: { show: false }, // Esconde a linha do eixo Y
         axisTick: { show: false }, // Esconde os risquinhos do eixo Y
@@ -68,13 +67,13 @@ export default function GraficoBarraDicotomica({ dados, titulo }: BarraDicotomic
           name: 'Atende', // Deve bater com o nome na Legenda
           type: 'bar',
           stack: 'total', // O SEGREDO: mesmo nome em ambas as séries faz elas empilharem
-          data: dados.acertos,
+          data: dados?.acertos || [0, 0],
           itemStyle: { color: '#99FF99' }, // Verde claro (Atende)
           barWidth: '45px', // Grossura da barra
           label: {
             show: true,
             position: 'insideLeft', // Texto dentro da barra, na esquerda
-            formatter: 'Atende: {c}', // '{c}' é o valor (Ex: Atende: 89)
+            formatter: (params: any) => Number(params.value) > 0 ? `Atende: ${params.value}` : '',
             color: '#006600', // Verde escuro para o texto
             fontWeight: 'bold',
             fontSize: 14
@@ -84,12 +83,12 @@ export default function GraficoBarraDicotomica({ dados, titulo }: BarraDicotomic
           name: 'Não atende',
           type: 'bar',
           stack: 'total', // Mesmo 'stack' para empilhar
-          data: dados.erros,
+          data: dados?.erros || [0, 0],
           itemStyle: { color: '#FF9999' }, // Vermelho claro (Não atende)
           label: {
             show: true,
             position: 'insideRight', // Texto dentro da barra, na direita
-            formatter: 'Não atende: {c}',
+            formatter: (params: any) => Number(params.value) > 0 ? `Não atende: ${params.value}` : '',
             color: '#990000', // Vermelho escuro para o texto
             fontWeight: 'bold',
             fontSize: 14

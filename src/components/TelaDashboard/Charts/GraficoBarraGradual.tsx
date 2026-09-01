@@ -27,7 +27,7 @@ export default function GraficoBarraGradual({ dados }: BarraGradualProps) {
       verticalAlign: 'middle',
       fontSize: 12,
       fontWeight: 'bold',
-      formatter: '{c}' // Mostra apenas o valor em cima da barra
+      formatter: (params: any) => Number(params.value) > 0 ? params.value : ''
     };
 
     const option = {
