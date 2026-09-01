@@ -289,7 +289,7 @@ export default function TelaDashboard(){
         return (
             <div className={styles.fullScreenLoading}>
                 <img 
-                    src="/assets/denso_logo.png" 
+                    src="/assets/denso_logo.svg" 
                     alt="Carregando Dashboard..." 
                     className={styles.pulsingLogo} 
                 />
@@ -412,7 +412,7 @@ export default function TelaDashboard(){
                                             }}>
                                                 <div className={styles.loadingContainer}>
                                                     <img 
-                                                        src="/assets/denso_logo.png" 
+                                                        src="/assets/denso_logo.svg" 
                                                         alt="Carregando..." 
                                                         className={styles.pulsingLogo} 
                                                     />

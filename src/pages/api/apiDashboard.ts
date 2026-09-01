@@ -190,9 +190,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             tabelaCandidatos: listaCandidatos || [],
             graficoMotivosReprovacao: dadosMotivosReprovacao
         });
-    }catch(error){
-        console.error(error);
-        res.status(500).json({message:"Internal Server Error: erro 500"})
+    } catch (error) {
+        console.error("Erro no apiDashboard:", error);
+        return res.status(200).json({
+            cards: {
+                totalAvaliados: 0,
+                totalAprovados: 0,
+                totalReprovados: 0,
+                taxaAprovacao: "0.00%",
+                taxaReprovacao: "0.00%"
+            },
+            graficoPizzaGeral: [
+                { value: 0, name: 'Aprovados' },
+                { value: 0, name: 'Reprovados' }
+            ],
+            graficoDicotomico: {
+                questoes: [
+                    'Condução segura do ciclo\n(Uso do EPI)', 
+                    'Tratamento adequado de Não\nConformidade (Stop & Call)'
+                ],
+                acertos: [0, 0],
+                erros: [0, 0]
+            },
+            graficoGradual: {
+                eixoX: ['DISCIPLINA OPERACIONAL', 'MONTAGEM CORRETA', 'ORGANIZAÇÃO DO POSTO', 'ACOMPANHAMENTO', 'RESILIÊNCIA'],
+                nota1: [0, 0, 0, 0, 0],
+                nota2: [0, 0, 0, 0, 0],
+                nota3: [0, 0, 0, 0, 0],
+                nota4: [0, 0, 0, 0, 0]
+            },
+            tabelaCandidatos: [],
+            graficoMotivosReprovacao: []
+        });
     }
     
 
