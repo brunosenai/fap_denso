@@ -190,7 +190,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.error(error);
                 res.status(500).json({ message: "Internal Server Error: erro 500" });
             }
-        }else if (action == "editarFapCandidato") {
+        } else if (action == "editarFapCandidato") {
             try {
                 const [rows_cadidatos] = await pool.query<RowDataPacket[]>(`
                     UPDATE fap
@@ -198,11 +198,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     WHERE n_id_avaliacao = ? AND n_id_candidato = ?;
                     `, [s_q13_fap, s_q14_fap, s_q15_fap, s_q16_fap, n_id_avaliacao, n_id_candidato]
                 );
-                res.status(200).json(rows_cadidatos);
+                return res.status(200).json(rows_cadidatos);
             } catch (error) {
                 console.error(error);
-                res.status(500).json({ message: "Internal Server Error: erro 500" });
+                return res.status(500).json({ message: "Internal Server Error: erro 500" });
             }
+        } else {
             // === SALVAMENTO DA AVALIAÇÃO COMPLETA (COM TRANSAÇÃO E RETRY AUTOMÁTICO) ===
             const maxTentativas = 3;
             let tentativa = 0;
@@ -216,38 +217,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     await connection.beginTransaction();
 
                     // 1. Atualiza a nota e status de cada candidato na tabela FAP
-                    for (const itemFap of fap) {
-                        let dataMySQL = itemFap.dt_date_fap;
-                        if (dataMySQL && typeof dataMySQL === 'string' && dataMySQL.includes('T')) {
-                            dataMySQL = dataMySQL.slice(0, 19).replace('T', ' ');
-                        }   
-                        await connection.query<ResultSetHeader>(`
-                            UPDATE fap SET 
-                                n_id_pessoa=?, dt_date_fap=?, n_nota_fap=?, n_resultado_fap=?,
-                                n_posto1_fap=?, n_posto2_fap=?, n_posto3_fap=?, n_posto4_fap=?,
-                                n_posto5_fap=?, n_posto6_fap=?, n_q6_fap=?, n_q7_fap=?,
-                                n_q8_fap=?, n_q9_fap=?, n_q10_fap=?, n_q11_fap=?,
-                                n_q12_fap=?, s_q13_fap=?, s_q14_fap=?, s_q15_fap=?, s_q16_fap=?,
-                                n_status_fap=?
-                            WHERE n_id_avaliacao = ? AND n_id_candidato = ?;
-                        `, [
-                            itemFap.n_id_pessoa, dataMySQL, itemFap.n_nota_fap, itemFap.n_resultado_fap,
-                            itemFap.n_posto1_fap, itemFap.n_posto2_fap, itemFap.n_posto3_fap, itemFap.n_posto4_fap,
-                            itemFap.n_posto5_fap, itemFap.n_posto6_fap, itemFap.n_q6_fap, itemFap.n_q7_fap,
-                            itemFap.n_q8_fap, itemFap.n_q9_fap, itemFap.n_q10_fap, itemFap.n_q11_fap,
-                            itemFap.n_q12_fap, itemFap.s_q13_fap, itemFap.s_q14_fap, itemFap.s_q15_fap, itemFap.s_q16_fap,
-                            itemFap.n_status_fap, itemFap.n_id_avaliacao, itemFap.n_id_candidato 
-                        ]);
-                    }
+                    if (fap && Array.isArray(fap)) {
+                        for (const itemFap of fap) {
+                            let dataMySQL = itemFap.dt_date_fap;
+                            if (dataMySQL && typeof dataMySQL === 'string' && dataMySQL.includes('T')) {
+                                dataMySQL = dataMySQL.slice(0, 19).replace('T', ' ');
+                            }   
+                            await connection.query<ResultSetHeader>(`
+                                UPDATE fap SET 
+                                    n_id_pessoa=?, dt_date_fap=?, n_nota_fap=?, n_resultado_fap=?,
+                                    n_posto1_fap=?, n_posto2_fap=?, n_posto3_fap=?, n_posto4_fap=?,
+                                    n_posto5_fap=?, n_posto6_fap=?, n_q6_fap=?, n_q7_fap=?,
+                                    n_q8_fap=?, n_q9_fap=?, n_q10_fap=?, n_q11_fap=?,
+                                    n_q12_fap=?, s_q13_fap=?, s_q14_fap=?, s_q15_fap=?, s_q16_fap=?,
+                                    n_status_fap=?
+                                WHERE n_id_avaliacao = ? AND n_id_candidato = ?;
+                            `, [
+                                itemFap.n_id_pessoa, dataMySQL, itemFap.n_nota_fap, itemFap.n_resultado_fap,
+                                itemFap.n_posto1_fap, itemFap.n_posto2_fap, itemFap.n_posto3_fap, itemFap.n_posto4_fap,
+                                itemFap.n_posto5_fap, itemFap.n_posto6_fap, itemFap.n_q6_fap, itemFap.n_q7_fap,
+                                itemFap.n_q8_fap, itemFap.n_q9_fap, itemFap.n_q10_fap, itemFap.n_q11_fap,
+                                itemFap.n_q12_fap, itemFap.s_q13_fap, itemFap.s_q14_fap, itemFap.s_q15_fap, itemFap.s_q16_fap,
+                                itemFap.n_status_fap, itemFap.n_id_avaliacao, itemFap.n_id_candidato 
+                            ]);
+                        }
 
-                    // 2. Atualiza o status geral da turma na tabela AVALIACAO
-                    if (fap && fap.length > 0) {
-                        const idAvaliacao = fap[0].n_id_avaliacao;
-                        await connection.query<ResultSetHeader>(`
-                            UPDATE avaliacao 
-                            SET n_status_avaliacao = 1 
-                            WHERE n_id_avaliacao = ?
-                        `, [idAvaliacao]);
+                        // 2. Atualiza o status geral da turma na tabela AVALIACAO
+                        if (fap.length > 0) {
+                            const idAvaliacao = fap[0].n_id_avaliacao;
+                            await connection.query<ResultSetHeader>(`
+                                UPDATE avaliacao 
+                                SET n_status_avaliacao = 1 
+                                WHERE n_id_avaliacao = ?
+                            `, [idAvaliacao]);
+                        }
                     }
 
                     await connection.commit();
