@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ]);
 
             await pool.query<ResultSetHeader>(
-                'INSERT INTO avaCanFap (n_id_avaliacao, n_id_candidato) VALUES ?',
+                'INSERT INTO fap (n_id_avaliacao, n_id_candidato) VALUES ?',
                 [valorCandidatosAvaliacao]
             );
 

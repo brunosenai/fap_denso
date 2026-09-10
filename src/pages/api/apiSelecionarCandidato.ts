@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM 
                         candidato c
                     INNER JOIN 
-                        avaCanFap acf ON c.n_id_candidato = acf.n_id_candidato
+                        fap acf ON c.n_id_candidato = acf.n_id_candidato
                     WHERE 
                         acf.n_id_avaliacao = ?;
                 `,[id]
@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             await pool.query<ResultSetHeader>(`
                 UPDATE 
-                    avaCanFap
+                    fap
                 SET 
                     n_id_pessoa = ?
                 WHERE 
