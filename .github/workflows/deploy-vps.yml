@@ -1,0 +1,35 @@
+name: Deploy e Backup na VPS
+
+on:
+  workflow_dispatch: # Executado apenas manualmente quando você apertar o botão
+
+jobs:
+  deploy-vps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Executar backup e atualizar aplicacao na VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            echo "Acessando diretorio do projeto..."
+            cd ${{ secrets.VPS_PROJECT_PATH }}
+
+            echo "1. Tirando foto/snapshot de seguranca do Next.js (docker commit)..."
+            docker commit nextjs_fap backup_app_seguranca || true
+
+            echo "2. Gerando backup do banco de dados MySQL..."
+            docker exec mysql_fap sh -c 'exec mysqldump -uroot -pstellantissenaicentro402026_root --databases fap' > fap_backup_seguranca.sql
+
+            echo "3. Baixando imagem nova atualizada..."
+            docker compose pull app || docker-compose pull app
+
+            echo "4. Subindo o sistema atualizado..."
+            docker compose up -d app || docker-compose up -d app
+
+            echo "Sucesso! Sistema atualizado e backups gerados com sucesso."
