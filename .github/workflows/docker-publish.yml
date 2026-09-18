@@ -26,6 +26,6 @@ jobs:
           context: .
           push: true
           # A tag será gerada usando o seu usuário do Docker Hub + /fap-app:latest
-          tags: ${{ secrets.DOCKER_USERNAME }}/fap-app:latest
+          tags: desenvolvimentocentro40/fap-app:latest
           build-args: |
             NEXT_PUBLIC_API_KEY=re_9DKiyDmV_DYNWWFM7xaurNsXFwG2vEaTu
