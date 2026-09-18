@@ -26,6 +26,7 @@ export default function Home() {
   const [mostrarTelaTrazerCandidato, setMostrarTelaTrazerCandidato] = useState<boolean>(false)
   const [mostrarTelaMovimentacaoAvancada, setMostrarTelaMovimentacaoAvancada] = useState<boolean>(false)
   const [nomeAvaliador, setNomeAvaliador] = useState<string>('')
+  const [incluirPassadas, setIncluirPassadas] = useState<boolean>(false)
 
   useEffect(() => {
     setNomeAvaliador(localStorage.getItem('s_nome_pessoa') || ''); // Carrega o nome do avaliador do localStorage
@@ -93,10 +94,10 @@ export default function Home() {
     }
   }
 
-  const getAvaliacoes = async () => {
+  const getAvaliacoes = async (comPassadas: boolean = incluirPassadas) => {
     setLoad(true)
     try {
-      const endpoint = `/api/apiAvaliacao?action=getAvaliacoesHojeEmDiante&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
+      const endpoint = `/api/apiAvaliacao?action=getAvaliacoesHojeEmDiante&incluirPassadas=${comPassadas}&apiKey=${process.env.NEXT_PUBLIC_API_KEY}`;
       fetch(endpoint, { method: "GET" })
       .then(res => res.json())
       .then(data => {
@@ -339,6 +340,11 @@ export default function Home() {
             finalizarAvaliacao={finalizarAvaliacao}
             qtdAvaliadores={qtdAvaliadores} 
             nomeAvaliador={nomeAvaliador}
+            incluirPassadas={incluirPassadas}
+            onTogglePassadas={(valor) => {
+              setIncluirPassadas(valor);
+              getAvaliacoes(valor);
+            }}
           />
           
           <div className={styles.formCandidatos}>

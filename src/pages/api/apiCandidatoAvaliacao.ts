@@ -150,7 +150,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             await pool.query<ResultSetHeader>(`
                 UPDATE 
-                    avaCanFap
+                    fap
                 SET 
                     n_id_pessoa = ?
                 WHERE 

@@ -40,8 +40,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             message: "Avaliação registrada!"
         });
     }catch(err){
-
-        throw err;
+        console.error("Erro ao registrar avaliação:", err);
+        return res.status(500).json({ message: 'Erro ao registrar avaliação.' });
     }
 
 }

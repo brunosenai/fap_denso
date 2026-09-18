@@ -45,21 +45,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const novoIdFap = resFap.insertId;
 
-            // 2. Atualizar a tabela 'avaCanFap' com os resultados e o novo ID da FAP
+            // 2. Atualizar a tabela 'fap' com os resultados
             await connection.query(
-                `UPDATE avaCanFap SET 
-                    n_id_fap = ?, 
-                    n_nota_avaCanFap = ?, 
-                    n_resultado_avaCanFap = ?,
-                    n_posto1_avaCanFap = ?, 
-                    n_posto2_avaCanFap = ?, 
-                    n_posto3_avaCanFap = ?,
-                    n_posto4_avaCanFap = ?, 
-                    n_posto5_avaCanFap = ?, 
-                    n_posto6_avaCanFap = ?
+                `UPDATE fap SET 
+                    n_nota_fap = ?, 
+                    n_resultado_fap = ?,
+                    n_posto1_fap = ?, 
+                    n_posto2_fap = ?, 
+                    n_posto3_fap = ?,
+                    n_posto4_fap = ?, 
+                    n_posto5_fap = ?, 
+                    n_posto6_fap = ?
                 WHERE n_id_avaliacao = ? AND n_id_candidato = ?`,
                 [
-                    novoIdFap, 
                     data.nota, 
                     data.resultado,
                     data.posto1, data.posto2, data.posto3,

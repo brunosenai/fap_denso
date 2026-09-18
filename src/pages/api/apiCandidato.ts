@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         f.n_candidatopresente_fap
                     FROM fap f
                     LEFT JOIN candidato c ON c.n_id_candidato=f.n_id_candidato
-                    WHERE f.n_id_avaliacao=? AND f.n_status_fap=0
+                    WHERE f.n_id_avaliacao=? AND f.n_status_fap <= 1
                     ORDER BY c.s_nome_candidato ASC
                     `, [n_id_avaliacao]
                 )
@@ -184,15 +184,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             s_escolaridade_candidato
         } = req.body;
         try {
+            const dataNascimento = s_dt_nasc_candidato && s_dt_nasc_candidato.trim() !== "" ? s_dt_nasc_candidato : null;
+            const grauInstrucao = s_escolaridade_candidato && s_escolaridade_candidato.trim() !== "" ? parseInt(s_escolaridade_candidato) : 0;
+
             await pool.query<ResultSetHeader>(`
-                INSERT INTO candidato (s_nome_candidato,s_cpf_candidato,s_email_candidato,s_sexo_candidato,s_dt_nasc_candidato,s_escolaridade_candidato)
-                VALUES (?,?,?);
-            `, [s_nome_candidato, s_cpf_candidato, s_email_candidato,s_sexo_candidato, s_dt_nasc_candidato, s_escolaridade_candidato]);
+                INSERT INTO candidato (
+                    s_nome_candidato,
+                    s_cpf_candidato,
+                    s_email_candidato,
+                    s_sexo_candidato,
+                    dt_nasc_candidato,
+                    n_grauInstrucao_candidado
+                ) VALUES (?, ?, ?, ?, ?, ?);
+            `, [
+                s_nome_candidato,
+                s_cpf_candidato,
+                s_email_candidato,
+                s_sexo_candidato || null,
+                dataNascimento,
+                grauInstrucao
+            ]);
             
             return res.status(200).json({ message: 'Candidato cadastrado com sucesso!' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Internal Server Error: erro 500" })
+            res.status(500).json({ message: "Internal Server Error: erro 500" });
         }
     } else if (req.method === 'PUT') {
         const { action } = req.body;
