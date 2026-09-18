@@ -40,6 +40,7 @@ export default function Login() {
       localStorage.setItem('n_id_pessoa', data.data.n_id_pessoa)
       localStorage.setItem('s_nome_pessoa', data.data.s_nome_pessoa)
       localStorage.setItem('s_email_pessoa', data.data.s_email_pessoa)
+      localStorage.setItem('n_id_tipoPessoa', data.data.n_id_tipoPessoa)
       if(data.data.n_id_tipoPessoa==1){
         router.replace('/selecaomodulo/adm');
       }else if(data.data.n_id_tipoPessoa==2){

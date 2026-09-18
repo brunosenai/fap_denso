@@ -28,10 +28,15 @@ export default function TelaDashboard(){
     const [hasMore, setHasMore] = useState(true);
     const [emailLogado, setEmailLogado] = useState<string>('');
     const [filtroSgtSge, setFiltroSgtSge] = useState<string>('Ambas');
+    const [emailsDashboard, setEmailsDashboard] = useState<string[]>([]);
 
     useEffect(() => {
         obterAvaliacoes();
         setEmailLogado(localStorage.getItem('s_email_pessoa') || '');
+        fetch(`/api/apiDashboardEmails?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`)
+            .then(res => res.json())
+            .then(data => setEmailsDashboard(data))
+            .catch(err => console.error(err));
     }, []);
 
     useEffect(() => {
@@ -237,7 +242,7 @@ export default function TelaDashboard(){
 
             const wb = XLSX.utils.book_new();
 
-            const temPermissao = ['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado);
+            const temPermissao = emailsDashboard.includes(emailLogado);
 
             if (!temPermissao) {
                 const ws = XLSX.utils.json_to_sheet(formatarParaXLSX(candidatos));
@@ -335,7 +340,7 @@ export default function TelaDashboard(){
                             <p>Até</p>
                         <input type="date" name="" title="dtfim" id="dtfim" value={dataFim}  onChange={(e)=>{setDataFim(e.target.value)}}/> 
 
-                        {['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado) && (
+                        {emailsDashboard.includes(emailLogado) && (
                             <div style={{ marginTop: '10px', width: '100%', display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                 <label style={{ marginBottom: '10px' }}>Com cadastro feito no:</label>
                                 <div className={styles.radioGroup}>
@@ -360,7 +365,7 @@ export default function TelaDashboard(){
                                 <button onClick={limparFiltros} className={styles.exportButton}>Limpar</button>
                                 <button onClick={exportarPlanilha} className={styles.exportButton}>Exportar CSV</button>
                             </div>
-                            {['ingridy.carvalho@fiemg.com.br', 'db.oliveira@fiemg.com.br', 'bpinho@fiemg.com.br'].includes(emailLogado) && (
+                            {emailsDashboard.includes(emailLogado) && (
                                 <button onClick={exportarPdfHoras} className={`${styles.exportButton} ${styles.btnExportPdfHoras}`}>Exportar PDF Horas</button>
                             )}
                         </div>
