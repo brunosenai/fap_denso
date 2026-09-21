@@ -341,6 +341,7 @@ export default function Home() {
             qtdAvaliadores={qtdAvaliadores} 
             nomeAvaliador={nomeAvaliador}
             incluirPassadas={incluirPassadas}
+            avaliacaoSelecionada={avaliacaoSelecionada}
             onTogglePassadas={(valor) => {
               setIncluirPassadas(valor);
               getAvaliacoes(valor);

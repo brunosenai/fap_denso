@@ -15,6 +15,7 @@ interface TopoSelecaoAvaliacaoProps{
     nomeAvaliador:string
     incluirPassadas?: boolean
     onTogglePassadas?: (v: boolean) => void
+    avaliacaoSelecionada?: number
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -50,7 +51,13 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                     )}
                     <div className={styles.fieldSelect_c1}>
                         <label className={styles.label} htmlFor="selecao">Selecione a avaliação</label>
-                        <select className={styles.fieldForm} name="selecao" id="selecao" onChange={(evt)=>props.setAvaliacao(Number(evt.target.value))}>
+                        <select 
+                            className={styles.fieldForm} 
+                            name="selecao" 
+                            id="selecao" 
+                            value={props.avaliacaoSelecionada !== undefined ? props.avaliacaoSelecionada : -1}
+                            onChange={(evt)=>props.setAvaliacao(Number(evt.target.value))}
+                        >
                             <option value={-1}>Selecione a avaliação</option>
                             {props.avaliacoes.length>0 && props.avaliacoes.map((item,index) => {
                                 let dataFormatada = "";
