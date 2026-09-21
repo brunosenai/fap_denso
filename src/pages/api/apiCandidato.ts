@@ -183,16 +183,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             s_dt_nasc_candidato,
             s_escolaridade_candidato
         } = req.body;
+
+        const sexoValido = s_sexo_candidato && String(s_sexo_candidato).trim() !== "" ? s_sexo_candidato : null;
+        const dtNascValida = s_dt_nasc_candidato && String(s_dt_nasc_candidato).trim() !== "" ? s_dt_nasc_candidato : null;
+        const escolaridadeValida = s_escolaridade_candidato && String(s_escolaridade_candidato).trim() !== "" ? Number(s_escolaridade_candidato) : null;
+
         try {
             await pool.query<ResultSetHeader>(`
-                INSERT INTO candidato (s_nome_candidato,s_cpf_candidato,s_email_candidato,s_sexo_candidato,dt_nasc_candidato,n_grauInstrucao_candidado)
-                VALUES (?,?,?,?,?,?);
-            `, [s_nome_candidato, s_cpf_candidato, s_email_candidato,s_sexo_candidato, s_dt_nasc_candidato, s_escolaridade_candidato]);
+                INSERT INTO candidato (s_nome_candidato, s_cpf_candidato, s_email_candidato, s_sexo_candidato, dt_nasc_candidato, n_grauInstrucao_candidado)
+                VALUES (?, ?, ?, ?, ?, ?);
+            `, [s_nome_candidato, s_cpf_candidato, s_email_candidato, sexoValido, dtNascValida, escolaridadeValida]);
             
             return res.status(200).json({ message: 'Candidato cadastrado com sucesso!' });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            res.status(500).json({ message: "Internal Server Error: erro 500" })
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ message: 'CPF ou E-mail já cadastrado.' });
+            }
+            res.status(500).json({ message: "Internal Server Error: erro 500" });
         }
     } else if (req.method === 'PUT') {
         const { action } = req.body;

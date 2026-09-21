@@ -107,7 +107,7 @@ export default function TelaCadastroCandidatos() {
     }
 
     const cadastrarCandidato = async () => {
-        if (nome.trim() == "" || cpf.trim() == "" || email.trim() == "") {
+        if (nome.trim() === "" || cpf.trim() === "" || email.trim() === "" || sexo.trim() === "") {
             setDadosPopupMessage({
                 tipo: 3,
                 titulo: "Erro",
@@ -118,7 +118,7 @@ export default function TelaCadastroCandidatos() {
             return
         }
 
-        const dados={
+        const dados = {
             s_nome_candidato: nome,
             s_cpf_candidato: cpf.replace(/\D/g, ""),
             s_email_candidato: email,
@@ -129,37 +129,52 @@ export default function TelaCadastroCandidatos() {
         }
 
         setLoad(true)
-        const endpoint = `/api/apiCandidato`
-        fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(dados)
-        })
-        .then(res => {
-            if (res.status != 200) {
+        try {
+            const endpoint = `/api/apiCandidato`
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            })
+
+            const data = await res.json().catch(() => null);
+
+            if (res.status !== 200) {
                 setDadosPopupMessage({
                     tipo: 3,
                     titulo: "Erro",
-                    mensagem: "Erro ao gravar candidato!",
+                    mensagem: data?.message || "Erro ao gravar candidato!",
                     comandoOK: () => setPopupMessage(false)
                 })
-                setLoad(false)
                 setPopupMessage(true)
             } else {
-                setLoad(false)
                 setDadosPopupMessage({
                     tipo: 1,
                     titulo: "Sucesso",
-                    mensagem: "Candidato cadastrado com sucesso",
+                    mensagem: data?.message || "Candidato cadastrado com sucesso",
                     comandoOK: () => setPopupMessage(false)
                 })
                 setPopupMessage(true)
                 setNome("")
                 setCpf("")
                 setEmail("")
+                setSexo("")
+                setDtNasc("")
+                setEscolaridade("")
                 obterCandidatos(1) // Força a voltar para a primeira página para ver o novo
             }
-        })
+        } catch (error) {
+            console.error(error)
+            setDadosPopupMessage({
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Ocorreu um erro de conexão ao gravar o candidato!",
+                comandoOK: () => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+        } finally {
+            setLoad(false)
+        }
     }
 
     const baixaRelatorios = async (relatorios: any) => {
@@ -328,7 +343,7 @@ export default function TelaCadastroCandidatos() {
                                     value={sexo} 
                                     onChange={(e) => setSexo(e.target.value)}
                                 >
-                                    <option value={''}>Selecione a escolaridade</option>
+                                    <option value={''}>Selecione o sexo</option>
                                     <option value={'m'}>Masculino</option>
                                     <option value={'f'}>Feminino</option>
                                 </select>

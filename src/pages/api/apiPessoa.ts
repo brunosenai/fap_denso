@@ -61,65 +61,58 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }else if(req.method === 'POST'){
         const { n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa } = req.body;
         
-        const [rows_pessoa]=await pool.query<RowDataPacket[]>(`
-            SELECT
-                s_nome_pessoa
-            FROM
-                pessoa
-            WHERE
-                s_email_pessoa=?;
-        `,[s_email_pessoa]
-        )
-
-        if(rows_pessoa.length>0){
-            return res.status(400).json({ message: 'Já existe um cadastro com este e-mail.' });
-        }
-
-        const gerarNovaSenhaAleatoria = () => {
-            let senha:string[] = [];
-            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            for (let i = 0; i < 6; i++) {
-                const indice = Math.floor(Math.random() * caracteres.length);
-                senha[i] = caracteres.charAt(indice);
-            }
-            return senha.join('');
-        }
-
-        // const senha=gerarNovaSenhaAleatoria()
-        const senha='123'
-
-        const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT) || 587,
-            secure: false,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
-        });
-        const emailEmpresa = process.env.EMAIL_DESTINO_EMPRESA;
-        const info = await transporter.sendMail({
-            from: `"Sistema FAP" <${process.env.SMTP_USER}>`, 
-            to: emailEmpresa, // <-- Envia para o e-mail fixo da empresa
-            subject: 'Cadastro realizado com sucesso', 
-            text: `Olá ${s_nome_pessoa}! Seu cadastro foi realizado e sua senha temporária é: ${senha}. No seu primeiro acesso você pode trocar sua senha.`, 
-            html: `<p>Olá ${s_nome_pessoa}!</p><p>Seu cadastro foi realizado e sua senha temporária é: <b>${senha}</b>. No seu primeiro acesso você pode trocar sua senha.</p>`, 
-        });
-
         try {
+            const [rows_pessoa] = await pool.query<RowDataPacket[]>(`
+                SELECT s_nome_pessoa FROM pessoa WHERE s_email_pessoa=? OR s_cpf_pessoa=?;
+            `, [s_email_pessoa, s_cpf_pessoa]);
+
+            if (rows_pessoa.length > 0) {
+                return res.status(409).json({ message: 'Já existe um cadastro com este CPF ou E-mail.' });
+            }
+
+            const senha = '123';
+
             await pool.query<ResultSetHeader>(`
                 INSERT INTO
                     pessoa (n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, s_senha_pessoa)
                 VALUES
                     (?,?,?,?,?,?);
-            `,[n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, senha]
-            )
+            `, [n_id_tipoPessoa, s_nome_pessoa, s_cpf_pessoa, s_email_pessoa, s_telefone_pessoa, senha]);
+
+            // Tenta enviar o e-mail sem bloquear a resposta de sucesso do banco
+            if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+                try {
+                    const transporter = nodemailer.createTransport({
+                        host: process.env.SMTP_HOST,
+                        port: Number(process.env.SMTP_PORT) || 587,
+                        secure: false,
+                        auth: {
+                            user: process.env.SMTP_USER,
+                            pass: process.env.SMTP_PASS,
+                        },
+                    });
+
+                    await transporter.sendMail({
+                        from: `"Sistema FAP" <${process.env.SMTP_USER}>`, 
+                        to: s_email_pessoa, 
+                        subject: 'Cadastro realizado com sucesso', 
+                        text: `Olá ${s_nome_pessoa}! Seu cadastro foi realizado e sua senha temporária é: ${senha}. No seu primeiro acesso você pode trocar sua senha.`, 
+                        html: `<p>Olá ${s_nome_pessoa}!</p><p>Seu cadastro foi realizado e sua senha temporária é: <b>${senha}</b>. No seu primeiro acesso você pode trocar sua senha.</p>`, 
+                    });
+                } catch (emailErr) {
+                    console.error("Erro ao enviar e-mail de confirmação para o colaborador:", emailErr);
+                }
+            }
+
             return res.status(200).json({ 
-                message: 'Candidato cadastrado com sucesso!',
+                message: 'Colaborador cadastrado com sucesso!',
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            res.status(500).json({message:"Internal Server Error: erro 500"})
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ message: 'Já existe um cadastro com este CPF ou E-mail.' });
+            }
+            res.status(500).json({ message: "Internal Server Error: erro 500" });
         }
     }else if(req.method === 'PUT'){
         const { id_pessoa, id_avaliacao, idsCandidatos } = req.body;

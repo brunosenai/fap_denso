@@ -211,62 +211,59 @@ export default function TelaCadastroAvaliador(){
         setTelefone(v);
     }
 
-    const cadastrarAvaliador=async()=>{
+    const cadastrarAvaliador = async () => {
+        if (!validarCampos()) return;
+
         setLoad(true)
-        try{
-            if(validarCampos()){
-                const endpoint=`/api/apiPessoa`
-                fetch(endpoint,{
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body:JSON.stringify({
-                        n_id_tipoPessoa:tipo,
-                        s_nome_pessoa:nome,
-                        // BLINDAGEM: Limpa a máscara antes de enviar para a API (envia só números)
-                        s_cpf_pessoa: cpf.replace(/\D/g, ""),
-                        s_email_pessoa:email,
-                        s_telefone_pessoa: telefone.replace(/\D/g, ""),
-                        apiKey:process.env.NEXT_PUBLIC_API_KEY
-                    })
+        try {
+            const endpoint = `/api/apiPessoa`
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    n_id_tipoPessoa: tipo,
+                    s_nome_pessoa: nome,
+                    s_cpf_pessoa: cpf.replace(/\D/g, ""),
+                    s_email_pessoa: email,
+                    s_telefone_pessoa: telefone.replace(/\D/g, ""),
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY
                 })
-                .then(res=>{
-                    if(res.status==200){
-                        limparCampos()
-                        setLoad(false)
-                        setDadosPopupMessage({
-                            tipo:1,
-                            titulo:"Sucesso",
-                            mensagem:"Colaborador cadastrado com sucesso!",
-                            comandoOK:() => setPopupMessage(false)
-                        })
-                        setPopupMessage(true)                        
-                        obterAvaliadores()
-                    }else if(res.status==400){
-                        setLoad(false)
-                        setDadosPopupMessage({
-                            tipo:3,
-                            titulo:"Erro",
-                            mensagem:"Cadastro não efetuado, já existe este email cadastrado",
-                            comandoOK:() => setPopupMessage(false)
-                        })
-                        setPopupMessage(true)                        
-                    }
+            })
+
+            const data = await res.json().catch(() => null);
+
+            if (res.status === 200) {
+                limparCampos()
+                setDadosPopupMessage({
+                    tipo: 1,
+                    titulo: "Sucesso",
+                    mensagem: data?.message || "Colaborador cadastrado com sucesso!",
+                    comandoOK: () => setPopupMessage(false)
                 })
+                setPopupMessage(true)                        
+                obterAvaliadores()
             } else {
-                setLoad(false); // Caso a validação falhe, remove o load
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Erro",
+                    mensagem: data?.message || "Erro ao cadastrar o colaborador.",
+                    comandoOK: () => setPopupMessage(false)
+                })
+                setPopupMessage(true)                        
             }
-        }catch(error){
-            setLoad(false)
+        } catch (error) {
             console.error(error)
             setDadosPopupMessage({
-                tipo:3,
-                titulo:"Erro",
-                mensagem:"Ocorreu um erro ao cadastrar o colaborador",
-                comandoOK:() => setPopupMessage(false)
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Ocorreu um erro de conexão ao cadastrar o colaborador",
+                comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)                        
+        } finally {
+            setLoad(false)
         }
     }
 
