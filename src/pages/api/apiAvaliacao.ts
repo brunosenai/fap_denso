@@ -190,21 +190,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }else if(action == "getAvaliacoesHojeEmDiante"){
             try {
-                const [rows] = await pool.query<RowDataPacket[]>(`
-                    SELECT
-                        *
-                    FROM
-                        avaliacao
-                    WHERE
-                        dt_data_avaliacao >= CURDATE() AND n_status_avaliacao=0
-                    ORDER BY
-                        dt_data_avaliacao ASC
-                    `,[]
-                )
-                res.status(200).json(rows)
+                const incluirPassadas = req.query.incluirPassadas === 'true';
+                const querySql = incluirPassadas
+                    ? `SELECT * FROM avaliacao WHERE n_status_avaliacao <= 1 ORDER BY dt_data_avaliacao DESC`
+                    : `SELECT * FROM avaliacao WHERE dt_data_avaliacao >= CURDATE() AND n_status_avaliacao=0 ORDER BY dt_data_avaliacao ASC`;
+
+                const [rows] = await pool.query<RowDataPacket[]>(querySql);
+                res.status(200).json(rows);
             } catch (error) {
                 console.error(error);
-                res.status(500).json({message:"Internal Server Error: erro 500"})
+                res.status(500).json({message:"Internal Server Error: erro 500"});
             }
         }else if(action == "getInfoAvaliacao"){
             try {

@@ -13,6 +13,8 @@ interface TopoSelecaoAvaliacaoProps{
     setMostrarTelaMovimentacaoAvancada:(b:boolean)=>void
     finalizarAvaliacao:()=>void
     nomeAvaliador:string
+    incluirPassadas?: boolean
+    onTogglePassadas?: (v: boolean) => void
 }
 
 export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
@@ -31,13 +33,39 @@ export default function TopoSelecaoAvaliacao(props:TopoSelecaoAvaliacaoProps){
                     <div className={styles.avaliador}>{props.nomeAvaliador}</div>
                 </div>
                 <div className={styles.selects}>
+                    {props.onTogglePassadas && (
+                        <div className={styles.fieldSelect_toggle}>
+                            <label className={styles.toggleContainer} title="Mostrar avaliações de datas passadas ainda não enviadas">
+                                <span className={styles.toggleText}>Passadas</span>
+                                <span className={styles.switch}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={props.incluirPassadas || false} 
+                                        onChange={(e) => props.onTogglePassadas && props.onTogglePassadas(e.target.checked)} 
+                                    />
+                                    <span className={styles.slider}></span>
+                                </span>
+                            </label>
+                        </div>
+                    )}
                     <div className={styles.fieldSelect_c1}>
                         <label className={styles.label} htmlFor="selecao">Selecione a avaliação</label>
                         <select className={styles.fieldForm} name="selecao" id="selecao" onChange={(evt)=>props.setAvaliacao(Number(evt.target.value))}>
                             <option value={-1}>Selecione a avaliação</option>
-                            {props.avaliacoes.length>0 && props.avaliacoes.map((item,index)=>
-                                <option key={index} value={item.n_id_avaliacao}>{item.s_nome_avaliacao}</option>
-                            )}
+                            {props.avaliacoes.length>0 && props.avaliacoes.map((item,index) => {
+                                let dataFormatada = "";
+                                if (item.dt_data_avaliacao) {
+                                    const d = new Date(item.dt_data_avaliacao);
+                                    if (!isNaN(d.getTime())) {
+                                        dataFormatada = ` (${d.toLocaleDateString("pt-BR")})`;
+                                    }
+                                }
+                                return (
+                                    <option key={index} value={item.n_id_avaliacao}>
+                                        {item.s_nome_avaliacao}{dataFormatada}
+                                    </option>
+                                );
+                            })}
                         </select>
                     </div>
                     <div className={styles.fieldSelect_c2}>

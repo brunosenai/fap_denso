@@ -147,7 +147,7 @@ export default function ImprimirPresenca() {
 
                         <div style={{ marginBottom: '50px' }}>
                             <div className="header-turma">
-                                <h2 style={{ margin: '0 0 5px 0', color: '#003366' }}>LISTA DE PRESENÇA - TESTE DE APTIDÃO PRÁTICA - STELLANTIS</h2>
+                                <h2 style={{ margin: '0 0 5px 0', color: '#003366' }}>LISTA DE PRESENÇA - TESTE DE APTIDÃO PRÁTICA - DENSO</h2>
                                 <p style={{ margin: '2px 0', fontSize: '14px' }}><strong>Turma/Avaliação:</strong> {turma.s_nome_avaliacao}</p>
                                 <p style={{ margin: '2px 0', fontSize: '14px' }}><strong>Data/Hora:</strong> {formatDateToText(turma.dt_data_avaliacao)}</p>
                                 <p style={{ margin: '2px 0', fontSize: '14px' }}><strong>Instrutor/Avaliador:</strong> ___________________________________________________</p>

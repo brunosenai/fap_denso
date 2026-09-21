@@ -10,6 +10,7 @@ import Image from "next/image";
 import Load from "@/components/Load/Load";
 import PopupFap from "@/components/Popup/PopupFap";
 import PopupConfirmation from "@/components/Popup/PopupConfirmation";
+import PopupRetry from "@/components/Popup/PopupRetry";
 
 export default function Fap() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function Fap() {
   const [popupInfoQuestao, setPopupInfoQuestao] = useState<any>(null); // To dynamically show popup
 
   const [popupConfirm, setPopupConfirm] = useState(false);
+  const [popupRetry, setPopupRetry] = useState(false);
   const [nomeAvaliador, setNomeAvaliador] = useState<string>('')
   
   const [dadosCarregados, setDadosCarregados] = useState<boolean>(false);
@@ -220,39 +222,40 @@ export default function Fap() {
     });
 
     const endpoint = `/api/apiFap`;
-    try {
-      const response = await fetch(endpoint, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          apiKey: process.env.NEXT_PUBLIC_API_KEY,
-          fap: fapFinalizado
-        }) 
-      });
- 
-      if (response.ok) {
-        return true; 
-      } else {
-        setDadosPopupMessage({
-          tipo: 3, 
-          titulo: "Erro",
-          mensagem: "Erro ao salvar avaliações no banco de dados.",
-          comandoOK: () => setPopupMessage(false)
+    const maxRetries = 3;
+    let attempt = 0;
+
+    while (attempt < maxRetries) {
+      attempt++;
+      try {
+        const response = await fetch(endpoint, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apiKey: process.env.NEXT_PUBLIC_API_KEY,
+            fap: fapFinalizado
+          }) 
         });
-        setPopupMessage(true);
-        return false; 
+
+        if (response.ok) {
+          return true;
+        } else {
+          console.warn(`Tentativa ${attempt} de envio falhou com status ${response.status}`);
+          if (attempt < maxRetries) {
+            await new Promise(res => setTimeout(res, 1000));
+          }
+        }
+      } catch (error) {
+        console.error(`Tentativa ${attempt} de envio falhou com erro de rede:`, error);
+        if (attempt < maxRetries) {
+          await new Promise(res => setTimeout(res, 1000));
+        }
       }
-    } catch (error) {
-      console.error("Erro na requisição:", error);
-      setDadosPopupMessage({
-        tipo: 3, 
-        titulo: "Erro",
-        mensagem: "Erro de conexão ao tentar salvar.",
-        comandoOK: () => setPopupMessage(false)
-      });
-      setPopupMessage(true);
-      return false; 
     }
+
+    // Se todas as tentativas automáticas falharam, exibe o popup interativo de re-tentativa
+    setPopupRetry(true);
+    return false; 
   };
 
   const finalizarAvaliacao = async () => {
@@ -291,6 +294,15 @@ export default function Fap() {
       {load && <Load/>}
       {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}
       {popupConfirm && <PopupConfirmation titulo="Sair" mensagem={'O seu progresso está salvo automaticamente no dispositivo. Confirma que deseja voltar?'} pergunta="Confirma que deseja sair?" comandoSim={()=>{setPopupConfirm(false); router.back();}} comandoNao={()=>setPopupConfirm(false)}/>}
+      {popupRetry && (
+        <PopupRetry 
+          comandoTentarNovamente={() => {
+            setPopupRetry(false);
+            finalizarAvaliacao();
+          }} 
+          comandoCancelar={() => setPopupRetry(false)} 
+        />
+      )}
       
       {/* Dynamic Popup for Question Info */}
       {popupInfoQuestao && <PopupFap

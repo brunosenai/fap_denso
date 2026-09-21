@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         f.n_candidatopresente_fap
                     FROM fap f
                     LEFT JOIN candidato c ON c.n_id_candidato=f.n_id_candidato
-                    WHERE f.n_id_avaliacao=? AND f.n_status_fap=0
+                    WHERE f.n_id_avaliacao=? AND f.n_status_fap <= 1
                     ORDER BY c.s_nome_candidato ASC
                     `, [n_id_avaliacao]
                 )
@@ -189,6 +189,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const escolaridadeValida = s_escolaridade_candidato && String(s_escolaridade_candidato).trim() !== "" ? Number(s_escolaridade_candidato) : null;
 
         try {
+            const dataNascimento = s_dt_nasc_candidato && s_dt_nasc_candidato.trim() !== "" ? s_dt_nasc_candidato : null;
+            const grauInstrucao = s_escolaridade_candidato && s_escolaridade_candidato.trim() !== "" ? parseInt(s_escolaridade_candidato) : 0;
+
             await pool.query<ResultSetHeader>(`
                 INSERT INTO candidato (s_nome_candidato, s_cpf_candidato, s_email_candidato, s_sexo_candidato, dt_nasc_candidato, n_grauInstrucao_candidado)
                 VALUES (?, ?, ?, ?, ?, ?);
