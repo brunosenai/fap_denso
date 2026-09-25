@@ -2,6 +2,7 @@ import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import PopupConfirmation from "../Popup/PopupConfirmation"
 import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
+import PopupEditarAvaliacao from "../Popup/PopupEditarAvaliacao"
 import InfoAvaliacao from "../InfoAvaliacao/InfoAvaliacao"
 import Analytics from "../InfoAvaliacao/Analytics"
 import { verifyIsTablet } from "@/utils/Utils"
@@ -41,6 +42,7 @@ export default function TelaCadastro() {
     const [idAvaliacaoExcluir, setIdAvaliacaoExcluir] = useState<number>(0)
     const [infoAva, setInfoAva] = useState<tInfoAva>()
     const [totalRealizadas, setTotalRealizadas] = useState<number>(0)
+    const [avaliacaoSendoEditada, setAvaliacaoSendoEditada] = useState<tAvaliacao | null>(null)
 
     useEffect(() => {
         setIsMounted(true) // Confirma que o HTML já está no browser
@@ -177,6 +179,7 @@ export default function TelaCadastro() {
             setPopupMessage(true)
             return
         }
+        setLoad(true);
         try {
             const endpoint = `/api/apiAvaliacao`
             fetch(endpoint, {
@@ -201,22 +204,21 @@ export default function TelaCadastro() {
                     setPopupMessage(true)
                 } else {
                     obterAvaliacoes(mostrarHistorico)
+                    setNome("")
+                    setData("")
                 }
             })
         } catch(err) {
             console.log(err)
-            setLoad(false)
             setDadosPopupMessage({
                 tipo: 3,
                 titulo: "Erro",
-                mensagem: "Erro ao gravar avaliação!",
+                mensagem: "Erro ao processar a avaliação!",
                 comandoOK: () => setPopupMessage(false)
             })
             setPopupMessage(true)
         } finally {
             setLoad(false)
-            setNome("")
-            setData("")
         }
     }
 
@@ -427,6 +429,23 @@ export default function TelaCadastro() {
             {popupConfirmation && <PopupConfirmation titulo="Excluir" mensagem="Esta avaliação e TODOS os candidatos (FAP) vinculados a ela serão excluídos!" pergunta="Confirma a exclusão de todos estes dados?" comandoSim={comandoSim} comandoNao={comandoNao}/>}
             {showInfoAvaliacao && <InfoAvaliacao comandoFechar={setShowInfoAvaliacao} infoAva={infoAva}/>}
             {showAnalytics && <Analytics comandoFechar={setShowAnalytics}/>}
+            {avaliacaoSendoEditada && (
+                <PopupEditarAvaliacao
+                    avaliacao={avaliacaoSendoEditada}
+                    comandoOK={() => {
+                        setAvaliacaoSendoEditada(null);
+                        obterAvaliacoes(mostrarHistorico);
+                        setDadosPopupMessage({
+                            tipo: 1,
+                            titulo: "Sucesso",
+                            mensagem: "Avaliação editada com sucesso!",
+                            comandoOK: () => setPopupMessage(false)
+                        });
+                        setPopupMessage(true);
+                    }}
+                    comandoCancelar={() => setAvaliacaoSendoEditada(null)}
+                />
+            )}
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
@@ -444,8 +463,10 @@ export default function TelaCadastro() {
                                 <input type="datetime-local" id={`data`} value={data} onChange={(e)=>setData(e.target.value)} />
                             </div>
                         </div>
-                        <div className={styles.fieldForm_center}>
-                            <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliacao()}>cadastrar nova</button>
+                        <div className={styles.fieldForm_center} style={{ gap: '10px' }}>
+                            <button className={styles.btnPadrao} onClick={()=>cadastrarAvaliacao()}>
+                                cadastrar nova
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -502,6 +523,7 @@ export default function TelaCadastro() {
                             <div className={`${styles.c_titulo} ${styles.c3}`}>Data Avaliação</div>
                             <div className={`${styles.c_titulo} ${styles.c4} ${styles.c_center}`}>
                                 <div>st</div>
+                                <Image src='/assets/icons/office_edit_w.svg' alt='Editar Avaliação' width={20} height={20}/>
                                 <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={20}/>
                                 <Image src='/assets/icons/print_w.svg' alt='Informações Avaliação' width={20} height={20}/>
                                 <Image src='/assets/icons/info_w.svg' alt='Informações Avaliação' width={20} height={20}/>
@@ -528,9 +550,15 @@ export default function TelaCadastro() {
                                             avaliacao.n_status_avaliacao==1?'Avaliação realizada, porém relatórios ainda não foram gerados e enviados':'Relatórios gerados e enviados'
                                         } width={20} height={20} className={styles.iconEditar}/>
                                         {avaliacao.n_status_avaliacao === 0 ? (
-                                            <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
+                                            <>
+                                                <Image src='/assets/icons/office_edit.svg' alt='Editar Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>setAvaliacaoSendoEditada(avaliacao)}/>
+                                                <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} className={styles.iconEditar} onClick={()=>comandoExcluir(avaliacao.n_id_avaliacao)}/>
+                                            </>
                                         ) : (
-                                            <Image src='/assets/icons/delete.svg' alt='Não é possível excluir' width={20} height={20} style={{ opacity: 0.2, cursor: 'not-allowed' }} title="Apenas avaliações não realizadas podem ser excluídas"/>
+                                            <>
+                                                <Image src='/assets/icons/office_edit.svg' alt='Não é possível editar' width={20} height={20} style={{ opacity: 0.2, cursor: 'not-allowed' }} title="Apenas avaliações não realizadas podem ser editadas"/>
+                                                <Image src='/assets/icons/delete.svg' alt='Não é possível excluir' width={20} height={20} style={{ opacity: 0.2, cursor: 'not-allowed' }} title="Apenas avaliações não realizadas podem ser excluídas"/>
+                                            </>
                                         )}
                                         <Image src='/assets/icons/print.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>imprimirListasPresenca(avaliacao.n_id_avaliacao)}/>
                                         <Image src='/assets/icons/info.svg' alt='Mostrar Informações' width={20} height={20} className={styles.iconEditar} onClick={()=>getInfoAvaliacao(avaliacao.n_id_avaliacao)}/>

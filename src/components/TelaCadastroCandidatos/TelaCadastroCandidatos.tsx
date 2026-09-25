@@ -7,6 +7,7 @@ import { verifyIsTablet } from "@/utils/Utils"
 import Load from "../Load/Load"
 import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
 import PopupSelecaoAvaliacao from "../Popup/PopupSelecaoAvaliacao"
+import PopupConfirmation, { PopupConfirmationProps } from "../Popup/PopupConfirmation"
 
 export default function TelaCadastroCandidatos() {
     const router = useRouter()
@@ -31,15 +32,25 @@ export default function TelaCadastroCandidatos() {
     const [load, setLoad] = useState<boolean>(false)
     const [popupPesquisarAvaliacao, setPopupPesquisarAvaliacao] = useState<boolean>(false)
     const [popupMessage, setPopupMessage] = useState<boolean>(false)
+    const [popupConfirmation, setPopupConfirmation] = useState<boolean>(false)
+    const [tipoLogado, setTipoLogado] = useState<number>(0)
     const [dadosPopupMessage, setDadosPopupMessage] = useState<PopupMessageProps>({
         tipo: 0,
         titulo: "",
         mensagem: "",
         comandoOK: () => setPopupMessage(false)
     })
+    const [dadosPopupConfirmation, setDadosPopupConfirmation] = useState<PopupConfirmationProps>({
+        titulo: "",
+        mensagem: "",
+        pergunta: "",
+        comandoSim: () => setPopupConfirmation(false),
+        comandoNao: () => setPopupConfirmation(false)
+    })
 
     useEffect(() => {
         setIsTablet(verifyIsTablet())
+        setTipoLogado(Number(localStorage.getItem('n_id_tipoPessoa') || 0))
         // A primeira carga agora também é garantida pelo useEffect do debounce abaixo, 
         // mas mantemos aqui por segurança de inicialização.
         obterCandidatos(1) 
@@ -177,6 +188,63 @@ export default function TelaCadastroCandidatos() {
         }
     }
 
+    const confirmarExclusao = (idCandidato: number) => {
+        setDadosPopupConfirmation({
+            titulo: "Confirmação de Exclusão",
+            mensagem: "Esta ação não poderá ser desfeita.",
+            pergunta: "Tem certeza que deseja remover este candidato?",
+            comandoSim: () => excluirCandidato(idCandidato),
+            comandoNao: () => setPopupConfirmation(false)
+        })
+        setPopupConfirmation(true)
+    }
+
+    const excluirCandidato = async (idCandidato: number) => {
+        setPopupConfirmation(false)
+        setLoad(true)
+        try {
+            const endpoint = `/api/apiCandidato`
+            const res = await fetch(endpoint, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    n_id_candidato: idCandidato,
+                    apiKey: process.env.NEXT_PUBLIC_API_KEY
+                })
+            })
+            const data = await res.json().catch(() => null);
+            if (res.status === 200) {
+                setDadosPopupMessage({
+                    tipo: 1,
+                    titulo: "Sucesso",
+                    mensagem: data?.message || "Candidato excluído com sucesso!",
+                    comandoOK: () => setPopupMessage(false)
+                })
+                setPopupMessage(true)
+                obterCandidatos(paginaAtual)
+            } else {
+                setDadosPopupMessage({
+                    tipo: 3,
+                    titulo: "Erro",
+                    mensagem: data?.message || "Erro ao excluir candidato.",
+                    comandoOK: () => setPopupMessage(false)
+                })
+                setPopupMessage(true)
+            }
+        } catch (error) {
+            console.error(error)
+            setDadosPopupMessage({
+                tipo: 3,
+                titulo: "Erro",
+                mensagem: "Ocorreu um erro de conexão ao tentar excluir.",
+                comandoOK: () => setPopupMessage(false)
+            })
+            setPopupMessage(true)
+        } finally {
+            setLoad(false)
+        }
+    }
+
     const baixaRelatorios = async (relatorios: any) => {
         const listaArquivos = Array.isArray(relatorios) ? relatorios : [relatorios];
         const relatoriosValidos = listaArquivos.filter(arquivo => arquivo !== null && arquivo !== undefined && arquivo !== "");
@@ -305,6 +373,7 @@ export default function TelaCadastroCandidatos() {
     return (
         <>
             {load && <Load />}
+            {popupConfirmation && <PopupConfirmation titulo={dadosPopupConfirmation.titulo} mensagem={dadosPopupConfirmation.mensagem} pergunta={dadosPopupConfirmation.pergunta} comandoSim={dadosPopupConfirmation.comandoSim} comandoNao={dadosPopupConfirmation.comandoNao} />}
             {popupPesquisarAvaliacao && <PopupSelecaoAvaliacao setFiltroAvaliacoes={setFiltroAvaliacoes} comandoFechar={() =>{setPopupPesquisarAvaliacao(false)}}/>}
             {popupMessage && <PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK} />}
             <div className={styles.telaCadastro}>
@@ -419,6 +488,9 @@ export default function TelaCadastroCandidatos() {
                             <div className={`${styles.c_titulo} ${styles.c3_candidato} ${styles.c_comandos}`}>
                                 <Image src='/assets/icons/file_export_w.svg' alt={""} width={25} height={25}></Image>
                                 <Image src='/assets/icons/mail_w.svg' alt={""} width={25} height={25}></Image>
+                                {(tipoLogado === 2 || tipoLogado === 3) && (
+                                    <Image src='/assets/icons/delete_w.svg' alt={""} width={25} height={25}></Image>
+                                )}
                             </div>
                             {!isTablet && <div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>
@@ -449,6 +521,16 @@ export default function TelaCadastroCandidatos() {
                                                 onClick={() => temRelatorio && enviarEmail(av.relatorios)}
                                                 style={{ cursor: temRelatorio ? 'pointer' : 'default' }}
                                             />
+                                            {(tipoLogado === 2 || tipoLogado === 3) && (
+                                                <Image
+                                                    src='/assets/icons/delete.svg'
+                                                    alt="Excluir Candidato"
+                                                    width={25}
+                                                    height={25}
+                                                    onClick={() => confirmarExclusao(av.n_id_candidato)}
+                                                    style={{ cursor: 'pointer' }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 );

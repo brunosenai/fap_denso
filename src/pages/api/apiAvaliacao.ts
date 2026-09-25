@@ -380,9 +380,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(500).json({message:"Internal Server Error: erro 500"})
         }
     }else if(req.method === 'PUT'){
-        const { fap } = req.body;
+        const { action, fap, id_avaliacao, s_nome_avaliacao, dt_data_avaliacao } = req.body;
 
         try {
+            if (action === 'editarAvaliacao') {
+                // TRAVA DE SEGURANÇA: Verifica o status atual da avaliação
+                const [rowsStatus] = await pool.query<RowDataPacket[]>(`
+                    SELECT n_status_avaliacao 
+                    FROM avaliacao 
+                    WHERE n_id_avaliacao = ?;
+                `, [id_avaliacao]);
+
+                if (rowsStatus.length === 0) {
+                    return res.status(404).json({ message: 'Avaliação não encontrada.' });
+                }
+                if (rowsStatus[0].n_status_avaliacao !== 0) {
+                    return res.status(400).json({ 
+                        message: 'Operação bloqueada: Apenas avaliações com status "Não Realizada" (0) podem ser editadas.' 
+                    });
+                }
+
+                await pool.query(`
+                    UPDATE avaliacao
+                    SET s_nome_avaliacao = ?, dt_data_avaliacao = ?
+                    WHERE n_id_avaliacao = ?;
+                `, [s_nome_avaliacao, dt_data_avaliacao, id_avaliacao]);
+                return res.status(200).json({ message: 'Avaliação atualizada com sucesso!' });
+            }
+
             for (const itemFap of fap) {
                 // 1. Formata a data do padrão ISO do JS para o padrão DATETIME do MySQL
                 let dataMySQL = itemFap.dt_date_fap;

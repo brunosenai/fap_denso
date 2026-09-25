@@ -10,8 +10,6 @@ import GraficoBarraDicotomica from "./Charts/GraficoBarraDicotomica"
 import GraficoBarraGradual from "./Charts/GraficoBarraGradual"
 import { tCandidatoFap } from "@/utils/Types"
 import GraficoRadialReprovados from "./Charts/GraficoRadialReprovados"
-import { pdf } from '@react-pdf/renderer';
-import { RelatorioAvaliadores } from '../Pdf/RelatorioAvaliadores';
 import { DensoLogo } from "@/components/DensoLogo";
 
 export default function TelaDashboard(){
@@ -198,6 +196,9 @@ export default function TelaDashboard(){
                 dadosSGT = contarAvaliadores(candidatosSGT);
                 dadosSGE = contarAvaliadores(candidatosSGE);
             }
+
+            const { pdf } = await import('@react-pdf/renderer');
+            const { RelatorioAvaliadores } = await import('../Pdf/RelatorioAvaliadores');
 
             const blob = await pdf(
                 <RelatorioAvaliadores 

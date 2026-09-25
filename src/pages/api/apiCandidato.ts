@@ -265,5 +265,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 res.status(500).json({ message: "Internal Server Error: erro 500" })
             }
         }
+    } else if (req.method === 'DELETE') {
+        const { n_id_candidato } = req.body;
+        if (!n_id_candidato) {
+            return res.status(400).json({ message: "ID do candidato não fornecido." });
+        }
+        try {
+            // Verifica se está associado a uma FAP
+            const [rows] = await pool.query<RowDataPacket[]>(`
+                SELECT n_id_candidato FROM fap WHERE n_id_candidato = ? LIMIT 1
+            `, [n_id_candidato]);
+
+            if (rows.length > 0) {
+                return res.status(409).json({ message: "Não é possível excluir: Candidato está associado a uma Avaliação (FAP)." });
+            }
+
+            await pool.query<ResultSetHeader>(`
+                DELETE FROM candidato WHERE n_id_candidato = ?
+            `, [n_id_candidato]);
+
+            return res.status(200).json({ message: 'Candidato excluído com sucesso!' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Erro ao excluir candidato." });
+        }
     }
 }

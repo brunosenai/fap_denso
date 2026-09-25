@@ -3,6 +3,7 @@ import styles from "@/styles/Cadastros.module.css"
 import Image from "next/image"
 import PopupConfirmation, {PopupConfirmationProps} from "../Popup/PopupConfirmation"
 import PopupMessage, { PopupMessageProps } from "../Popup/PopupMessage"
+import PopupTrocarSenha from "../Popup/PopupTrocarSenha"
 import { verifyIsTablet } from "@/utils/Utils"
 import { useState, useEffect } from "react"
 import { tAvaliador } from "@/utils/Types"
@@ -22,9 +23,17 @@ export default function TelaCadastroAvaliador(){
     const [avaliadoresFiltrados,setAvaliadoresFiltrados]=useState<tAvaliador[]>([])
     const [filtroAvaliadores,setFiltroAvaliadores]=useState("")
     const [isTablet, setIsTablet]=useState<boolean>()
+    const [loggedUserEmail, setLoggedUserEmail]=useState<string>("")
     const [popupMessage,setPopupMessage]=useState<boolean>(false)
     const [popupConfirmation,setPopupConfirmation]=useState<boolean>(false)
+    const [popupTrocarSenha, setPopupTrocarSenha]=useState<boolean>(false)
+    const [emailTrocarSenha, setEmailTrocarSenha]=useState<string>("")
     const [load, setLoad]=useState<boolean>(false)
+
+    const abrirTrocarSenha = (email: string) => {
+        setEmailTrocarSenha(email)
+        setPopupTrocarSenha(true)
+    }
     const [dadosPopupMessage,setDadosPopupMessage]=useState<PopupMessageProps>(
         {
             tipo:0,
@@ -45,6 +54,7 @@ export default function TelaCadastroAvaliador(){
 
     useEffect(()=>{
         setIsTablet(verifyIsTablet())
+        setLoggedUserEmail(localStorage.getItem('s_email_pessoa') || "")
         obterAvaliadores()
     },[])
 
@@ -272,6 +282,7 @@ export default function TelaCadastroAvaliador(){
             {load&&<Load/>}
             {popupConfirmation&&<PopupConfirmation titulo={dadosPopupConfirmation.titulo} mensagem={dadosPopupConfirmation.mensagem} pergunta={dadosPopupConfirmation.pergunta} comandoSim={dadosPopupConfirmation.comandoSim} comandoNao={dadosPopupConfirmation.comandoNao}/>}
             {popupMessage&&<PopupMessage tipo={dadosPopupMessage.tipo} titulo={dadosPopupMessage.titulo} mensagem={dadosPopupMessage.mensagem} comandoOK={dadosPopupMessage.comandoOK}/>}      
+            {popupTrocarSenha&&<PopupTrocarSenha email={emailTrocarSenha} comandoOK={() => setPopupTrocarSenha(false)} comandoCancelar={() => setPopupTrocarSenha(false)}/>}
             <div className={styles.telaCadastro}>
                 <div className={styles.telaCadastro_sessao1}>
                     <div className={styles.telaCadastro_topo}>
@@ -339,7 +350,7 @@ export default function TelaCadastroAvaliador(){
                             <div className={`${styles.c_titulo} ${styles.c3_avalidador}`}>Telefone</div>
                             <div className={`${styles.c_titulo} ${styles.c4_avalidador}`}>Tipo</div>
                             <div className={`${styles.c_titulo} ${styles.c5_avalidador} ${styles.c_comandos}`}>
-                                <Image src='/assets/icons/delete_w.svg' alt='Excluir Avaliação' width={20} height={20}/>
+                                <Image src='/assets/icons/settings_w.svg' alt='Comandos' width={20} height={20}/>
                             </div>
                             {!isTablet&&<div className={`${styles.c_titulo} ${styles.espacoBarraRolagem}`}></div>}
                         </div>
@@ -350,10 +361,14 @@ export default function TelaCadastroAvaliador(){
                                     <div className={`${styles.c_dado} ${styles.c2_avalidador}`}>{av.s_email_pessoa}</div>
                                     <div className={`${styles.c_dado} ${styles.c3_avalidador}`}>{formatarTelefone(av.s_telefone_pessoa)}</div>
                                     <div className={`${styles.c_dado} ${styles.c4_avalidador}`}>{av.n_id_tipoPessoa==1?'Avaliador':av.n_id_tipoPessoa==2?'Gestor':'Root'}</div>
-                                    <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`} onClick={()=>av.n_id_tipoPessoa!=3&&excluirPessoa(av.n_id_pessoa)}>
+                                    <div className={`${styles.c_dado} ${styles.c5_avalidador} ${styles.c_comandos}`}>
+                                        {av.s_email_pessoa === loggedUserEmail?
+                                            <Image src='/assets/icons/settings.svg' alt='Trocar Senha' width={20} height={20} style={{cursor:"pointer"}} onClick={()=>abrirTrocarSenha(av.s_email_pessoa)}/>:
+                                            <Image src='/assets/icons/settings.svg' alt='Trocar Senha' width={20} height={20} style={{opacity:0.5}}/>
+                                        }
                                         {av.n_id_tipoPessoa!=3?
-                                            <Image src='/assets/icons/delete.svg' alt='Excluir Avaliação' width={20} height={20} style={{cursor:"pointer"}}/>:
-                                            <Image src='/assets/icons/nodelete.svg' alt='Não Excluir Avaliação' width={20} height={20} style={{opacity:0.5}}/>
+                                            <Image src='/assets/icons/delete.svg' alt='Excluir Colaborador' width={20} height={20} style={{cursor:"pointer"}} onClick={()=>excluirPessoa(av.n_id_pessoa)}/>:
+                                            <Image src='/assets/icons/nodelete.svg' alt='Não Excluir Colaborador' width={20} height={20} style={{opacity:0.5}}/>
                                         }
                                     </div>                                
                                 </div>
