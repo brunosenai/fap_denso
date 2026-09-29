@@ -191,6 +191,9 @@ export default function Fap() {
       }
     });
 
+    // Corrige problema de precisão de ponto flutuante (ex: 12.9999999998 ao invés de 13)
+    nota = Math.round(nota * 100) / 100;
+
     let aprovado = 0;
     if(nota >= mediaAprovacao && !falhouEliminatoria){
       aprovado = 1;
@@ -213,8 +216,23 @@ export default function Fap() {
  
     const fapFinalizado = fap.map((f) => {
       const [nota, aprovado] = calcularNota(f);
+      const resp = f.j_respostas as any || {};
+      
       return {
         ...f,
+        n_q6_fap: resp['q_1'] !== undefined ? resp['q_1'] : f.n_q6_fap,
+        n_q7_fap: resp['q_2'] !== undefined ? resp['q_2'] : f.n_q7_fap,
+        n_q8_fap: resp['q_3'] !== undefined ? resp['q_3'] : f.n_q8_fap,
+        n_q9_fap: resp['q_4'] !== undefined ? resp['q_4'] : f.n_q9_fap,
+        n_q10_fap: resp['q_5'] !== undefined ? resp['q_5'] : f.n_q10_fap,
+        n_q11_fap: resp['q_6'] !== undefined ? resp['q_6'] : f.n_q11_fap,
+        n_q12_fap: resp['q_7'] !== undefined ? resp['q_7'] : f.n_q12_fap,
+        n_posto1_fap: resp['posto_1'] !== undefined ? resp['posto_1'] : f.n_posto1_fap,
+        n_posto2_fap: resp['posto_2'] !== undefined ? resp['posto_2'] : f.n_posto2_fap,
+        n_posto3_fap: resp['posto_3'] !== undefined ? resp['posto_3'] : f.n_posto3_fap,
+        n_posto4_fap: resp['posto_4'] !== undefined ? resp['posto_4'] : f.n_posto4_fap,
+        n_posto5_fap: resp['posto_5'] !== undefined ? resp['posto_5'] : f.n_posto5_fap,
+        n_posto6_fap: resp['posto_6'] !== undefined ? resp['posto_6'] : f.n_posto6_fap,
         n_nota_fap: nota,
         n_resultado_fap: aprovado,
         n_status_fap: 1
