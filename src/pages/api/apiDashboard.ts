@@ -45,6 +45,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             filtroSql += " AND f.dt_date_fap >= '2026-07-22 00:00:00'";
         }
 
+        // Lógica para descobrir a nota de corte real a partir das configurações dinâmicas
+        const [configRows] = await pool.query<RowDataPacket[]>("SELECT j_config_fap FROM config LIMIT 1");
+        let cutoff = 13;
+        if (configRows.length > 0 && configRows[0].j_config_fap) {
+            const configObj = typeof configRows[0].j_config_fap === 'string' ? JSON.parse(configRows[0].j_config_fap) : configRows[0].j_config_fap;
+            let notaDeCorte = configObj.notaDeCorte || 13;
+            let maxNota = 0;
+            if (configObj.questoes && Array.isArray(configObj.questoes)) {
+                configObj.questoes.filter((q: any) => q.habilitada).forEach((q: any) => {
+                    if (q.tipo === 'num') maxNota += 4 * q.peso;
+                    else if (q.tipo === 'sn') maxNota += 1 * q.peso;
+                });
+            } else {
+                maxNota = 22; 
+            }
+            if (notaDeCorte > maxNota) {
+                cutoff = (notaDeCorte / 100) * maxNota; // transforma em porcentagem (ex: 70 -> 15.4)
+            } else {
+                cutoff = notaDeCorte; // absoluto (ex: 15)
+            }
+        }
+
         const [rows] = await pool.query<RowDataPacket[]>(`
             SELECT 
                 *,
@@ -103,9 +125,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     FROM (
                         SELECT 
                             f.*,
-                            CASE WHEN (f.n_nota_fap < 13) AND (f.n_q6_fap = 1 AND f.n_q7_fap = 1) THEN 1 ELSE 0 END AS apenas_gradual,
-                            CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap >= 13) THEN 1 ELSE 0 END AS apenas_dicotomica,
-                            CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap < 13) THEN 1 ELSE 0 END AS ambas
+                            CASE WHEN (f.n_nota_fap < ${cutoff}) AND (f.n_q6_fap = 1 AND f.n_q7_fap = 1) THEN 1 ELSE 0 END AS apenas_gradual,
+                            CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap >= ${cutoff}) THEN 1 ELSE 0 END AS apenas_dicotomica,
+                            CASE WHEN (f.n_q6_fap = 0 OR f.n_q7_fap = 0) AND (f.n_nota_fap < ${cutoff}) THEN 1 ELSE 0 END AS ambas
                         FROM 
                             fap f
                         WHERE 
@@ -131,7 +153,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             FROM fap f
             INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
             INNER JOIN avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
-            INNER JOIN pessoa p ON f.n_id_pessoa = p.n_id_pessoa
+            LEFT JOIN pessoa p ON f.n_id_pessoa = p.n_id_pessoa
             WHERE f.n_status_fap = 1 ${filtroSql}
             ORDER BY f.dt_date_fap DESC
             LIMIT ? OFFSET ?
