@@ -191,12 +191,30 @@ export default function Fap() {
       }
     });
 
-    // Corrige problema de precisão de ponto flutuante (ex: 12.9999999998 ao invés de 13)
+    // Corrige problema de precisão de ponto flutuante
     nota = Math.round(nota * 100) / 100;
 
+    // Calcula a nota máxima possível para descobrir se a nota de corte é percentual
+    let maxNota = 0;
+    fapConfig.questoes.filter(q => q.habilitada).forEach(q => {
+        if (q.tipo === 'num') maxNota += 4 * q.peso;
+        else if (q.tipo === 'sn') maxNota += 1 * q.peso;
+    });
+
     let aprovado = 0;
-    if(nota >= mediaAprovacao && !falhouEliminatoria){
-      aprovado = 1;
+    
+    // Se a nota de corte configurada for MAIOR que a nota máxima possível (ex: 70 > 22), 
+    // significa que o usuário configurou como PORCENTAGEM (70%).
+    if (mediaAprovacao > maxNota) {
+      const percentualAtual = (nota / maxNota) * 100;
+      if (percentualAtual >= mediaAprovacao && !falhouEliminatoria) {
+        aprovado = 1;
+      }
+    } else {
+      // Caso contrário, é pontuação absoluta
+      if (nota >= mediaAprovacao && !falhouEliminatoria) {
+        aprovado = 1;
+      }
     }
     
     return [nota, aprovado];
