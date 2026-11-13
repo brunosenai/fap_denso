@@ -21,10 +21,10 @@ jobs:
             cd ${{ secrets.VPS_PROJECT_PATH }}
 
             echo "1. Tirando foto/snapshot de seguranca do Next.js (docker commit)..."
-            docker commit nextjs_fap backup_app_seguranca || true
+            docker commit fap_denso backup_app_seguranca || true
 
             echo "2. Gerando backup do banco de dados MySQL..."
-            docker exec mysql_fap sh -c 'exec mysqldump -uroot -pstellantissenaicentro402026_root --databases fap' > fap_backup_seguranca.sql
+            docker exec mysql_fap_denso sh -c 'exec mysqldump -uroot -pdensosenaicentro402026_root --databases fap_denso' > fap_denso_backup_seguranca.sql
 
             echo "3. Baixando imagem nova atualizada..."
             docker compose pull app || docker-compose pull app
