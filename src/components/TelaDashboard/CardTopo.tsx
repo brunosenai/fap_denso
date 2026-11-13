@@ -32,11 +32,14 @@ export default function CardTopo({ titulo, texto, color, setDashboardFilter, fil
             case 3:
                 setEstilo(styles.cardTopo3)
             break;
+            case 5:
+                setEstilo(styles.cardTopo5)
+            break;
             default:
                 setEstilo(styles.cardTopo1)
             break;
         }
-    },[])
+    },[color])
 
     return(
         <div className={`${styles.cardTopo}`} onClick={()=>{setDashboardFilter(filter!)}}>

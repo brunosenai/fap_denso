@@ -17,32 +17,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { filter, dataInicio, dataFim, page = 1, avaliacao, isExport = false, filtroSgtSge} = req.query;
 
     try{
-        let filtroSql = "";
+        let filtroTabelaSql = "";
+        let filtroComumSql = "";
         
-        const params: any[] = [];
+        const paramsComuns: any[] = [];
         const limitSql = isExport === 'true' ? 10000 : 20; 
         const offsetSql = isExport === 'true' ? 0 : (Number(page) - 1) * 20;
 
         if (filter === 'aprovados') {
-            filtroSql += " AND f.n_resultado_fap <> 0";
+            filtroTabelaSql += " AND ((f.n_q6_fap <> -1 AND f.n_q6_fap IS NOT NULL) OR f.j_respostas IS NOT NULL) AND f.n_resultado_fap <> 0";
         } else if (filter === 'reprovados') {
-            filtroSql += " AND f.n_resultado_fap = 0";
+            filtroTabelaSql += " AND ((f.n_q6_fap <> -1 AND f.n_q6_fap IS NOT NULL) OR f.j_respostas IS NOT NULL) AND f.n_resultado_fap = 0";
+        } else if (filter === 'faltas') {
+            filtroTabelaSql += " AND f.n_candidatopresente_fap = 0 AND (f.n_q6_fap = -1 OR f.n_q6_fap IS NULL) AND (f.j_respostas IS NULL OR f.j_respostas = '')";
+        } else if (filter === 'todos') {
+            filtroTabelaSql += " AND ((f.n_q6_fap <> -1 AND f.n_q6_fap IS NOT NULL) OR f.j_respostas IS NOT NULL)";
         }
 
         if (dataInicio && dataFim) {
-            filtroSql += " AND f.dt_date_fap BETWEEN ? AND ?";
-            params.push(`${dataInicio} 00:00:00`, `${dataFim} 23:59:59`);
+            filtroComumSql += " AND f.dt_date_fap BETWEEN ? AND ?";
+            paramsComuns.push(`${dataInicio} 00:00:00`, `${dataFim} 23:59:59`);
         }
 
         if (avaliacao && avaliacao !== 'todas') {
-            filtroSql += " AND f.n_id_avaliacao = ?";
-            params.push(avaliacao);
+            filtroComumSql += " AND f.n_id_avaliacao = ?";
+            paramsComuns.push(avaliacao);
         }
 
         if (filtroSgtSge === 'SGT') {
-            filtroSql += " AND f.dt_date_fap <= '2026-07-21 23:59:59'";
+            filtroComumSql += " AND f.dt_date_fap <= '2026-07-21 23:59:59'";
         } else if (filtroSgtSge === 'SGE') {
-            filtroSql += " AND f.dt_date_fap >= '2026-07-22 00:00:00'";
+            filtroComumSql += " AND f.dt_date_fap >= '2026-07-22 00:00:00'";
         }
 
         // Lógica para descobrir a nota de corte real a partir das configurações dinâmicas
@@ -77,6 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     total_avaliados,
                     total_aprovados,
                     total_reprovados,
+                    total_faltas,
                     reprovado_apenas_dicotomica,
                     reprovado_apenas_gradual,
                     reprovado_pelas_duas,
@@ -90,38 +96,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     q12_p1, q12_p2, q12_p3, q12_p4
                 FROM (
                     SELECT 
-                        COUNT(*) AS total_avaliados,
-                        SUM(CASE WHEN n_resultado_fap <> 0 THEN 1 ELSE 0 END) AS total_aprovados,
-                        SUM(CASE WHEN n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados,
-                        SUM(apenas_dicotomica) AS reprovado_apenas_dicotomica,
-                        SUM(apenas_gradual) AS reprovado_apenas_gradual,
-                        SUM(ambas) AS reprovado_pelas_duas,
-                        SUM(CASE WHEN n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
-                        SUM(CASE WHEN n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
-                        SUM(CASE WHEN n_q8_fap = 1 THEN 1 ELSE 0 END) AS q8_p1,
-                        SUM(CASE WHEN n_q8_fap = 2 THEN 1 ELSE 0 END) AS q8_p2,
-                        SUM(CASE WHEN n_q8_fap = 3 THEN 1 ELSE 0 END) AS q8_p3,
-                        SUM(CASE WHEN n_q8_fap = 4 THEN 1 ELSE 0 END) AS q8_p4,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN 1 ELSE 0 END) AS total_avaliados,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_resultado_fap <> 0 THEN 1 ELSE 0 END) AS total_aprovados,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados,
+                        SUM(CASE WHEN n_candidatopresente_fap = 0 AND (n_q6_fap = -1 OR n_q6_fap IS NULL) AND (j_respostas IS NULL OR j_respostas = '') THEN 1 ELSE 0 END) AS total_faltas,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN apenas_dicotomica ELSE 0 END) AS reprovado_apenas_dicotomica,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN apenas_gradual ELSE 0 END) AS reprovado_apenas_gradual,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN ambas ELSE 0 END) AS reprovado_pelas_duas,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 1 THEN 1 ELSE 0 END) AS q8_p1,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 2 THEN 1 ELSE 0 END) AS q8_p2,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 3 THEN 1 ELSE 0 END) AS q8_p3,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 4 THEN 1 ELSE 0 END) AS q8_p4,
 
-                        SUM(CASE WHEN n_q9_fap = 1 THEN 1 ELSE 0 END) AS q9_p1,
-                        SUM(CASE WHEN n_q9_fap = 2 THEN 1 ELSE 0 END) AS q9_p2,
-                        SUM(CASE WHEN n_q9_fap = 3 THEN 1 ELSE 0 END) AS q9_p3,
-                        SUM(CASE WHEN n_q9_fap = 4 THEN 1 ELSE 0 END) AS q9_p4,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 1 THEN 1 ELSE 0 END) AS q9_p1,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 2 THEN 1 ELSE 0 END) AS q9_p2,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 3 THEN 1 ELSE 0 END) AS q9_p3,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 4 THEN 1 ELSE 0 END) AS q9_p4,
 
-                        SUM(CASE WHEN n_q10_fap = 1 THEN 1 ELSE 0 END) AS q10_p1,
-                        SUM(CASE WHEN n_q10_fap = 2 THEN 1 ELSE 0 END) AS q10_p2,
-                        SUM(CASE WHEN n_q10_fap = 3 THEN 1 ELSE 0 END) AS q10_p3,
-                        SUM(CASE WHEN n_q10_fap = 4 THEN 1 ELSE 0 END) AS q10_p4,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 1 THEN 1 ELSE 0 END) AS q10_p1,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 2 THEN 1 ELSE 0 END) AS q10_p2,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 3 THEN 1 ELSE 0 END) AS q10_p3,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 4 THEN 1 ELSE 0 END) AS q10_p4,
 
-                        SUM(CASE WHEN n_q11_fap = 1 THEN 1 ELSE 0 END) AS q11_p1,
-                        SUM(CASE WHEN n_q11_fap = 2 THEN 1 ELSE 0 END) AS q11_p2,
-                        SUM(CASE WHEN n_q11_fap = 3 THEN 1 ELSE 0 END) AS q11_p3,
-                        SUM(CASE WHEN n_q11_fap = 4 THEN 1 ELSE 0 END) AS q11_p4,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 1 THEN 1 ELSE 0 END) AS q11_p1,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 2 THEN 1 ELSE 0 END) AS q11_p2,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 3 THEN 1 ELSE 0 END) AS q11_p3,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 4 THEN 1 ELSE 0 END) AS q11_p4,
 
-                        SUM(CASE WHEN n_q12_fap = 1 THEN 1 ELSE 0 END) AS q12_p1,
-                        SUM(CASE WHEN n_q12_fap = 2 THEN 1 ELSE 0 END) AS q12_p2,
-                        SUM(CASE WHEN n_q12_fap = 3 THEN 1 ELSE 0 END) AS q12_p3,
-                        SUM(CASE WHEN n_q12_fap = 4 THEN 1 ELSE 0 END) AS q12_p4
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 1 THEN 1 ELSE 0 END) AS q12_p1,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 2 THEN 1 ELSE 0 END) AS q12_p2,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 3 THEN 1 ELSE 0 END) AS q12_p3,
+                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 4 THEN 1 ELSE 0 END) AS q12_p4
                     FROM (
                         SELECT 
                             f.*,
@@ -131,11 +138,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         FROM 
                             fap f
                         WHERE 
-                            f.n_status_fap <> 0 AND f.n_candidatopresente_fap = 1 ${filtroSql}
+                            f.n_status_fap <> 0 ${filtroComumSql}
                     ) AS sub
                 ) AS resumo_interno
             ) AS resumo_final;  
-        `, params);
+        `, paramsComuns);
 
 
         /**/ 
@@ -149,19 +156,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 p.s_nome_pessoa AS avaliador,
                 DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y %H:%i') AS data,
                 f.n_resultado_fap AS resultado,
+                CASE 
+                    WHEN f.n_candidatopresente_fap = 0 AND (f.n_q6_fap = -1 OR f.n_q6_fap IS NULL) AND (f.j_respostas IS NULL OR f.j_respostas = '') THEN 0 
+                    ELSE 1 
+                END AS presente,
                 f.s_relatorio_fap AS relatorio
             FROM fap f
             INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
             INNER JOIN avaliacao a ON f.n_id_avaliacao = a.n_id_avaliacao
             LEFT JOIN pessoa p ON f.n_id_pessoa = p.n_id_pessoa
-            WHERE f.n_status_fap = 1 ${filtroSql}
+            WHERE f.n_status_fap <> 0 ${filtroComumSql} ${filtroTabelaSql}
             ORDER BY f.dt_date_fap DESC
             LIMIT ? OFFSET ?
-        `, [...params, limitSql, offsetSql]);
+        `, [...paramsComuns, limitSql, offsetSql]);
 
         const totalAvaliados = Number(rows[0]?.total_avaliados || 0);
         const totalAprovados = Number(rows[0]?.total_aprovados || 0);
         const totalReprovados = Number(rows[0]?.total_reprovados || 0);
+        const totalFaltas = Number(rows[0]?.total_faltas || 0);
         const taxaAprovacao = Number(rows[0]?.taxa_aprovacao || 0);
 
         const dadosGraficoGeral = [
@@ -203,6 +215,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 totalAvaliados: totalAvaliados,
                 totalAprovados: totalAprovados,
                 totalReprovados: totalReprovados,
+                totalFaltas: totalFaltas,
                 taxaAprovacao: taxaAprovacao.toFixed(2) + "%",
                 taxaReprovacao: (100 - taxaAprovacao).toFixed(2) + "%"
             },
@@ -219,6 +232,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 totalAvaliados: 0,
                 totalAprovados: 0,
                 totalReprovados: 0,
+                totalFaltas: 0,
                 taxaAprovacao: "0.00%",
                 taxaReprovacao: "0.00%"
             },

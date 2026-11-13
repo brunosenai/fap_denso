@@ -238,7 +238,7 @@ export default function TelaDashboard(){
                     CPF: c.cpf,
                     Email: c.email,
                     Data: c.data,
-                    Resultado: c.resultado !== 0 ? "APROVADO" : "REPROVADO"
+                    Resultado: c.presente === 0 ? "FALTOU" : c.resultado !== 0 ? "APROVADO" : "REPROVADO"
                 }));
             };
 
@@ -309,6 +309,7 @@ export default function TelaDashboard(){
                 <CardTopo  currentFilter={dashboardFilter} titulo={"CANDIDATOS AVALIADOS"} texto={dadosDashboard.cards.totalAvaliados} color={1} filter={'todos'} setDashboardFilter={setDashboardFilter}/>
                 <CardTopo  currentFilter={dashboardFilter} titulo={"APROVADOS"} texto={dadosDashboard.cards.totalAprovados} color={2} filter={'aprovados'} setDashboardFilter={setDashboardFilter}/>
                 <CardTopo  currentFilter={dashboardFilter} titulo={"REPROVADOS"} texto={dadosDashboard.cards.totalReprovados} color={3} filter={'reprovados'} setDashboardFilter={setDashboardFilter}/>
+                <CardTopo  currentFilter={dashboardFilter} titulo={"FALTAS"} texto={dadosDashboard.cards.totalFaltas} color={5} filter={'faltas'} setDashboardFilter={setDashboardFilter}/>
                 <CardTopo  currentFilter={dashboardFilter} titulo={"TAXA DE APROVAÇÃO"} texto={dadosDashboard.cards.taxaAprovacao} color={4} filter="geral" setDashboardFilter={setDashboardFilter}/>
                 <CardTopo  currentFilter={dashboardFilter} titulo={"TAXA DE REPROVAÇÃO"} texto={dadosDashboard.cards.taxaReprovacao} color={4} filter="geral" setDashboardFilter={setDashboardFilter}/>
            </div>
@@ -434,10 +435,12 @@ export default function TelaDashboard(){
                                                 <td>
                                                     <span
                                                         className={`${styles.badge} ${
-                                                            candidato.resultado !== 0 ? styles.aprovado : styles.reprovado
+                                                            candidato.presente === 0
+                                                                ? styles.falta
+                                                                : candidato.resultado !== 0 ? styles.aprovado : styles.reprovado
                                                         }`}
                                                     >
-                                                        {candidato.resultado !== 0 ? "APROVADO" : "REPROVADO"}
+                                                        {candidato.presente === 0 ? "FALTOU" : candidato.resultado !== 0 ? "APROVADO" : "REPROVADO"}
                                                     </span>
                                                 </td>
                                             </tr>

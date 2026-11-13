@@ -18,7 +18,7 @@
     display: flex;
     width: 95%;
     justify-content: space-between;
-    gap: 20px;
+    gap: 15px;
 }
 
 .cardTopo{
@@ -28,7 +28,8 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    width: 18.2%;
+    flex: 1;
+    min-width: 0;
     cursor: pointer;
     background-color: #2D2D2D;
     padding: 10px 0 0px 0px;
@@ -62,7 +63,14 @@
     height: 100%;
 }
 
-.cardTopo1:hover, .cardTopo2:hover, .cardTopo3:hover {
+.cardTopo5{
+    color: #FFA726 !important;
+    font-size: 40px;
+    width: 100%;
+    height: 100%;
+}
+
+.cardTopo1:hover, .cardTopo2:hover, .cardTopo3:hover, .cardTopo5:hover {
     color: #99000A !important;
     background-color: var(--vermelhoDestaque);
     font-size: 40px;
@@ -385,6 +393,11 @@
 .reprovado{
     background-color: #FF9D9D;
     color: #fff !important;
+}
+
+.falta{
+    background-color: #FFA726;
+    color: #2d2d2d !important;
 }
 
 .noRegisters{
