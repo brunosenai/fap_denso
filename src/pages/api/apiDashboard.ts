@@ -25,13 +25,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const offsetSql = isExport === 'true' ? 0 : (Number(page) - 1) * 20;
 
         if (filter === 'aprovados') {
-            filtroTabelaSql += " AND ((f.n_q6_fap <> -1 AND f.n_q6_fap IS NOT NULL) OR f.j_respostas IS NOT NULL) AND f.n_resultado_fap <> 0";
+            filtroTabelaSql += " AND f.n_candidatopresente_fap = 1 AND f.n_resultado_fap <> 0";
         } else if (filter === 'reprovados') {
-            filtroTabelaSql += " AND ((f.n_q6_fap <> -1 AND f.n_q6_fap IS NOT NULL) OR f.j_respostas IS NOT NULL) AND f.n_resultado_fap = 0";
+            filtroTabelaSql += " AND f.n_candidatopresente_fap = 1 AND f.n_resultado_fap = 0";
         } else if (filter === 'faltas') {
-            filtroTabelaSql += " AND f.n_candidatopresente_fap = 0 AND (f.n_q6_fap = -1 OR f.n_q6_fap IS NULL) AND (f.j_respostas IS NULL OR f.j_respostas = '')";
+            filtroTabelaSql += " AND f.n_candidatopresente_fap = 0";
         } else if (filter === 'todos') {
-            filtroTabelaSql += " AND ((f.n_q6_fap <> -1 AND f.n_q6_fap IS NOT NULL) OR f.j_respostas IS NOT NULL)";
+            filtroTabelaSql += " AND f.n_candidatopresente_fap = 1";
         }
 
         if (dataInicio && dataFim) {
@@ -96,39 +96,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     q12_p1, q12_p2, q12_p3, q12_p4
                 FROM (
                     SELECT 
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN 1 ELSE 0 END) AS total_avaliados,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_resultado_fap <> 0 THEN 1 ELSE 0 END) AS total_aprovados,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados,
-                        SUM(CASE WHEN n_candidatopresente_fap = 0 AND (n_q6_fap = -1 OR n_q6_fap IS NULL) AND (j_respostas IS NULL OR j_respostas = '') THEN 1 ELSE 0 END) AS total_faltas,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN apenas_dicotomica ELSE 0 END) AS reprovado_apenas_dicotomica,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN apenas_gradual ELSE 0 END) AS reprovado_apenas_gradual,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) THEN ambas ELSE 0 END) AS reprovado_pelas_duas,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 1 THEN 1 ELSE 0 END) AS q8_p1,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 2 THEN 1 ELSE 0 END) AS q8_p2,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 3 THEN 1 ELSE 0 END) AS q8_p3,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q8_fap = 4 THEN 1 ELSE 0 END) AS q8_p4,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 THEN 1 ELSE 0 END) AS total_avaliados,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_resultado_fap <> 0 THEN 1 ELSE 0 END) AS total_aprovados,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_resultado_fap = 0 THEN 1 ELSE 0 END) AS total_reprovados,
+                        SUM(CASE WHEN n_candidatopresente_fap = 0 THEN 1 ELSE 0 END) AS total_faltas,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 THEN apenas_dicotomica ELSE 0 END) AS reprovado_apenas_dicotomica,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 THEN apenas_gradual ELSE 0 END) AS reprovado_apenas_gradual,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 THEN ambas ELSE 0 END) AS reprovado_pelas_duas,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q6_fap = 1 THEN 1 ELSE 0 END) AS acertos_q6,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q7_fap = 1 THEN 1 ELSE 0 END) AS acertos_q7,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q8_fap = 1 THEN 1 ELSE 0 END) AS q8_p1,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q8_fap = 2 THEN 1 ELSE 0 END) AS q8_p2,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q8_fap = 3 THEN 1 ELSE 0 END) AS q8_p3,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q8_fap = 4 THEN 1 ELSE 0 END) AS q8_p4,
 
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 1 THEN 1 ELSE 0 END) AS q9_p1,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 2 THEN 1 ELSE 0 END) AS q9_p2,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 3 THEN 1 ELSE 0 END) AS q9_p3,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q9_fap = 4 THEN 1 ELSE 0 END) AS q9_p4,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q9_fap = 1 THEN 1 ELSE 0 END) AS q9_p1,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q9_fap = 2 THEN 1 ELSE 0 END) AS q9_p2,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q9_fap = 3 THEN 1 ELSE 0 END) AS q9_p3,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q9_fap = 4 THEN 1 ELSE 0 END) AS q9_p4,
 
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 1 THEN 1 ELSE 0 END) AS q10_p1,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 2 THEN 1 ELSE 0 END) AS q10_p2,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 3 THEN 1 ELSE 0 END) AS q10_p3,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q10_fap = 4 THEN 1 ELSE 0 END) AS q10_p4,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q10_fap = 1 THEN 1 ELSE 0 END) AS q10_p1,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q10_fap = 2 THEN 1 ELSE 0 END) AS q10_p2,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q10_fap = 3 THEN 1 ELSE 0 END) AS q10_p3,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q10_fap = 4 THEN 1 ELSE 0 END) AS q10_p4,
 
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 1 THEN 1 ELSE 0 END) AS q11_p1,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 2 THEN 1 ELSE 0 END) AS q11_p2,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 3 THEN 1 ELSE 0 END) AS q11_p3,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q11_fap = 4 THEN 1 ELSE 0 END) AS q11_p4,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q11_fap = 1 THEN 1 ELSE 0 END) AS q11_p1,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q11_fap = 2 THEN 1 ELSE 0 END) AS q11_p2,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q11_fap = 3 THEN 1 ELSE 0 END) AS q11_p3,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q11_fap = 4 THEN 1 ELSE 0 END) AS q11_p4,
 
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 1 THEN 1 ELSE 0 END) AS q12_p1,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 2 THEN 1 ELSE 0 END) AS q12_p2,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 3 THEN 1 ELSE 0 END) AS q12_p3,
-                        SUM(CASE WHEN ((n_q6_fap <> -1 AND n_q6_fap IS NOT NULL) OR j_respostas IS NOT NULL) AND n_q12_fap = 4 THEN 1 ELSE 0 END) AS q12_p4
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q12_fap = 1 THEN 1 ELSE 0 END) AS q12_p1,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q12_fap = 2 THEN 1 ELSE 0 END) AS q12_p2,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q12_fap = 3 THEN 1 ELSE 0 END) AS q12_p3,
+                        SUM(CASE WHEN n_candidatopresente_fap = 1 AND n_q12_fap = 4 THEN 1 ELSE 0 END) AS q12_p4
                     FROM (
                         SELECT 
                             f.*,
@@ -156,10 +156,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 p.s_nome_pessoa AS avaliador,
                 DATE_FORMAT(f.dt_date_fap, '%d/%m/%Y %H:%i') AS data,
                 f.n_resultado_fap AS resultado,
-                CASE 
-                    WHEN f.n_candidatopresente_fap = 0 AND (f.n_q6_fap = -1 OR f.n_q6_fap IS NULL) AND (f.j_respostas IS NULL OR f.j_respostas = '') THEN 0 
-                    ELSE 1 
-                END AS presente,
+                f.n_candidatopresente_fap AS presente,
                 f.s_relatorio_fap AS relatorio
             FROM fap f
             INNER JOIN candidato c ON f.n_id_candidato = c.n_id_candidato
